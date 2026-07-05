@@ -1,0 +1,14 @@
+# Jekyll build output & caches
+_site/
+.jekyll-cache/
+.jekyll-metadata
+.sass-cache/
+
+# Bundler / local gem install
+vendor/
+.bundle/
+
+# Machine-specific binstubs (regenerate with `bundle binstubs jekyll`)
+bin/
+
+*.gem

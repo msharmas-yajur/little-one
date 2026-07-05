@@ -1,0 +1,69 @@
+# ══════════════════════════════════════════════════════════════
+#  SHARED STORIES
+#  This is the file you'll edit most as the children grow.
+#  Each story has an id, a title, an age hint, and a list of pages.
+#  Each page: a scene colour, a line to read aloud, an art key,
+#  and a cue (a gentle reminder for YOU, the grown-up).
+#
+#  Art keys available (see assets/js/art.js): sun, bird, dog, cat,
+#  fish, moon, star, flower, cloud, butterfly, duck, apple, ball,
+#  rain, tree, boat, car.
+#
+#  To add a new story: copy a block, change the id, and write pages.
+#  To add a page: add another "- line / art / cue / sky" entry.
+#  Sky options: morning, day, garden, night, rain.
+# ══════════════════════════════════════════════════════════════
+
+- id: little-ones-day
+  title: "Little One's Day"
+  age: "1+"
+  pages:
+    - sky: morning
+      line: "Good morning, sun! You're up so high."
+      art: sun
+      cue: "Point up. Say “sun!” and let her tap it."
+    - sky: morning
+      line: "A little bird says hop, hop, hop."
+      art: bird
+      cue: "Hop your fingers along her arm as you read."
+    - sky: garden
+      line: "The puppy wags and wants to play."
+      art: dog
+      cue: "Try a soft “woof” — she may try to copy you."
+    - sky: garden
+      line: "A flower grows to say hello."
+      art: flower
+      cue: "Wave hello to the flower together."
+    - sky: day
+      line: "A butterfly floats by so slow."
+      art: butterfly
+      cue: "Float your hand slowly through the air."
+    - sky: night
+      line: "Now stars come out, one, two, three."
+      art: star
+      cue: "Count on her fingers: one, two, three."
+    - sky: night
+      line: "Goodnight, moon. Goodnight from me."
+      art: moon
+      cue: "A whisper works well for this last line."
+
+- id: splish-splash
+  title: "Splish, Splash!"
+  age: "1+"
+  pages:
+    - sky: rain
+      line: "Pitter-patter, down comes the rain."
+      art: rain
+      cue: "Tap fingertips on the back of her hand — soft rain."
+    - sky: rain
+      line: "A little duck goes quack, quack, quack."
+      art: duck
+      cue: "Try a happy “quack!” — ducks love puddles."
+    - sky: day
+      line: "Out comes the sun to dry the ground."
+      art: sun
+      cue: "Open your arms wide like the warm sun."
+    - sky: garden
+      line: "And up jumps a tree, tall and round."
+      art: tree
+      cue: "Stretch up tall together like the tree."

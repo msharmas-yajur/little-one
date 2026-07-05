@@ -1,0 +1,32 @@
+# ─────────────────────────────────────────────
+#  Little One — a growing storybook for the little ones
+# ─────────────────────────────────────────────
+title: Little One
+description: A gentle first storybook to share, tap, and giggle through together.
+# When published at username.github.io/little-one, set baseurl to "/little-one".
+# When published at a custom domain or username.github.io (root), leave it "".
+baseurl: ""
+url: ""
+
+# Build settings
+markdown: kramdown
+collections:
+  children:
+    output: true
+    permalink: /:name/
+
+defaults:
+  - scope:
+      path: ""
+      type: children
+    values:
+      layout: child
+
+exclude:
+  - README.md
+  - HANDOFF.md
+  - Gemfile
+  - Gemfile.lock
+  - vendor
+  - bin
+  - new-child.sh

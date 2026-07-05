@@ -1,0 +1,42 @@
+# ══════════════════════════════════════════════════════════════
+#  THE CHILDREN
+#  One block per grandchild. This is how the site becomes specific
+#  to each of them. To add a new grandchild, copy a block, give a
+#  new id and name, pick a colour, and choose which stories/games
+#  they see. Everyone can share the same content to start, and you
+#  branch whenever you like.
+#
+#  colour  — the accent used on their page (any hex value)
+#  greeting— shown at the top of their page
+#  stories — list of story ids from _data/stories.yml
+#            (use "all" to include every shared story)
+#  games   — list of word-game ids from _data/wordgames.yml
+#            (use "all" to include every shared game)
+#  notes   — private notes to yourself: what she responds to,
+#            words she's trying, what to add next. Not shown on site.
+# ══════════════════════════════════════════════════════════════
+
+- id: little-one
+  name: "Little One"
+  colour: "#5BB0C7"
+  greeting: "Shall we read together?"
+  stories: all
+  games: all
+  notes: |
+    First child on the site — the grand niece, around 1 year.
+    Watching for: which pictures get the biggest reaction.
+    Next to try: adding her real name into a story line.
+
+# ── Example of a second grandchild, ready when you need it. ──
+# Remove the "#" marks to switch it on and edit freely.
+#
+# - id: second-star
+#   name: "Second Star"
+#   colour: "#F28C7A"
+#   greeting: "Ready to play?"
+#   stories:
+#     - little-ones-day
+#   games:
+#     - animal-friends
+#   notes: |
+#     Add when the next little one arrives.

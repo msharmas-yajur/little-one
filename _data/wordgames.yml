@@ -1,0 +1,54 @@
+# ══════════════════════════════════════════════════════════════
+#  TAP & FIND — word games
+#  Each set is a themed group of things she can learn to name.
+#  The game asks "can you find the puppy?" and shows a few choices.
+#  As she grows, make sets bigger or add harder themes (shapes,
+#  colours, letters). Each item: an art key and the word to say.
+# ══════════════════════════════════════════════════════════════
+
+- id: animal-friends
+  title: "Animal friends"
+  age: "1+"
+  items:
+    - art: dog
+      label: "the puppy"
+    - art: cat
+      label: "the kitty"
+    - art: bird
+      label: "the birdie"
+    - art: fish
+      label: "the fishy"
+    - art: duck
+      label: "the duck"
+    - art: butterfly
+      label: "the butterfly"
+
+- id: out-in-the-world
+  title: "Out in the world"
+  age: "1+"
+  items:
+    - art: sun
+      label: "the sun"
+    - art: moon
+      label: "the moon"
+    - art: star
+      label: "the star"
+    - art: flower
+      label: "the flower"
+    - art: tree
+      label: "the tree"
+    - art: cloud
+      label: "the cloud"
+
+- id: things-i-know
+  title: "Things I know"
+  age: "1+"
+  items:
+    - art: apple
+      label: "the apple"
+    - art: ball
+      label: "the ball"
+    - art: car
+      label: "the car"
+    - art: boat
+      label: "the boat"

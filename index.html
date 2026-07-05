@@ -1,0 +1,18 @@
+---
+layout: default
+title: Little One
+---
+<section class="home">
+  <div class="brand">Little <span>One</span></div>
+  <p class="tag">A gentle first storybook to share, tap, and giggle through together.</p>
+
+  <div class="kids">
+    {% for c in site.data.children %}
+    <a class="kid-card" href="{{ c.id | relative_url }}/" style="background: {{ c.colour | default: '#5BB0C7' }};">
+      {{ c.name }} <span class="go">→</span>
+    </a>
+    {% endfor %}
+  </div>
+
+  <p class="grownup-note">For grown-ups: this is a lap activity. Hold the device together, read the lines aloud in your own voice, and let the little one tap along with you.</p>
+</section>

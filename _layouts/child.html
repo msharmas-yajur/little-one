@@ -1,0 +1,92 @@
+---
+layout: default
+---
+{%- comment -%}
+  Resolve this child's stories and games from the shared data sets.
+  "all" includes everything; otherwise match by id.
+{%- endcomment -%}
+{%- assign childRec = nil -%}
+{%- for c in site.data.children -%}
+  {%- if c.id == page.child_id -%}{%- assign childRec = c -%}{%- endif -%}
+{%- endfor -%}
+
+<style>:root{ --accent: {{ childRec.colour | default: '#5BB0C7' }}; }</style>
+
+<!-- MENU SCREEN -->
+<section id="menuScreen" class="screen active">
+  <div class="child-top">
+    <div class="child-hi">{{ childRec.name }}</div>
+    <div class="child-sub">{{ childRec.greeting | default: 'Shall we read together?' }}</div>
+    <a class="back-home" href="{{ '/' | relative_url }}">← All the little ones</a>
+  </div>
+  <div class="menu-wrap"><div id="menu"></div></div>
+</section>
+
+<!-- STORY SCREEN -->
+<section id="storyScreen" class="screen">
+  <div class="topbar">
+    <button class="pill" onclick="LO.backToMenu()">← Back</button>
+    <span class="screen-title" id="storyTitle"></span>
+    <span class="progress" id="storyProgress"></span>
+  </div>
+  <div class="stage">
+    <div class="scene" id="scene"></div>
+    <div class="line" id="storyLine"></div>
+    <div class="cue" id="storyCue"></div>
+  </div>
+  <div class="nav">
+    <button class="navbtn prev" id="prevBtn" onclick="LO.prevPage()">←</button>
+    <button class="navbtn next" id="nextBtn" onclick="LO.nextPage()">Turn the page →</button>
+  </div>
+</section>
+
+<!-- GAME SCREEN -->
+<section id="gameScreen" class="screen">
+  <div class="topbar">
+    <button class="pill" onclick="LO.backToMenu()">← Back</button>
+    <span class="screen-title" id="gameTitle"></span>
+    <span class="progress" id="gameScore"></span>
+  </div>
+  <div class="gamewrap">
+    <div class="ask" id="ask"></div>
+    <div class="grid" id="grid"></div>
+    <div class="cheer" id="cheer"></div>
+  </div>
+</section>
+
+<script>
+/* Content injected by Jekyll from the shared data sets */
+window.CHILD = {
+  name: {{ childRec.name | jsonify }},
+  stories: [
+    {%- for s in site.data.stories -%}
+      {%- assign inc = false -%}
+      {%- if childRec.stories == 'all' -%}{%- assign inc = true -%}
+      {%- else -%}{%- for sid in childRec.stories -%}{%- if sid == s.id -%}{%- assign inc = true -%}{%- endif -%}{%- endfor -%}{%- endif -%}
+      {%- if inc -%}
+      { title: {{ s.title | jsonify }}, age: {{ s.age | jsonify }}, pages: [
+        {%- for p in s.pages -%}
+        { sky: {{ p.sky | jsonify }}, line: {{ p.line | jsonify }}, art: {{ p.art | jsonify }}, cue: {{ p.cue | jsonify }} },
+        {%- endfor -%}
+      ] },
+      {%- endif -%}
+    {%- endfor -%}
+  ],
+  games: [
+    {%- for g in site.data.wordgames -%}
+      {%- assign inc = false -%}
+      {%- if childRec.games == 'all' -%}{%- assign inc = true -%}
+      {%- else -%}{%- for gid in childRec.games -%}{%- if gid == g.id -%}{%- assign inc = true -%}{%- endif -%}{%- endfor -%}{%- endif -%}
+      {%- if inc -%}
+      { title: {{ g.title | jsonify }}, age: {{ g.age | jsonify }}, items: [
+        {%- for it in g.items -%}
+        { art: {{ it.art | jsonify }}, label: {{ it.label | jsonify }} },
+        {%- endfor -%}
+      ] },
+      {%- endif -%}
+    {%- endfor -%}
+  ]
+};
+</script>
+<script src="{{ '/assets/js/art.js' | relative_url }}"></script>
+<script src="{{ '/assets/js/player.js' | relative_url }}"></script>

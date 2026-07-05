@@ -61,38 +61,64 @@
     return actx;
   }
 
-  /* ---- gentle generative background music (Web Audio, no files) ----
-     Soft, slow, random notes from a C-major pentatonic scale (no "wrong" notes),
-     low volume, ducks under the voice. Off by default; toggled by the 🎵 button. */
-  const PENTA = [261.63,293.66,329.63,392.00,440.00,523.25,587.33,659.25];
-  let musicOn=false, musicGain=null, musicTimer=null;
-  function musicNote(){
-    if(!musicOn || !actx || !musicGain){ return; }
-    if(Math.random() < 0.25){ scheduleMusic(); return; }          // gentle rests
-    const o=actx.createOscillator(), g=actx.createGain();
-    o.type='triangle'; o.frequency.value = PENTA[Math.random()*PENTA.length|0];
-    const t=actx.currentTime;
-    g.gain.setValueAtTime(0.0001,t);
-    g.gain.exponentialRampToValueAtTime(0.09,t+0.05);
-    g.gain.exponentialRampToValueAtTime(0.0001,t+1.7);            // music-box decay
-    o.connect(g).connect(musicGain);
-    o.start(t); o.stop(t+1.8);
-    scheduleMusic();
+  /* ---- playful background music (Web Audio, no files) ----
+     A tiny looping sequencer: a bell-like melody over a soft bass, with real
+     rhythm — a proper little tune, not stray notes. Each story has its OWN theme
+     (root/scale/tempo/timbre/pattern); the menu has a gentle default. Low volume,
+     ducks under the voice, off by default, toggled by 🎵. */
+  const SCALES = { penta:[0,2,4,7,9], major:[0,2,4,5,7,9,11] };
+  function degToFreq(root, scale, deg){                 // scale degree → Hz (octave-wrapping)
+    const n=scale.length, oct=Math.floor(deg/n), idx=((deg%n)+n)%n;
+    return root * Math.pow(2, (scale[idx] + oct*12)/12);
   }
-  function scheduleMusic(){ clearTimeout(musicTimer); musicTimer=setTimeout(musicNote, 1200+Math.random()*1500); }
+  // mel = melody scale-degrees per eighth-note (null = rest); bass = degrees per beat
+  const THEMES = {
+    menu:              { root:261.63, scale:'penta', bpm:96,  wave:'triangle', mel:[0,2,4,2,4,7,4,2],                         bass:[0,null,4,null] },
+    'little-ones-day': { root:293.66, scale:'major', bpm:116, wave:'triangle', mel:[4,2,0,2,4,4,5,null,4,2,0,-3,0,2,4,null],  bass:[0,null,3,null] }, // bright sunny morning
+    'splish-splash':   { root:246.94, scale:'penta', bpm:108, wave:'sine',     mel:[0,2,4,2,0,null,2,4,7,4,2,0,2,null,0,null], bass:[0,0,3,3] },        // bouncy, watery
+    'things-that-fall':{ root:329.63, scale:'penta', bpm:126, wave:'triangle', mel:[7,4,2,0,7,4,2,0,9,7,4,2,0,null,0,null],   bass:[0,null,4,null] },   // playful tumbling-down
+    peekaboo:          { root:220.00, scale:'penta', bpm:100, wave:'triangle', mel:[0,null,0,null,2,null,4,null,null,null,7,9,null,null,null,null], bass:[0,null,null,null] } // sneaky … then a peek!
+  };
+  let musicOn=false, musicGain=null, musicTimer=null, musTheme=null, musStep=0;
+  function playTone(freq, dur, wave, gain){
+    if(!actx || !musicGain || freq==null) return;
+    const o=actx.createOscillator(), g=actx.createGain(), t=actx.currentTime;
+    o.type=wave; o.frequency.value=freq;
+    g.gain.setValueAtTime(0.0001,t);
+    g.gain.exponentialRampToValueAtTime(gain,t+0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+    o.connect(g).connect(musicGain); o.start(t); o.stop(t+dur+0.02);
+  }
+  function musicTick(){
+    if(!musicOn || !actx || !musicGain || !musTheme) return;
+    const T=musTheme, sc=SCALES[T.scale]||SCALES.penta;
+    const deg=T.mel[musStep % T.mel.length];
+    if(deg!=null) playTone(degToFreq(T.root, sc, deg), 0.26, T.wave, 0.08);        // melody
+    if(T.bass && (musStep % 2===0)){                                              // bass on each beat
+      const bd=T.bass[(musStep/2|0) % T.bass.length];
+      if(bd!=null) playTone(degToFreq(T.root/2, sc, bd), 0.42, 'sine', 0.055);
+    }
+    musStep++;
+    musicTimer=setTimeout(musicTick, 60000/T.bpm/2);                              // eighth-note step
+  }
+  function musicSetTheme(name, restart){
+    musTheme = THEMES[name] || THEMES.menu;
+    if(restart && musicOn){ clearTimeout(musicTimer); musStep=0; musicTick(); }   // switch cleanly at a scene change
+  }
   function duckMusic(){
     if(!musicOn || !musicGain || !actx) return;
     const t=actx.currentTime; musicGain.gain.cancelScheduledValues(t);
-    musicGain.gain.setTargetAtTime(0.015,t,0.05);                 // dip while the voice talks
-    musicGain.gain.setTargetAtTime(0.06, t+1.0,0.5);              // then restore
+    musicGain.gain.setTargetAtTime(0.02,t,0.05);                                  // dip while the voice talks
+    musicGain.gain.setTargetAtTime(0.06, t+1.0,0.5);                              // then restore
   }
   function startMusic(){
     if(!ensureAudio()) return;
     if(!musicGain){ musicGain=actx.createGain(); musicGain.gain.value=0.0001; musicGain.connect(actx.destination); }
+    if(!musTheme) musicSetTheme('menu');
     musicOn=true;
     musicGain.gain.cancelScheduledValues(actx.currentTime);
-    musicGain.gain.setTargetAtTime(0.06, actx.currentTime, 0.7);  // fade in
-    scheduleMusic();
+    musicGain.gain.setTargetAtTime(0.06, actx.currentTime, 0.6);                  // fade in
+    clearTimeout(musicTimer); musStep=0; musicTick();
   }
   function stopMusic(){
     musicOn=false; clearTimeout(musicTimer);
@@ -292,6 +318,7 @@
   function openStory(i){
     curStory = stories[i]; pageIdx = 0;
     telOpen(curStory);
+    musicSetTheme(curStory.id, true);        // this story's own tune
     show('storyScreen'); renderPage();
   }
   function renderPage(){
@@ -377,6 +404,7 @@
   function openGame(i){
     curGame = games[i]; score=0;
     telOpen(curGame);
+    musicSetTheme('menu', true);             // games use the gentle default theme
     $('gameScore').textContent='⭐ 0';
     $('gameTitle').textContent = curGame.title;
     show('gameScreen'); newRound();
@@ -416,7 +444,7 @@
       const el=$(s); if(el) el.classList.toggle('active', s===id);
     });
   }
-  function backToMenu(){ show('menuScreen'); maybeNotice(); }
+  function backToMenu(){ show('menuScreen'); musicSetTheme('menu', true); maybeNotice(); }
 
   /* ---- noticing prompt: a gentle one-tap card at the session-end pause.
      Never blocks (the menu is fully usable underneath); shows at most rarely,

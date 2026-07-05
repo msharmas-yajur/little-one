@@ -46,7 +46,8 @@ jobs:
           RUN_NOTE: ${{ github.event.inputs.note }}
         run: |
           set -euo pipefail
-          printf '%s\n' .gardener-coverage.md .gardener-pastprs.md .gardener-note.md >> .git/info/exclude
+          printf '%s\n' .gardener-coverage.md .gardener-pastprs.md .gardener-note.md .gardener-out.json >> .git/info/exclude
+          rm -f .gardener-out.json   # clean slate for this run's decision file
 
           ruby .github/gardener/coverage.rb > .gardener-coverage.md
 
@@ -77,7 +78,6 @@ jobs:
             --model claude-opus-4-8
             --max-turns 40
             --allowedTools "Read,Grep,Glob,Write,Edit"
-            --json-schema .github/gardener/output-schema.json
           prompt: |
             You are the Gardener for the "Little One" project, running as an
             automated build-time session (no human is watching this run).
@@ -121,33 +121,36 @@ jobs:
             Before finishing, self-check every hard rule in GARDENER.md, and
             append a matching entry to knowledge-base/log.md as part of your changes.
 
-            Then return your structured result (acted, action_type, pr_title,
-            pr_body, summary). pr_body must be Markdown containing the three
-            GARDENER.md sections: "## What & why", "## Provenance", "## Self-check".
-            If you choose to do nothing, set acted=false and explain why in summary.
+            FINALLY — always, whether or not you acted — use the Write tool to
+            create a file named ".gardener-out.json" in the repo root whose entire
+            contents are a single JSON object (no prose, no code fences) with
+            exactly these keys:
+              {
+                "acted": true or false,
+                "action_type": "ingest" | "fill-gap" | "tend" | "none",
+                "pr_title": "short specific title, or empty string if acted is false",
+                "pr_body": "Markdown with the three GARDENER.md sections '## What & why', '## Provenance', '## Self-check'; empty string if acted is false",
+                "summary": "one or two sentences; if acted is false, why nothing cleared the bar"
+              }
+            This file is git-excluded and is how the workflow learns your decision.
 
       # If the Gardener proposed something, open the PR from its branch.
       - name: Open pull request
         if: ${{ steps.gardener.outputs.branch_name != '' }}
         env:
           GH_TOKEN: ${{ github.token }}
-          STRUCT: ${{ steps.gardener.outputs.structured_output }}
           BRANCH: ${{ steps.gardener.outputs.branch_name }}
           REPO: ${{ github.repository }}
           RUN_ID: ${{ github.run_id }}
         run: |
           set -euo pipefail
-          acted=$(printf '%s' "$STRUCT" | jq -r '.acted // false')
-          summary=$(printf '%s' "$STRUCT" | jq -r '.summary // "(no summary)"')
-          if [ "$acted" != "true" ]; then
-            {
-              echo "### 🌱 Gardener: quiet garden"
-              echo "The Gardener made a branch but chose not to propose. $summary"
-            } >> "$GITHUB_STEP_SUMMARY"
-            exit 0
+          if [ -f .gardener-out.json ] && jq -e . .gardener-out.json >/dev/null 2>&1; then
+            title=$(jq -r '.pr_title // "Gardener proposal"' .gardener-out.json)
+            jq -r '.pr_body // ""' .gardener-out.json > /tmp/pr_body.md
+          else
+            title="Gardener proposal"
+            echo "The Gardener produced changes but no structured summary — review the diff directly." > /tmp/pr_body.md
           fi
-          title=$(printf '%s' "$STRUCT" | jq -r '.pr_title // "Gardener proposal"')
-          printf '%s' "$STRUCT" | jq -r '.pr_body // ""' > /tmp/pr_body.md
           {
             echo ""
             echo "---"
@@ -172,7 +175,11 @@ jobs:
       - name: No proposal
         if: ${{ steps.gardener.outputs.branch_name == '' }}
         run: |
+          summary=""
+          if [ -f .gardener-out.json ]; then
+            summary=$(jq -r '.summary // ""' .gardener-out.json 2>/dev/null || echo "")
+          fi
           {
             echo "### 🌱 Gardener: quiet garden"
-            echo "No changes proposed this run — a healthy outcome. Nothing cleared the bar."
+            echo "No changes proposed this run — a healthy outcome. ${summary}"
           } >> "$GITHUB_STEP_SUMMARY"

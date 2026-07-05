@@ -44,7 +44,9 @@ $0 otherwise.
   matrix + biggest-gap picker (piped into the run as fact, per PRD open-Q2).
 - `.github/gardener/lint.rb` — the content gate (schema, art keys, tag vocabulary,
   banned framing, PII); exits non-zero to block a merge.
-- `.github/gardener/output-schema.json` — the structured PR fields the runner reads.
+- `.github/gardener/output-schema.json` — documents the decision-file shape
+  (`.gardener-out.json`: acted / action_type / pr_title / pr_body / summary) that
+  the Gardener writes and the runner reads to open the PR.
 - `.github/workflows/gardener-lint.yml` — the required check on every PR to `main`:
   runs `lint.rb`, enforces a **changed-files allowlist** (gardener branches may
   only touch `_data/stories.yml`, `_data/wordgames.yml`, `knowledge-base/**`), and

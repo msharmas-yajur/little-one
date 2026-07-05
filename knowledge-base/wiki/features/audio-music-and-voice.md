@@ -9,13 +9,16 @@ updated: 2026-07-05
 
 # Audio — Background Music & Voice
 
-## Background music — BUILT (2026-07-05)
-Gentle, **generative** background music in the browser via Web Audio — **no files**
-(owner's chosen approach). Soft, slow, random notes from a C-major **pentatonic**
-scale (no "wrong" notes), low volume, **ducks under the voice**. **Off by default**;
-a 🎵/🔇 **toggle button** (top-right) turns it on/off and the choice persists in
-`localStorage`. Starts only on a user tap (browser autoplay rules). `player.js`
-(`startMusic`/`toggleMusic`/`duckMusic`), toggle in `_layouts/child.html`, styles.
+## Background music — BUILT (2026-07-05; reworked to be playful + per-story)
+Web-Audio background music — **no files**. v1 was single random pentatonic notes;
+owner feedback ("not engaging, notes one-by-one") → rebuilt as a tiny **looping
+sequencer**: a bell-like melody over a soft octave-down bass on a real eighth-note
+grid — a proper little tune. **Per-story THEMES** (root/scale/tempo/timbre/pattern):
+little-ones-day = bright morning, splish-splash = bouncy watery, things-that-fall =
+tumbling playful, peekaboo = sneaky-then-a-peek; menu/games use a gentle default.
+`musicSetTheme(name, restart)` switches at scene changes. Still **off by default**,
+low volume, **ducks under the voice**, 🎵/🔇 toggle persisted in `localStorage`,
+starts on first tap. `player.js`.
 
 ## Voice — decided approach (roadmap)
 The current reinforcing voice uses the browser's built-in speech (Web Speech API),

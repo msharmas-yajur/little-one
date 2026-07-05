@@ -120,3 +120,18 @@ Append-only. Newest at the bottom. Each entry: date · what happened.
   week's emphasis). Verified in-browser end-to-end on the served build. Privacy
   hard-line held throughout: child data never leaves the device. NEXT: Option B —
   the Tier-2 build-time self-learning PR loop.
+- 2026-07-05 · Pre-Option-B enhancements (owner requests), all live:
+  (a) MOBILE FULLSCREEN — PWA manifest (display:fullscreen), original Pillow-drawn
+  app icons (192/512 + apple-touch), apple/mobile web-app-capable + theme-color +
+  viewport-fit=cover meta, safe-area insets, best-effort Fullscreen API on first
+  touch. Add-to-home-screen → true fullscreen.
+  (b) NO-SCROLL age-friendly layout — the game "find X" page can never scroll
+  (#gameScreen height:100dvh + overflow:hidden; 2x2 grid capped by min(width,
+  height)); the story scene is capped so its Turn-the-page button stays visible.
+  Verified at a real 390x620 phone viewport via a same-origin iframe harness
+  (scrollHeight == viewport for both).
+  (c) PLAYFUL MUSIC + per-story themes (see audio-music-and-voice.md).
+  (d) AUTO-GUIDED "NEXT" — the child page leads with a big "Next for {name}" hero
+  that opens the next PENDING story (dyad.nextUp uses the completes telemetry;
+  all-done → least-recently-seen re-visit); the menu becomes "Or choose". This is
+  the app creating the next step for the child, not a bare menu.

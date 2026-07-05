@@ -24,6 +24,7 @@ The catalog of every page. One line each. Keep current on every ingest.
 - `grown-up-card.md` — the per-child monthly practice card. Status: built.
 - `companion-guide.md` — the on-site + docx full guide. Status: built.
 - `per-child-structure.md` — multi-child registry & neutral URLs. Status: built.
+- `bilingual-first-words.md` — name things in two languages (English + home language). Status: idea.
 
 ## Raw sources (`raw/`)
 - `raw/ideas/` — (drop loose ideas here)
@@ -35,6 +36,7 @@ The catalog of every page. One line each. Keep current on every ingest.
   - `books/gardener-and-the-carpenter.md` — Gopnik: gardener-not-carpenter ethos.
   - `books/mind-in-the-making.md` — Galinsky: seven essential life skills.
   - `books/how-to-talk-little-kids.md` — Faber & King: responsive talk techniques (adapted to ~12mo).
+  - `famous-books.md` — beloved 1–2yo books worldwide + original story-theme ideas.
 
 ## Backlog / open questions
 - See `log.md` for the running timeline.

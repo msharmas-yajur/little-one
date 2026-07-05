@@ -27,3 +27,9 @@ Append-only. Newest at the bottom. Each entry: date · what happened.
   `_data/stories.yml`, `companion.html`, and the KB concept/research pages.
   (2) Child-first ordering: on the child page the grown-up card now renders BELOW
   the little one's stories/games (`_layouts/child.html`).
+- 2026-07-05 · Ingested `raw/research/famous-books.md` (famous 1–2yo books across
+  the world: global classics, UK, Japan, India, novelty; + original story-theme
+  ideas). Compiled new feature page `wiki/features/bilingual-first-words.md`
+  (status: idea) — highest-value new idea surfaced. Updated `index.md`. Noted
+  existing backlog item (animal sounds on tap) already on the storybook-player
+  page. Copyright note: reproduce none of the referenced books; write originals.

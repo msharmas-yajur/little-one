@@ -17,6 +17,7 @@
   function tone(freq, dur=0.18, type='sine', when=0){
     try{
       if(!actx) actx = new (window.AudioContext||window.webkitAudioContext)();
+      if(actx.state==='suspended') actx.resume();   // mobile: contexts start suspended
       const o=actx.createOscillator(), g=actx.createGain();
       o.type=type; o.frequency.value=freq;
       const t=actx.currentTime+when;
@@ -87,6 +88,18 @@
     say(sayLines[Math.random()*sayLines.length|0].replace('{L}', label));
   }
 
+  /* ---- reliable tap wobble (Web Animations API: restarts every tap, works on SVG + mobile) ---- */
+  function wobble(el){
+    if(!el || reduceMotion || typeof el.animate!=='function') return;
+    el.animate([
+      {transform:'rotate(0deg) scale(1)'},
+      {transform:'rotate(-6deg) scale(1.08)', offset:.25},
+      {transform:'rotate(6deg) scale(1.08)', offset:.75},
+      {transform:'rotate(0deg) scale(1)'}
+    ], {duration:520, easing:'ease'});
+  }
+  const artWord = key => key ? key.charAt(0).toUpperCase()+key.slice(1)+'!' : '';
+
   const $ = id => document.getElementById(id);
   function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];}return a;}
 
@@ -140,10 +153,8 @@
     $('prevBtn').disabled = pageIdx===0;
     $('nextBtn').innerHTML = pageIdx===curStory.pages.length-1 ? 'The end 💛' : 'Turn the page →';
 
-    $('heroArt').addEventListener('click', ()=>{
-      happy();
-      const h=$('heroArt'); h.classList.remove('wobble'); void h.offsetWidth; h.classList.add('wobble');
-    });
+    const hint=$('tapHint'); if(hint) hint.textContent='👆 Tap the picture!';
+    const heroEl=$('heroArt'); if(heroEl) setTimeout(()=>wobble(heroEl), 350); // invite a tap
   }
   function nextPage(){ if(pageIdx<curStory.pages.length-1){pageIdx++;renderPage();} else backToMenu(); }
   function prevPage(){ if(pageIdx>0){pageIdx--;renderPage();} }
@@ -191,6 +202,22 @@
     });
   }
   function backToMenu(){ show('menuScreen'); }
+
+  /* Tap anywhere on the story picture → chime + the word + wobble.
+     Listener lives on the persistent .scene div (reliable on mobile; the whole
+     picture becomes one big tap target for little fingers). */
+  const sceneEl = $('scene');
+  if(sceneEl) sceneEl.addEventListener('click', ()=>{
+    const h=$('heroArt'); if(!h || !curStory) return;
+    happy();
+    say(artWord(curStory.pages[pageIdx].art));
+    wobble(h);
+  });
+
+  /* Unlock audio on the first user gesture (mobile browsers start it suspended). */
+  window.addEventListener('pointerdown', function unlock(){
+    try{ if(!actx) actx=new (window.AudioContext||window.webkitAudioContext)(); if(actx.state==='suspended') actx.resume(); }catch(e){}
+  }, {once:true, passive:true});
 
   window.LO = { openStory, openGame, nextPage, prevPage, backToMenu };
   renderMenu(); show('menuScreen');

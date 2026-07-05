@@ -45,3 +45,11 @@ Append-only. Newest at the bottom. Each entry: date · what happened.
   Reduced-motion skips confetti. `wiki/features/encouraging-cheer-button.md` →
   status: built (mascot button / mute / CC0 voice remain future). Also enlarged the
   tap-and-find shapes (`.choice svg` 78%→92%) so the pictures fill the boxes.
+- 2026-07-05 · Fixed story-player bugs reported on mobile: (a) art animated only
+  once — the CSS class-restart trick doesn't reflow SVG; replaced with the Web
+  Animations API so it re-animates every tap; (b) no sound on phones — the
+  AudioContext starts suspended; now `resume()`d on first gesture + per tone;
+  (c) unreliable SVG tap target + no CTA — moved the tap handler to the persistent
+  `.scene` div (whole picture is a big tap target), added a "👆 Tap the picture!"
+  hint and a spoken word on tap. Touched `player.js`, `_layouts/child.html`,
+  `style.css`. See `wiki/features/storybook-player.md`.

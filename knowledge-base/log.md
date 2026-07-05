@@ -152,3 +152,18 @@ Append-only. Newest at the bottom. Each entry: date · what happened.
 - 2026-07-05 · Added docs/product-plan.html — a reviewer-facing HTML presentation
   of both PRDs (Adaptive Arc v1 = live; Gardener = planned), served on the site
   (not linked from the child-facing UI). Presents only already-public KB content.
+- 2026-07-06 · BUILT THE GARDENER LOOP (Option B / Tier-2), on Opus. Verified the
+  current runner: `anthropics/claude-code-action@v1` edits files, commits to a
+  `gardener/*` branch, exposes `branch_name` + `structured_output`; the workflow
+  opens the PR via `gh pr create`. Added `.github/workflows/gardener.yml`
+  (manual workflow_dispatch only; `--model claude-opus-4-8`, tools = Read/Grep/
+  Glob/Write/Edit, `--json-schema` for PR fields; injects computed context via
+  git-excluded scratch files so nothing leaks into the diff), the required-check
+  `.github/workflows/gardener-lint.yml` (runs lint.rb + a changed-files allowlist
+  restricting gardener PRs to _data/stories.yml, _data/wordgames.yml, knowledge-
+  base/** + a Jekyll build), and `.github/gardener/{coverage.rb,lint.rb,
+  output-schema.json}`. coverage.rb + lint.rb verified locally (lint bites on
+  bad tags/art/framing/PII/dup-id; coverage confirms `challenges` is the zero-
+  content skill, so 12-24m×challenges is the default gap). Feature page → built.
+  Not yet run (manual, ~$1–5/press). Auto-PR needs the repo "Actions may create
+  PRs" toggle; falls back to a compare link if off.

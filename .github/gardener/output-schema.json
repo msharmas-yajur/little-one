@@ -1,0 +1,28 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["acted", "action_type", "pr_title", "pr_body", "summary"],
+  "properties": {
+    "acted": {
+      "type": "boolean",
+      "description": "true only if you changed files to propose one improvement; false if you chose to do nothing this run."
+    },
+    "action_type": {
+      "type": "string",
+      "enum": ["ingest", "fill-gap", "tend", "none"],
+      "description": "Which of the charter's options you took (none if acted is false)."
+    },
+    "pr_title": {
+      "type": "string",
+      "description": "Short, specific PR title. Empty string if acted is false."
+    },
+    "pr_body": {
+      "type": "string",
+      "description": "Full PR description in Markdown with the three GARDENER.md sections: '## What & why', '## Provenance', '## Self-check'. Empty string if acted is false."
+    },
+    "summary": {
+      "type": "string",
+      "description": "One or two sentences for the run log. If acted is false, explain why nothing cleared the bar."
+    }
+  }
+}

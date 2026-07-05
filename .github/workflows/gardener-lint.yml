@@ -1,0 +1,66 @@
+name: Gardener lint gate
+
+# The automated gate for content pull requests (and the Gardener's PRs in
+# particular). A red run here blocks the merge — this is the machine half of
+# the human/machine review. See knowledge-base/GARDENER.md and PRD 0002.
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # need base history to diff changed files
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+          bundler-cache: true
+
+      # 1. Content rules: schema, art keys, tag vocabulary, banned framing, PII.
+      - name: Content lint
+        run: ruby .github/gardener/lint.rb
+
+      # 2. Structural guard — ONLY for gardener/* branches: the Gardener may
+      #    touch content and the knowledge base, nothing else. This is what
+      #    keeps an automated run away from the engine, the arc, workflows,
+      #    and _data/children.yml (which holds the child pointer).
+      - name: Changed-files allowlist (gardener branches only)
+        if: startsWith(github.head_ref, 'gardener/')
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          echo "Files changed on this gardener branch:"
+          changed=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA")
+          echo "$changed"
+          bad=""
+          while IFS= read -r f; do
+            [ -z "$f" ] && continue
+            case "$f" in
+              _data/stories.yml|_data/wordgames.yml) : ;;    # content — allowed
+              knowledge-base/*)                       : ;;    # the KB — allowed
+              *) bad="$bad $f" ;;                             # anything else — forbidden
+            esac
+          done <<< "$changed"
+          if [ -n "$bad" ]; then
+            echo ""
+            echo "::error::A gardener PR may only change _data/stories.yml, _data/wordgames.yml, or knowledge-base/**."
+            echo "Forbidden files in this PR:$bad"
+            exit 1
+          fi
+          echo "OK — only content and knowledge-base files changed."
+
+      # 3. The site must still build.
+      - name: Jekyll build
+        run: bundle exec jekyll build
+        env:
+          JEKYLL_ENV: production

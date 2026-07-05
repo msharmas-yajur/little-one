@@ -31,7 +31,7 @@ The catalog of every page. One line each. Keep current on every ingest.
 - `audio-music-and-voice.md` — generative background-music toggle (built) + the voice roadmap. Status: built.
 - `page-turn-animation.md` — board-book page-turn flip on advancing. Status: built.
 - `peekaboo-flaps.md` — lift-the-flap "Where's …?" reveal + camera-mirror finale. Status: built.
-- `gardener-loop.md` — Tier-2 self-learning loop: one reviewed PR per manual run. Status: specced.
+- `gardener-loop.md` — Tier-2 self-learning loop: one reviewed PR per manual run. Status: built (awaiting first run).
 
 ## Raw sources (`raw/`)
 - `raw/ideas/`

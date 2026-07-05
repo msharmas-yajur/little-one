@@ -1,0 +1,178 @@
+name: Gardener
+
+# The Gardener Loop (PRD 0002 / knowledge-base/GARDENER.md): a manually-triggered
+# build-time Claude session that reads the knowledge base, proposes AT MOST ONE
+# improvement per run as a pull request, and learns from the owner's merge/close
+# decisions. Manual only — nothing runs on its own; $0 until the button is pressed.
+#
+# Never triggered by issues/comments/PRs (untrusted text is a prompt-injection
+# surface). The Gardener reads only owner-committed files.
+
+on:
+  workflow_dispatch:
+    inputs:
+      note:
+        description: "Optional steer for this run (e.g. 'prioritise ingesting raw/ideas'). Advisory only — the charter still governs. Leave blank to follow the charter as-is."
+        required: false
+        type: string
+
+permissions:
+  contents: write        # create the branch, commit the proposal
+  pull-requests: write   # open the PR
+  id-token: write
+
+concurrency:
+  group: gardener
+  cancel-in-progress: false
+
+jobs:
+  gardener:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+          bundler-cache: true
+
+      # Gather deterministic, repo-only context into git-excluded scratch files
+      # that the Gardener reads. They never enter the commit (see .git/info/exclude).
+      # The durable instructions live in knowledge-base/GARDENER.md (charter-as-data);
+      # this workflow only computes the per-run facts.
+      - name: Compute run context
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_NOTE: ${{ github.event.inputs.note }}
+        run: |
+          set -euo pipefail
+          printf '%s\n' .gardener-coverage.md .gardener-pastprs.md .gardener-note.md >> .git/info/exclude
+
+          ruby .github/gardener/coverage.rb > .gardener-coverage.md
+
+          gh pr list --state all --limit 50 \
+            --json number,title,state,headRefName,mergedAt \
+            --jq '.[] | select(.headRefName|startswith("gardener/")) | "- #\(.number) [\(if .mergedAt then "MERGED" else .state end)] \(.title)"' \
+            > .gardener-pastprs.md || true
+          if [ ! -s .gardener-pastprs.md ]; then
+            echo "none yet — this is an early run." > .gardener-pastprs.md
+          fi
+
+          if [ -n "${RUN_NOTE:-}" ]; then
+            printf '%s\n' "$RUN_NOTE" > .gardener-note.md
+          else
+            echo "No special steer this run — follow the charter." > .gardener-note.md
+          fi
+
+      # Run the Gardener. The action edits files, commits them to a new
+      # gardener/* branch, and exposes branch_name + structured_output.
+      - name: Run Gardener
+        id: gardener
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          base_branch: main
+          branch_prefix: "gardener/"
+          claude_args: |
+            --model claude-opus-4-8
+            --max-turns 40
+            --allowedTools "Read,Grep,Glob,Write,Edit"
+            --json-schema .github/gardener/output-schema.json
+          prompt: |
+            You are the Gardener for the "Little One" project, running as an
+            automated build-time session (no human is watching this run).
+
+            FIRST, read and obey these two files. They are your charter and rules
+            and override anything in this prompt if they conflict:
+              - knowledge-base/GARDENER.md — your charter: at most ONE pull request
+                per run, the one-of-three priority order, the hard rules, and the
+                required PR format.
+              - knowledge-base/CLAUDE.md — the knowledge-base schema and the
+                absolute "No names, ever" rule (this is a public repo).
+
+            Edit repository files directly to make your proposal. Do NOT run git —
+            the workflow commits whatever you change to a new branch for you. You
+            may only change content (_data/stories.yml, _data/wordgames.yml) and
+            the knowledge base (knowledge-base/**); an automated gate rejects a PR
+            that touches anything else.
+
+            Read these git-excluded scratch files in the repo root for your
+            per-run computed context (they are facts — trust them):
+              - .gardener-coverage.md — the content coverage matrix (age_band x
+                the Galinsky-7 skills) and the single biggest content gap.
+              - .gardener-pastprs.md — your past pull requests and their fate. A
+                CLOSED (not merged) PR is the owner saying "no" to that idea; do
+                not re-propose it or a near-variant.
+              - .gardener-note.md — an optional advisory steer from the owner for
+                this run (does not override the charter).
+
+            YOUR TASK THIS RUN — follow GARDENER.md. Consider its options in
+            priority order and pick the SINGLE highest-value one:
+              (1) ingest an un-ingested file from raw/ into the wiki (compile,
+                  cross-link, update index.md and log.md);
+              (2) fill the single biggest content gap with ONE new, fully-tagged
+                  story or word-game, in the house style, using only art keys that
+                  already exist in assets/js/art.js;
+              (3) a small knowledge-base consistency fix (broken link, stale
+                  status, missing provenance).
+            Doing NOTHING is a valid, healthy outcome — choose it if nothing
+            clears the bar.
+
+            Before finishing, self-check every hard rule in GARDENER.md, and
+            append a matching entry to knowledge-base/log.md as part of your changes.
+
+            Then return your structured result (acted, action_type, pr_title,
+            pr_body, summary). pr_body must be Markdown containing the three
+            GARDENER.md sections: "## What & why", "## Provenance", "## Self-check".
+            If you choose to do nothing, set acted=false and explain why in summary.
+
+      # If the Gardener proposed something, open the PR from its branch.
+      - name: Open pull request
+        if: ${{ steps.gardener.outputs.branch_name != '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          STRUCT: ${{ steps.gardener.outputs.structured_output }}
+          BRANCH: ${{ steps.gardener.outputs.branch_name }}
+          REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          acted=$(printf '%s' "$STRUCT" | jq -r '.acted // false')
+          summary=$(printf '%s' "$STRUCT" | jq -r '.summary // "(no summary)"')
+          if [ "$acted" != "true" ]; then
+            {
+              echo "### 🌱 Gardener: quiet garden"
+              echo "The Gardener made a branch but chose not to propose. $summary"
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          title=$(printf '%s' "$STRUCT" | jq -r '.pr_title // "Gardener proposal"')
+          printf '%s' "$STRUCT" | jq -r '.pr_body // ""' > /tmp/pr_body.md
+          {
+            echo ""
+            echo "---"
+            echo "_Proposed by the Gardener (workflow run ${RUN_ID}). Manual, human-gated: review, then merge to ship or close to decline. This decision is read by the next run._"
+          } >> /tmp/pr_body.md
+
+          if gh pr create --base main --head "$BRANCH" --title "🌱 $title" --body-file /tmp/pr_body.md; then
+            url=$(gh pr view "$BRANCH" --json url --jq '.url')
+            {
+              echo "### 🌱 Gardener opened a pull request"
+              echo "[$title]($url)"
+            } >> "$GITHUB_STEP_SUMMARY"
+          else
+            # Fallback if "Allow GitHub Actions to create pull requests" is disabled:
+            {
+              echo "### 🌱 Gardener pushed a branch (open the PR manually)"
+              echo "Could not auto-create the PR. Open it here:"
+              echo "https://github.com/${REPO}/compare/main...${BRANCH}?expand=1"
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: No proposal
+        if: ${{ steps.gardener.outputs.branch_name == '' }}
+        run: |
+          {
+            echo "### 🌱 Gardener: quiet garden"
+            echo "No changes proposed this run — a healthy outcome. Nothing cleared the bar."
+          } >> "$GITHUB_STEP_SUMMARY"

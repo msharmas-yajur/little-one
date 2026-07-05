@@ -20,5 +20,22 @@
 <div class="app">
 {{ content }}
 </div>
+<script>
+/* iOS Safari can't hide the URL bar in a browser tab; true fullscreen needs
+   Add-to-Home-Screen (the manifest + apple meta make it fullscreen then). Show a
+   gentle, dismissible hint on iOS Safari only. */
+(function(){
+  try{
+    if(!/iPhone|iPad|iPod/.test(navigator.userAgent||'')) return;
+    var standalone = navigator.standalone || (window.matchMedia && window.matchMedia('(display-mode: standalone), (display-mode: fullscreen)').matches);
+    if(standalone) return;
+    if(localStorage.getItem('lo.a2hs')==='1') return;
+    var b=document.createElement('div'); b.className='a2hs';
+    b.innerHTML='<span>Full screen: tap <b>Share</b> then <b>Add to Home Screen</b></span><button aria-label="Dismiss">×</button>';
+    document.body.appendChild(b);
+    b.querySelector('button').onclick=function(){ try{localStorage.setItem('lo.a2hs','1');}catch(e){} b.remove(); };
+  }catch(e){}
+})();
+</script>
 </body>
 </html>

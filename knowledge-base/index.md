@@ -27,11 +27,12 @@ The catalog of every page. One line each. Keep current on every ingest.
 - `bilingual-first-words.md` — name things in two languages (English + home language). Status: idea.
 - `encouraging-cheer-button.md` — celebration on correct taps (confetti + voice). Status: built.
 - `page-turn-animation.md` — board-book page-turn flip on advancing. Status: built.
-- `peekaboo-flaps.md` — lift-the-flap "Where's …?" reveal in some books. Status: specced.
+- `peekaboo-flaps.md` — lift-the-flap "Where's …?" reveal + camera-mirror finale. Status: built.
 
 ## Raw sources (`raw/`)
 - `raw/ideas/`
   - `cheer-button.md` — owner idea + IP decision behind the cheer-button feature.
+  - `book-animations.md` — owner idea: page-turn + lift-the-flap peek-a-boo.
 - `raw/prds/` — (drop feature PRDs here)
 - `raw/research/`
   - `gopnik-notes.md` — notes on Gopnik's work underpinning the arc.

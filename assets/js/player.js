@@ -124,6 +124,33 @@
     ], {duration:520, easing:'ease'});
   }
   const artWord = key => key ? key.charAt(0).toUpperCase()+key.slice(1)+'!' : '';
+  const speakable = s => (s||'').replace(/[^\w\s,.!?'-]/g,'').replace(/\s+/g,' ').trim();
+
+  /* ---- peek-a-boo camera mirror — LOCAL ONLY: the stream is shown on-device and
+     never recorded, saved, or uploaded. Stopped on leaving the page/screen. ---- */
+  let camStream=null;
+  function stopCamera(){
+    try{ if(camStream){ camStream.getTracks().forEach(t=>t.stop()); camStream=null; } }catch(e){}
+    const v=$('mirrorVid'); if(v){ try{ v.srcObject=null; }catch(e){} }
+  }
+  function startCamera(){
+    happy();
+    const vid=$('mirrorVid'), fb=$('mirrorFallback');
+    const md = navigator.mediaDevices;
+    if(!vid || !md || !md.getUserMedia){ if(fb) fb.hidden=false; say("Peek-a-boo! It's you!"); return; }
+    md.getUserMedia({video:{facingMode:'user'}, audio:false})
+      .then(s=>{ camStream=s; vid.srcObject=s; if(fb) fb.hidden=true; say("Peek-a-boo! It's you!"); })
+      .catch(()=>{ if(fb) fb.hidden=false; say("Peek-a-boo! It's you!"); });   // denied/unavailable → gentle fallback
+  }
+  function toggleFlap(p){
+    const flap=$('flapEl'); if(!flap) return;
+    const opening = !flap.classList.contains('flap-open');
+    flap.classList.toggle('flap-open', opening);
+    if(opening){
+      if(p.mirror){ startCamera(); }
+      else { happy(); say(speakable(p.reveal) || 'Peek-a-boo!'); confetti(); wobble($('heroArt')); }
+    } else if(p.mirror){ stopCamera(); }
+  }
 
   const $ = id => document.getElementById(id);
   function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];}return a;}
@@ -158,6 +185,7 @@
   function renderPage(){
     const p = curStory.pages[pageIdx];
     const scene = $('scene');
+    stopCamera();                                  // leaving any prior mirror page
     scene.style.background = bg[p.sky] || '#DFF1F6';
     let deco='';
     if(p.sky==='night'){
@@ -169,6 +197,19 @@
     const hero = `<g class="tappable" id="heroArt" transform="translate(28,26) scale(0.46)">${ART[p.art]||''}</g>`;
     scene.innerHTML = svgWrap(`${deco}${hero}`);
 
+    /* peek-a-boo: hidden picture under a flap, or the front-camera mirror finale */
+    if(p.mirror){
+      const mc=document.createElement('div'); mc.className='mirror-circle';
+      mc.innerHTML='<video id="mirrorVid" playsinline autoplay muted></video>'
+                 + '<div class="mirror-fallback" id="mirrorFallback" hidden>Peek-a-boo — it\'s you! 💛</div>';
+      scene.appendChild(mc);
+    }
+    if(p.flap || p.mirror){
+      const flap=document.createElement('div'); flap.id='flapEl';
+      flap.className='flap'+(p.mirror?' flap-mirror':'');
+      scene.appendChild(flap);
+    }
+
     const line = $('storyLine');
     line.textContent = p.line;
     line.style.color = inkOn[p.sky] || '#4A4038';
@@ -178,8 +219,16 @@
     $('prevBtn').disabled = pageIdx===0;
     $('nextBtn').innerHTML = pageIdx===curStory.pages.length-1 ? 'The end 💛' : 'Turn the page →';
 
-    const hint=$('tapHint'); if(hint) hint.textContent='👆 Tap the picture!';
-    const heroEl=$('heroArt'); if(heroEl) setTimeout(()=>wobble(heroEl), 350); // invite a tap
+    const flapPage = p.flap || p.mirror;
+    const hint=$('tapHint'); if(hint) hint.textContent = flapPage ? '👆 Lift the flap!' : '👆 Tap the picture!';
+    if(!flapPage){
+      const heroEl=$('heroArt'); if(heroEl) setTimeout(()=>wobble(heroEl), 350); // invite a tap
+    } else {
+      const f=$('flapEl');                                  // little wiggle to invite lifting
+      if(f && f.animate && !reduceMotion) setTimeout(()=>f.animate(
+        [{transform:'rotate(-1.5deg)'},{transform:'rotate(1.5deg)'},{transform:'rotate(0deg)'}],
+        {duration:520, easing:'ease'}), 350);
+    }
   }
   /* ---- board-book page-turn: soft two-phase flip on the scene ---- */
   let turning=false;
@@ -248,6 +297,7 @@
 
   /* ---- screen switching ---- */
   function show(id){
+    stopCamera();                                           // stop the mirror when switching screens
     ['menuScreen','storyScreen','gameScreen'].forEach(s=>{
       const el=$(s); if(el) el.classList.toggle('active', s===id);
     });
@@ -259,11 +309,14 @@
      picture becomes one big tap target for little fingers). */
   const sceneEl = $('scene');
   if(sceneEl) sceneEl.addEventListener('click', ()=>{
-    const h=$('heroArt'); if(!h || !curStory) return;
-    happy();
-    say(artWord(curStory.pages[pageIdx].art));
-    wobble(h);
+    if(!curStory) return;
+    const p = curStory.pages[pageIdx];
+    if(p.flap || p.mirror){ toggleFlap(p); return; }      // peek-a-boo: lift the flap
+    const h=$('heroArt'); if(!h) return;
+    happy(); say(artWord(p.art)); wobble(h);
   });
+
+  window.addEventListener('pagehide', stopCamera);          // privacy: never leave the camera on
 
   /* Unlock audio on the first user gesture (mobile browsers start it suspended). */
   window.addEventListener('pointerdown', function unlock(){

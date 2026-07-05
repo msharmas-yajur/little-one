@@ -96,3 +96,41 @@
       line: "Do it again! What will fall now?"
       art: ball
       cue: "Repeating IS the learning. Let her lead the next drop."
+
+# ── PEEK-A-BOO ── flap pages hide a picture; tap to lift the flap and reveal it.
+#  A page with `flap: true` hides its `art` under a flap ("Where's the …?" → tap →
+#  reveal + `reveal:` line). A page with `mirror: true` opens to the front camera
+#  (a live, on-device mirror — never recorded or uploaded; grown-up grants access).
+- id: peekaboo
+  title: "Peek-a-boo!"
+  age: "1+"
+  pages:
+    - sky: garden
+      flap: true
+      art: duck
+      line: "Where's the duck?"
+      reveal: "There she is! Quack, quack! 🦆"
+      cue: "Let her tap the flap — then say “peek-a-boo!” together."
+    - sky: day
+      flap: true
+      art: cat
+      line: "Where's the kitty?"
+      reveal: "Peek-a-boo! There's the kitty! 🐱"
+      cue: "Wait for the reveal, then her giggle. Do it again if she loves it."
+    - sky: morning
+      flap: true
+      art: dog
+      line: "Where's the puppy?"
+      reveal: "There he is! Woof, woof! 🐶"
+      cue: "Try a soft “woof!” as the puppy pops out."
+    - sky: night
+      flap: true
+      art: star
+      line: "Where's the little star?"
+      reveal: "Twinkle, twinkle — there it is! ⭐"
+      cue: "A whisper suits the night sky. Point up afterwards."
+    - sky: day
+      mirror: true
+      line: "And where's… YOU?"
+      reveal: "Peek-a-boo — it's you! 💛"
+      cue: "Open the last flap to find the little one in the mirror."

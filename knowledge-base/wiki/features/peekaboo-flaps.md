@@ -1,7 +1,7 @@
 ---
 title: Peek-a-boo Flaps
 type: feature
-status: specced
+status: built
 sources: [raw/ideas/book-animations.md, raw/research/videos/felt-flaps-peekaboo.md]
 related: [wiki/features/storybook-player.md, wiki/features/tap-and-find-game.md, wiki/concepts/the-12-month-arc.md, wiki/concepts/design-principles.md]
 updated: 2026-07-05
@@ -13,6 +13,19 @@ updated: 2026-07-05
 asks "**Where's the [animal]?**"; tapping lifts the flap → the animal appears →
 "**There she is!**" + the reinforcing voice names it. Recreates the Felt-Flaps
 mechanic (`raw/research/videos/felt-flaps-peekaboo.md`) in our own art.
+
+## Shipped (2026-07-05)
+A dedicated **"Peek-a-boo!"** story exists (`_data/stories.yml`, id `peekaboo`):
+four flap pages (duck, kitty, puppy, star) + the **mirror finale**. Data model:
+optional `flap: true` (hides `art` under an original flap) and `reveal:` line, or
+`mirror: true` for the finale; pages without them are unchanged. Player renders the
+flap (original CSS panel), toggles it open/closed on tap (repeatable), and on reveal
+plays chime + confetti + the soothing voice. Reduced-motion → instant reveal. The
+**mirror finale** opens the front camera into a circle — **local only, never
+recorded/uploaded**, stopped on page/screen change + `pagehide`; if the camera is
+denied/unavailable it falls back to a gentle "Peek-a-boo — it's you! 💛". Verified
+in-browser (flap open/close, reveal, mirror + fallback). Implemented in
+`player.js`, `_layouts/child.html` (page-field injection), `assets/css/style.css`.
 
 **Why.** Object permanence (gone → back), anticipation, repetition, naming, and the
 joy of causing the reveal. Peek-a-boo → memory & trust (Molly Wright TED); fits arc

@@ -69,3 +69,10 @@ Append-only. Newest at the bottom. Each entry: date · what happened.
 - 2026-07-05 · Voice change (owner request): the reinforcing voice now prefers a
   pleasant/soothing FEMALE English voice where the device offers one (rate 0.9,
   pitch 1.15). Available voices depend on the device/OS. `player.js` (`pickVoice`).
+- 2026-07-05 · Built peek-a-boo (owner request). New "Peek-a-boo!" story (id
+  peekaboo): 4 flap pages + mirror finale. Data model: optional `flap`/`reveal`/
+  `mirror` on story pages (backward-compatible); child.html now injects them into
+  window.CHILD. Player: flap open/close on tap (repeatable), reveal = chime +
+  confetti + soothing voice; mirror finale opens the front camera in a circle
+  (LOCAL ONLY, never recorded/uploaded, stopped on nav/screen/pagehide, graceful
+  fallback). `wiki/features/peekaboo-flaps.md` → status: built. Verified in-browser.

@@ -2,7 +2,7 @@
 title: Responsive Talk (the grown-up's talk toolkit)
 type: concept
 status: built
-sources: [raw/research/books/how-to-talk-little-kids.md, raw/research/books/mind-in-the-making.md, raw/research/books/scientist-in-the-crib.md]
+sources: [raw/research/books/how-to-talk-little-kids.md, raw/research/books/mind-in-the-making.md, raw/research/books/scientist-in-the-crib.md, raw/research/videos/thrive-by-five-molly-wright.md]
 related: [wiki/concepts/book-foundations.md, wiki/features/storybook-player.md, wiki/features/grown-up-card.md]
 updated: 2026-07-05
 ---

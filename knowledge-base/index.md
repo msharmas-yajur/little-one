@@ -39,6 +39,7 @@ The catalog of every page. One line each. Keep current on every ingest.
   - `books/mind-in-the-making.md` — Galinsky: seven essential life skills.
   - `books/how-to-talk-little-kids.md` — Faber & King: responsive talk techniques (adapted to ~12mo).
   - `famous-books.md` — beloved 1–2yo books worldwide + original story-theme ideas.
+  - `videos/thrive-by-five-molly-wright.md` — TED talk (serve-and-return; connect, talk, play).
 
 ## Backlog / open questions
 - See `log.md` for the running timeline.

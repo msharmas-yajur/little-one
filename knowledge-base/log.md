@@ -53,3 +53,7 @@ Append-only. Newest at the bottom. Each entry: date · what happened.
   `.scene` div (whole picture is a big tap target), added a "👆 Tap the picture!"
   hint and a spoken word on tap. Touched `player.js`, `_layouts/child.html`,
   `style.css`. See `wiki/features/storybook-player.md`.
+- 2026-07-05 · Added video source `raw/research/videos/thrive-by-five-molly-wright.md`
+  (Molly Wright TED, "How Every Child Can Thrive by Five" — serve-and-return:
+  connect, talk, play; the five things; games→skills). Cross-linked from
+  `responsive-talk.md`; updated `index.md`.

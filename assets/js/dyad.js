@@ -232,6 +232,11 @@
   function setDismissed(){ try{ localStorage.setItem(DISMISS,'1'); }catch(e){} }
   function clearDismissed(){ try{ localStorage.removeItem(DISMISS); }catch(e){} }
 
+  // Languages offered as tap-to-toggle pills (plus a free-text "add another" for
+  // anything not listed). A broad global + South-Asian spread; edit freely.
+  const LANG_OPTIONS = ['English','Hindi','Spanish','Mandarin','Bengali','Tamil',
+    'Telugu','Marathi','Punjabi','Urdu','Gujarati','Kannada','Arabic','French'];
+
   function openSetup(onDone){
     if(document.getElementById('dyadModal')) return;
     const wrap=document.createElement('div'); wrap.id='dyadModal'; wrap.className='dyad-modal';
@@ -240,15 +245,24 @@
       '<h2>Make it hers</h2>'+
       '<p class="dyad-sub">A few gentle details so the stories and games grow with her. This stays on <b>your device</b> — never uploaded, and we never ask her name.</p>'+
       '<label>When was she born?</label><input type="month" id="dyadBirth">'+
-      '<label>Languages you speak at home</label><input type="text" id="dyadLangs" placeholder="e.g. English, Hindi">'+
+      '<label>Languages you speak at home <span class="opt">(tap all that apply)</span></label>'+
+      '<div class="dyad-pills" id="dyadLangPills">'+
+        LANG_OPTIONS.map(function(l){ return '<button type="button" class="dyad-pill" data-lang="'+l+'">'+l+'</button>'; }).join('')+
+      '</div>'+
+      '<input type="text" id="dyadLangOther" placeholder="Another language? Add it here">'+
       '<label>Traditions or cultures <span class="opt">(optional)</span></label><input type="text" id="dyadCultures" placeholder="optional">'+
       '<div class="dyad-actions"><button class="dyad-skip" id="dyadSkip">Not now</button><button class="dyad-save" id="dyadSave">Save 💛</button></div>'+
       '</div>';
     document.body.appendChild(wrap);
+    wrap.querySelectorAll('#dyadLangPills .dyad-pill').forEach(function(b){
+      b.onclick=function(){ b.classList.toggle('sel'); b.setAttribute('aria-pressed', b.classList.contains('sel')?'true':'false'); };
+    });
     document.getElementById('dyadSkip').onclick=()=>{ setDismissed(); wrap.remove(); onDone&&onDone(false); };
     document.getElementById('dyadSave').onclick=()=>{
       const birth=document.getElementById('dyadBirth').value||null;
-      const langs=(document.getElementById('dyadLangs').value||'').split(',').map(s=>s.trim()).filter(Boolean);
+      const picked=Array.from(wrap.querySelectorAll('#dyadLangPills .dyad-pill.sel')).map(b=>b.getAttribute('data-lang'));
+      const other=(document.getElementById('dyadLangOther').value||'').split(',').map(s=>s.trim()).filter(Boolean);
+      const langs=Array.from(new Set(picked.concat(other)));
       const cults=(document.getElementById('dyadCultures').value||'').split(',').map(s=>s.trim()).filter(Boolean);
       profile=blankProfile({birthMonth:birth, languages:langs, cultures:cults}); save(); clearDismissed();
       wrap.remove(); onDone&&onDone(true);

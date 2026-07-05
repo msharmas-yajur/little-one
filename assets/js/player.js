@@ -61,11 +61,13 @@
     return actx;
   }
 
-  /* ---- playful background music (Web Audio, no files) ----
-     A tiny looping sequencer: a bell-like melody over a soft bass, with real
-     rhythm — a proper little tune, not stray notes. Each story has its OWN theme
-     (root/scale/tempo/timbre/pattern); the menu has a gentle default. Low volume,
-     ducks under the voice, off by default, toggled by 🎵. */
+  /* ---- warm background music (Web Audio, no files, no licensing) ----
+     A little looping band: a soft music-box / marimba melody over a rounded
+     bass, a gentle plucked chord and a light shaker for groove — run through a
+     small reverb (for space) and a compressor (glue + no clipping). Each story
+     has its OWN theme; the menu has a gentle default. Ducks under the voice,
+     off by default, toggled by 🎵. Louder than before, still a background bed. */
+  const MUS = { master:0.13, duck:0.05, mel:0.16, bass:0.13, chord:0.055, sh:0.03 };  // levels (turn these up/down to taste)
   const SCALES = { penta:[0,2,4,7,9], major:[0,2,4,5,7,9,11] };
   function degToFreq(root, scale, deg){                 // scale degree → Hz (octave-wrapping)
     const n=scale.length, oct=Math.floor(deg/n), idx=((deg%n)+n)%n;
@@ -81,28 +83,68 @@
     'little-ones-day': { root:293.66, bpm:138, wave:'triangle', mel:[0,2,4,4,4,2,0,2, 4,5,4,2,0,2,0,null], chords:[0,3,4,0] }, // sunny bounce
     'splish-splash':   { root:261.63, bpm:132, wave:'triangle', mel:[4,2,0,2,4,4,4,2, 5,4,2,4,0,0,0,null], chords:[0,3,0,4] }, // playful splashy
     'things-that-fall':{ root:329.63, bpm:146, wave:'triangle', mel:[7,7,4,4,2,2,0,0, 4,4,7,7,4,2,0,null], chords:[0,4,0,4] }, // fast & tumbling
-    peekaboo:          { root:293.66, bpm:124, wave:'triangle', mel:[0,0,2,2,4,4,2,0, 7,7,4,4,2,2,0,null], chords:[0,0,4,4] }  // cheeky & bouncy
+    peekaboo:          { root:293.66, bpm:124, wave:'triangle', mel:[0,0,2,2,4,4,2,0, 7,7,4,4,2,2,0,null], chords:[0,0,4,4] }, // cheeky & bouncy
+    'try-try-again':   { root:293.66, bpm:130, wave:'triangle', mel:[0,2,4,5,7,5,4,2, 4,5,7,7,9,7,4,null], chords:[0,3,4,0] }, // reaching, climbing
+    'chatter-chatter': { root:261.63, bpm:120, wave:'triangle', mel:[4,4,2,4,7,4,2,0, 2,2,4,2,0,null,0,null], chords:[0,4,0,3] } // sing-song, call & answer
   };
-  let musicOn=false, musicGain=null, musicTimer=null, musTheme=null, musStep=0;
-  function playTone(freq, dur, wave, gain){
+  let musicOn=false, musicGain=null, musicComp=null, musReverb=null, musReverbSend=null, musicTimer=null, musTheme=null, musStep=0;
+  // a short, soft impulse for a gentle room reverb (built once)
+  function buildReverb(){
+    const len=Math.floor(actx.sampleRate*1.5), buf=actx.createBuffer(2,len,actx.sampleRate);
+    for(let ch=0; ch<2; ch++){ const d=buf.getChannelData(ch);
+      for(let i=0;i<len;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/len,3.2); }
+    const c=actx.createConvolver(); c.buffer=buf; return c;
+  }
+  // warm plucked "music-box / marimba" voice: 2 oscillators + a closing lowpass +
+  // a quick pluck envelope, sent both dry and into the reverb.
+  function voice(freq, dur, wave, gain){
     if(!actx || !musicGain || freq==null) return;
-    const o=actx.createOscillator(), g=actx.createGain(), t=actx.currentTime;
-    o.type=wave; o.frequency.value=freq;
+    const t=actx.currentTime;
+    const o1=actx.createOscillator(); o1.type=wave; o1.frequency.value=freq;
+    const o2=actx.createOscillator(); o2.type='sine'; o2.frequency.value=freq*2;   // shimmer octave
+    const o2g=actx.createGain(); o2g.gain.value=0.3;
+    const lp=actx.createBiquadFilter(); lp.type='lowpass';
+    lp.frequency.setValueAtTime(Math.min(freq*6+1400,9000),t);
+    lp.frequency.exponentialRampToValueAtTime(Math.max(freq*2,600),t+dur);         // tone softens as it rings
+    const g=actx.createGain();
+    g.gain.setValueAtTime(0.0001,t);
+    g.gain.exponentialRampToValueAtTime(gain,t+0.008);                             // quick pluck
+    g.gain.exponentialRampToValueAtTime(0.0001,t+dur);                             // natural decay
+    o1.connect(g); o2.connect(o2g).connect(g); g.connect(lp);
+    lp.connect(musicGain);                                                         // dry
+    if(musReverbSend) lp.connect(musReverbSend);                                   // → reverb
+    o1.start(t); o2.start(t); o1.stop(t+dur+0.05); o2.stop(t+dur+0.05);
+  }
+  function bass(freq, dur, gain){
+    if(!actx || !musicGain || freq==null) return;
+    const t=actx.currentTime, o=actx.createOscillator(), g=actx.createGain();
+    o.type='sine'; o.frequency.value=freq;
     g.gain.setValueAtTime(0.0001,t);
     g.gain.exponentialRampToValueAtTime(gain,t+0.02);
     g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
-    o.connect(g).connect(musicGain); o.start(t); o.stop(t+dur+0.02);
+    o.connect(g).connect(musicGain); o.start(t); o.stop(t+dur+0.03);
+  }
+  function shaker(gain){                                                           // soft filtered-noise groove
+    if(!actx || !musicGain) return;
+    const t=actx.currentTime, len=Math.floor(actx.sampleRate*0.05);
+    const buf=actx.createBuffer(1,len,actx.sampleRate), d=buf.getChannelData(0);
+    for(let i=0;i<len;i++) d[i]=(Math.random()*2-1)*(1-i/len);
+    const s=actx.createBufferSource(); s.buffer=buf;
+    const hp=actx.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=5500;
+    const g=actx.createGain(); g.gain.value=gain;
+    s.connect(hp).connect(g).connect(musicGain); s.start(t);
   }
   function musicTick(){
     if(!musicOn || !actx || !musicGain || !musTheme) return;
     const T=musTheme, sc=SCALES.major;
     const md=T.mel[musStep % T.mel.length];
-    if(md!=null) playTone(degToFreq(T.root, sc, md), 0.20, T.wave, 0.085);              // melody
+    if(md!=null) voice(degToFreq(T.root, sc, md), 0.36, T.wave, MUS.mel);              // melody rings a little
     const beat=musStep>>1, chordRoot=T.chords[beat % T.chords.length];
     if(musStep % 2 === 0){                                                             // ON beat → bass "oom"
-      playTone(degToFreq(T.root/2, sc, chordRoot), 0.22, 'sine', 0.075);
-    } else {                                                                           // OFF beat → chord "pah"
-      triad(T.root, sc, chordRoot).forEach(fr=> playTone(fr, 0.13, 'triangle', 0.03));
+      bass(degToFreq(T.root/2, sc, chordRoot), 0.26, MUS.bass);
+    } else {                                                                           // OFF beat → chord "pah" + shaker
+      triad(T.root, sc, chordRoot).forEach(fr=> voice(fr, 0.2, 'triangle', MUS.chord));
+      shaker(MUS.sh);
     }
     musStep++;
     musicTimer=setTimeout(musicTick, 60000/T.bpm/2);                                   // eighth-note step
@@ -114,16 +156,22 @@
   function duckMusic(){
     if(!musicOn || !musicGain || !actx) return;
     const t=actx.currentTime; musicGain.gain.cancelScheduledValues(t);
-    musicGain.gain.setTargetAtTime(0.02,t,0.05);                                  // dip while the voice talks
-    musicGain.gain.setTargetAtTime(0.06, t+1.0,0.5);                              // then restore
+    musicGain.gain.setTargetAtTime(MUS.duck,t,0.05);                              // dip while the voice talks
+    musicGain.gain.setTargetAtTime(MUS.master, t+1.0,0.5);                        // then restore
   }
   function startMusic(){
     if(!ensureAudio()) return;
-    if(!musicGain){ musicGain=actx.createGain(); musicGain.gain.value=0.0001; musicGain.connect(actx.destination); }
+    if(!musicGain){
+      musicGain=actx.createGain(); musicGain.gain.value=0.0001;
+      musicComp=actx.createDynamicsCompressor();                                  // glue + clip protection
+      musicGain.connect(musicComp).connect(actx.destination);
+      try{ musReverb=buildReverb(); musReverbSend=actx.createGain(); musReverbSend.gain.value=0.55;
+           musReverbSend.connect(musReverb).connect(musicGain); }catch(e){ musReverb=null; musReverbSend=null; }
+    }
     if(!musTheme) musicSetTheme('menu');
     musicOn=true;
     musicGain.gain.cancelScheduledValues(actx.currentTime);
-    musicGain.gain.setTargetAtTime(0.06, actx.currentTime, 0.6);                  // fade in
+    musicGain.gain.setTargetAtTime(MUS.master, actx.currentTime, 0.6);            // fade in
     clearTimeout(musicTimer); musStep=0; musicTick();
   }
   function stopMusic(){

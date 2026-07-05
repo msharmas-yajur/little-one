@@ -16,7 +16,8 @@ big picture, which wobbles and makes a soft sound.
   `sky` (scene colour), `line` (read aloud), `art` (picture key), `cue` (a
   prompt *for the grown-up*, e.g. "try a soft woof").
 - Engine: `assets/js/player.js` renders pages; art from `assets/js/art.js`.
-- Current stories: little-ones-day, splish-splash, things-that-fall.
+- Current stories: little-ones-day, splish-splash, things-that-fall, try-try-again,
+  peekaboo, chatter-chatter.
 
 **Acceptance:** open a child page → pick a story → pages turn, the hero picture
 taps and wobbles with a gentle sound, the grown-up cue shows, last page reads

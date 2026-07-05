@@ -135,3 +135,8 @@ Append-only. Newest at the bottom. Each entry: date · what happened.
   that opens the next PENDING story (dyad.nextUp uses the completes telemetry;
   all-done → least-recently-seen re-visit); the menu becomes "Or choose". This is
   the app creating the next step for the child, not a bare menu.
+- 2026-07-05 · Two more owner UX fixes (live): (1) story picture taps now speak a
+  SIMPLE SENTENCE ("Look, the sun!" / "Can you say sun?" — dialogic-reading style)
+  instead of a bare word (player.js sayArt). (2) Music reworked again to UPBEAT/
+  bouncy per "Wheels on the Bus" — an oom-pah (bass on beat + triad off-beat),
+  major key, faster tempos, per-story themes kept.

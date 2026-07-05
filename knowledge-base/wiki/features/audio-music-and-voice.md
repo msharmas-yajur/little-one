@@ -11,9 +11,10 @@ updated: 2026-07-05
 
 ## Background music — BUILT (2026-07-05; reworked to be playful + per-story)
 Web-Audio background music — **no files**. v1 was single random pentatonic notes;
-owner feedback ("not engaging, notes one-by-one") → rebuilt as a tiny **looping
-sequencer**: a bell-like melody over a soft octave-down bass on a real eighth-note
-grid — a proper little tune. **Per-story THEMES** (root/scale/tempo/timbre/pattern):
+owner feedback ("notes one-by-one", then "more upbeat like Wheels on the Bus") →
+rebuilt as a bouncy **oom-pah** sequencer: bass "oom" on the beat + a soft triad
+"pah" off-beat, under a singable melody; major key (clean triads), upbeat tempos
+(124–146 bpm). **Per-story THEMES** (root/scale/tempo/timbre/pattern):
 little-ones-day = bright morning, splish-splash = bouncy watery, things-that-fall =
 tumbling playful, peekaboo = sneaky-then-a-peek; menu/games use a gentle default.
 `musicSetTheme(name, restart)` switches at scene changes. Still **off by default**,

@@ -34,6 +34,60 @@
 
   const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  function ensureAudio(){
+    try{ if(!actx) actx = new (window.AudioContext||window.webkitAudioContext)(); if(actx.state==='suspended') actx.resume(); }catch(e){}
+    return actx;
+  }
+
+  /* ---- gentle generative background music (Web Audio, no files) ----
+     Soft, slow, random notes from a C-major pentatonic scale (no "wrong" notes),
+     low volume, ducks under the voice. Off by default; toggled by the 🎵 button. */
+  const PENTA = [261.63,293.66,329.63,392.00,440.00,523.25,587.33,659.25];
+  let musicOn=false, musicGain=null, musicTimer=null;
+  function musicNote(){
+    if(!musicOn || !actx || !musicGain){ return; }
+    if(Math.random() < 0.25){ scheduleMusic(); return; }          // gentle rests
+    const o=actx.createOscillator(), g=actx.createGain();
+    o.type='triangle'; o.frequency.value = PENTA[Math.random()*PENTA.length|0];
+    const t=actx.currentTime;
+    g.gain.setValueAtTime(0.0001,t);
+    g.gain.exponentialRampToValueAtTime(0.09,t+0.05);
+    g.gain.exponentialRampToValueAtTime(0.0001,t+1.7);            // music-box decay
+    o.connect(g).connect(musicGain);
+    o.start(t); o.stop(t+1.8);
+    scheduleMusic();
+  }
+  function scheduleMusic(){ clearTimeout(musicTimer); musicTimer=setTimeout(musicNote, 1200+Math.random()*1500); }
+  function duckMusic(){
+    if(!musicOn || !musicGain || !actx) return;
+    const t=actx.currentTime; musicGain.gain.cancelScheduledValues(t);
+    musicGain.gain.setTargetAtTime(0.015,t,0.05);                 // dip while the voice talks
+    musicGain.gain.setTargetAtTime(0.06, t+1.0,0.5);              // then restore
+  }
+  function startMusic(){
+    if(!ensureAudio()) return;
+    if(!musicGain){ musicGain=actx.createGain(); musicGain.gain.value=0.0001; musicGain.connect(actx.destination); }
+    musicOn=true;
+    musicGain.gain.cancelScheduledValues(actx.currentTime);
+    musicGain.gain.setTargetAtTime(0.06, actx.currentTime, 0.7);  // fade in
+    scheduleMusic();
+  }
+  function stopMusic(){
+    musicOn=false; clearTimeout(musicTimer);
+    if(musicGain && actx) musicGain.gain.setTargetAtTime(0.0001, actx.currentTime, 0.4);
+  }
+  function reflectMusicBtn(){
+    const b=$('musicBtn'); if(!b) return;
+    b.textContent = musicOn ? '🎵' : '🔇';
+    b.classList.toggle('off', !musicOn);
+    b.setAttribute('aria-label', musicOn ? 'Turn music off' : 'Turn music on');
+  }
+  function toggleMusic(){
+    musicOn ? stopMusic() : startMusic();
+    try{ localStorage.setItem('lo.music', musicOn ? '1':'0'); }catch(e){}
+    reflectMusicBtn();
+  }
+
   /* ---- reinforcing voice (browser speech; no files, no third-party character) ----
      Prefer a pleasant, soothing FEMALE English voice where the device offers one.
      Available voices vary by device/OS; we choose the best match and soften it. */
@@ -65,6 +119,7 @@
       const u = new SpeechSynthesisUtterance(text);
       const v = ensureVoice(); if(v){ u.voice = v; u.lang = v.lang; }
       u.rate = 0.9; u.pitch = 1.15; u.volume = 0.9;   // soft, warm, soothing
+      duckMusic();
       window.speechSynthesis.cancel();
       window.speechSynthesis.speak(u);
     }catch(e){}
@@ -319,10 +374,14 @@
   window.addEventListener('pagehide', stopCamera);          // privacy: never leave the camera on
 
   /* Unlock audio on the first user gesture (mobile browsers start it suspended). */
+  let musicPref = false;
+  try{ musicPref = localStorage.getItem('lo.music') === '1'; }catch(e){}
   window.addEventListener('pointerdown', function unlock(){
-    try{ if(!actx) actx=new (window.AudioContext||window.webkitAudioContext)(); if(actx.state==='suspended') actx.resume(); }catch(e){}
+    ensureAudio();
+    if(musicPref && !musicOn) startMusic();     // resume the family's music choice on first tap
+    reflectMusicBtn();
   }, {once:true, passive:true});
 
-  window.LO = { openStory, openGame, nextPage, prevPage, backToMenu };
-  renderMenu(); show('menuScreen');
+  window.LO = { openStory, openGame, nextPage, prevPage, backToMenu, toggleMusic };
+  renderMenu(); show('menuScreen'); reflectMusicBtn();
 })();

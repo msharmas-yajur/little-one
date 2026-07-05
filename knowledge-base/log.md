@@ -76,3 +76,11 @@ Append-only. Newest at the bottom. Each entry: date · what happened.
   confetti + soothing voice; mirror finale opens the front camera in a circle
   (LOCAL ONLY, never recorded/uploaded, stopped on nav/screen/pagehide, graceful
   fallback). `wiki/features/peekaboo-flaps.md` → status: built. Verified in-browser.
+- 2026-07-05 · Built generative background music (owner request): gentle pentatonic
+  Web-Audio notes (no files), low volume, ducks under the voice, OFF by default,
+  🎵/🔇 toggle (persists in localStorage). `wiki/features/audio-music-and-voice.md`.
+  Recorded the VOICE architecture decision: Claude has no TTS and CopilotKit needs a
+  backend (site is static) — so author scripts with Claude + render once with a
+  neural TTS (e.g. ElevenLabs) at build time into static clips, one voice ID reused
+  across the 5-year journey; family-recording is the private alternative. Needs an
+  API key or a recording decision from the owner.

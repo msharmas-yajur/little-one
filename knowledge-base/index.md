@@ -26,6 +26,7 @@ The catalog of every page. One line each. Keep current on every ingest.
 - `per-child-structure.md` — multi-child registry & neutral URLs. Status: built.
 - `bilingual-first-words.md` — name things in two languages (English + home language). Status: idea.
 - `encouraging-cheer-button.md` — celebration on correct taps (confetti + voice). Status: built.
+- `audio-music-and-voice.md` — generative background-music toggle (built) + the voice roadmap. Status: built.
 - `page-turn-animation.md` — board-book page-turn flip on advancing. Status: built.
 - `peekaboo-flaps.md` — lift-the-flap "Where's …?" reveal + camera-mirror finale. Status: built.
 

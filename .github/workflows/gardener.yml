@@ -77,6 +77,7 @@ jobs:
           claude_args: |
             --model claude-opus-4-8
             --max-turns 40
+            --permission-mode acceptEdits
             --allowedTools "Read,Grep,Glob,Write,Edit"
           prompt: |
             You are the Gardener for the "Little One" project, running as an
@@ -133,6 +134,16 @@ jobs:
                 "summary": "one or two sentences; if acted is false, why nothing cleared the bar"
               }
             This file is git-excluded and is how the workflow learns your decision.
+
+      # Diagnostics — always print what the Gardener decided and whether the
+      # action committed anything, so a no-PR run is never a mystery.
+      - name: Diagnostics
+        if: ${{ always() }}
+        run: |
+          echo "branch_name output: '${{ steps.gardener.outputs.branch_name }}'"
+          echo "--- current branch ---"; git rev-parse --abbrev-ref HEAD 2>/dev/null || true
+          echo "--- git status --porcelain (uncommitted edits, if any) ---"; git status --porcelain 2>/dev/null || true
+          echo "--- .gardener-out.json ---"; cat .gardener-out.json 2>/dev/null || echo "(absent)"
 
       # If the Gardener proposed something, open the PR from its branch.
       - name: Open pull request

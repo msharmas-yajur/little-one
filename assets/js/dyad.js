@@ -76,6 +76,53 @@
     return profile.phase;
   }
 
+  /* ---- noticing prompts (calibration/partnership only) ----
+     Passive-first: we only ask when a hypothesis exists, at a natural pause,
+     rarely, and every answer maps to a serving change (heart boosts, too-early
+     rests). Cadence: ≤1/session, ≤2/week. */
+  function weekReset(){
+    if(!profile) return;
+    const p=profile.prompts, ws=p.weekStart?new Date(p.weekStart+'T00:00:00').getTime():0;
+    if(!ws || (Date.now()-ws)/864e5 >= 7){ p.weekStart=todayISO(); p.shownThisWeek=0; }
+  }
+  function promptBudgetOk(){
+    if(!profile) return false;
+    if(phase()==='discovery') return false;              // never in discovery
+    weekReset();
+    const p=profile.prompts;
+    if((p.shownThisWeek||0) >= 2) return false;          // ≤ 2 / week
+    if(p.lastShownAt && (Date.now()-p.lastShownAt) < SESSION_GAP) return false;  // ≤ 1 / session
+    return true;
+  }
+  function pickHypothesis(list){                          // "she keeps coming back to X"
+    if(!profile || !Array.isArray(list)) return null;
+    const answered=new Set(profile.prompts.answered||[]);
+    let best=null, bestScore=0;
+    list.forEach(it=>{
+      if(!it || !it.id) return;
+      const s=profile.signals[it.id]; if(!s) return;
+      if((s.hearts||0)>0 || (s.tooEarly||0)>0 || answered.has(it.id)) return;   // already a verdict
+      const score=(s.opens||0) + (s.repeats||0)*2 + (s.completes||0) + (s.taps||0)*0.3;
+      if((s.opens||0) >= 3 && score>bestScore){ bestScore=score; best=it; }
+    });
+    return best;
+  }
+  function recordPromptShown(){
+    if(!profile) return; weekReset();
+    profile.prompts.lastShownAt=Date.now();
+    profile.prompts.shownThisWeek=(profile.prompts.shownThisWeek||0)+1;
+    profile.prompts.lastShown=todayISO(); save();
+  }
+  function answerPrompt(id, kind){                        // kind: heart | early | skip
+    if(!profile) return;
+    if(kind==='heart') bumpSignal(id,'hearts');
+    else if(kind==='early') bumpSignal(id,'tooEarly');
+    bumpAdult(kind==='skip' ? 'promptsSkipped' : 'promptsAnswered');
+    if(!profile.prompts.answered) profile.prompts.answered=[];
+    if(kind!=='skip') profile.prompts.answered.push(id);  // don't re-ask once she has a verdict; a skip can resurface later
+    save();
+  }
+
   /* ---- content ranking (the policy layer) ----
      Reorders the menu for THIS dyad. Never hides anything — ordering only.
      - discovery: rotate a leading skill domain per session + nudge fresh
@@ -198,6 +245,7 @@
     exists, get, update, reset, save,
     sig, bumpSignal, bumpDomain, bumpAdult,
     recordActivity, ageMonths, ageBand, phase, rankContent, focusDomain,
+    promptBudgetOk, pickHypothesis, recordPromptShown, answerPrompt,
     exportProfile, importProfile,
     openSetup, openSettings, dismissed, setDismissed,
     DOMAINS

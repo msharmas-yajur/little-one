@@ -123,6 +123,17 @@ a{color:inherit;text-decoration:none;}
 .dyad-save{background:var(--leaf);color:#fff;box-shadow:0 4px 0 var(--shadow);}
 .dyad-skip{background:#fff;color:var(--ink);box-shadow:0 4px 0 var(--shadow);}
 .dyad-save:active,.dyad-skip:active{transform:translateY(2px);}
+
+/* ---- noticing prompt card (session-end, non-blocking) ---- */
+.notice-card{background:#fff;border-radius:22px;padding:16px 18px;margin:0 4px 16px;
+  box-shadow:0 6px 0 var(--shadow);animation:noticeIn .35s ease;}
+@keyframes noticeIn{from{opacity:0;transform:translateY(-8px);}to{opacity:1;transform:translateY(0);}}
+.notice-q{font-family:'Baloo 2',cursive;font-weight:600;color:var(--ink);font-size:1.02rem;line-height:1.35;margin-bottom:12px;}
+.notice-q b{color:var(--accent);}
+.notice-actions{display:flex;gap:8px;flex-wrap:wrap;}
+.notice-actions button{border:none;cursor:pointer;font-family:'Fredoka',sans-serif;font-weight:600;font-size:.95rem;
+  padding:10px 14px;border-radius:100px;background:var(--cream);color:var(--ink);box-shadow:0 3px 0 var(--shadow);}
+.notice-actions button:active{transform:translateY(2px);}
 .nav{display:flex;gap:14px;padding:0 20px 26px;align-items:center;justify-content:center;}
 .navbtn{border:none;cursor:pointer;width:66px;height:66px;border-radius:50%;font-size:1.7rem;color:#fff;box-shadow:0 6px 0 var(--shadow);display:flex;align-items:center;justify-content:center;transition:transform .1s;}
 .navbtn:active{transform:translateY(4px);box-shadow:0 2px 0 var(--shadow);}

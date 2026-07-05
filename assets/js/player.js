@@ -390,7 +390,36 @@
       const el=$(s); if(el) el.classList.toggle('active', s===id);
     });
   }
-  function backToMenu(){ show('menuScreen'); }
+  function backToMenu(){ show('menuScreen'); maybeNotice(); }
+
+  /* ---- noticing prompt: a gentle one-tap card at the session-end pause.
+     Never blocks (the menu is fully usable underneath); shows at most rarely,
+     only in calibration/partnership, only when a hypothesis exists. ---- */
+  function maybeNotice(){
+    tel(D=>{
+      if(!D.promptBudgetOk || !D.promptBudgetOk()) return;
+      const hyp = D.pickHypothesis((stories||[]).concat(games||[]));
+      if(hyp) showNotice(D, hyp);
+    });
+  }
+  function showNotice(D, item){
+    const menu=$('menu'); if(!menu || document.getElementById('noticeCard')) return;
+    D.recordPromptShown();
+    const card=document.createElement('div'); card.id='noticeCard'; card.className='notice-card';
+    card.innerHTML =
+      '<p class="notice-q">She keeps coming back to <b>'+item.title+'</b> — is she loving it?</p>'+
+      '<div class="notice-actions">'+
+        '<button data-k="heart">❤️ Loving it</button>'+
+        '<button data-k="early">🌱 Too early</button>'+
+        '<button data-k="skip" aria-label="skip">🤷</button>'+
+      '</div>';
+    menu.parentNode.insertBefore(card, menu);          // above the story/game list
+    card.querySelectorAll('button').forEach(b=>b.onclick=()=>{
+      D.answerPrompt(item.id, b.getAttribute('data-k'));
+      card.remove();
+      renderMenu();                                    // reflect new ordering immediately
+    });
+  }
 
   /* Tap anywhere on the story picture → chime + the word + wobble.
      Listener lives on the persistent .scene div (reliable on mobile; the whole

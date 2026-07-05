@@ -84,3 +84,26 @@ Append-only. Newest at the bottom. Each entry: date · what happened.
   neural TTS (e.g. ElevenLabs) at build time into static clips, one voice ID reused
   across the 5-year journey; family-recording is the private alternative. Needs an
   API key or a recording decision from the owner.
+- 2026-07-05 · FORMALIZED THE ADAPTIVE ARC (owner discussion, two rounds).
+  New concept `wiki/concepts/adaptive-arc.md` (status: specced): three loops
+  (evidence/cohort/dyad), layered architecture, four decided pillars —
+  passive-first signals + noticing prompts (pediatrician pattern); autonomy as a
+  lifecycle (discovery→calibration→partnership, explore-then-exploit); DYAD model
+  (parent+child, dual culture/language tracks, LOCAL-FIRST — child data never
+  leaves the device); Galinsky-7 as taxonomy, never a report card. Self-learning
+  = heuristics in the data layer, 3 tiers (on-device real-time; build-time
+  human-gated PRs; evidence ingestion). Hard line: no runtime LLM calls / no
+  unreviewed generated content on the child-facing site.
+- 2026-07-05 · New PRD `raw/prds/0001-adaptive-arc-v1.md` (specced): content
+  tagging (age band + Galinsky-7 + lang/culture), local dyad profile w/
+  export-import, silent telemetry, discovery phase, noticing prompts, minimal
+  partnership (menu ordering, ask-first mode). Out of scope + open questions
+  recorded.
+- 2026-07-05 · New research: `raw/research/bilingual-early-years.md` (sourced —
+  Byers-Heinlein/Lew-Williams/Kuhl: infants separate languages early; milestones
+  on schedule; live exposure quantity/quality drives outcomes; code-mixing normal
+  but cues should model clean alternation; social gating → the app is never the
+  language teacher). New video source
+  `videos/copilotkit-self-improving-agents.md` (CLHF / in-context learning:
+  the engine stays fixed, the context/data it reads changes — validates the
+  KB-as-mutable-memory architecture; adopt the pattern, not the library).

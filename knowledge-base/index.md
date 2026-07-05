@@ -17,6 +17,7 @@ The catalog of every page. One line each. Keep current on every ingest.
 - `book-foundations.md` — the four source books and which arc months each informs.
 - `seven-life-skills.md` — Galinsky's seven life skills mapped to arc months.
 - `responsive-talk.md` — the grown-up's talk toolkit (serve-and-return, describe-don't-judge).
+- `adaptive-arc.md` — the self-learning framework: three loops, dyad model, discovery→partnership. Status: specced.
 
 ## Features (`wiki/features/`)
 - `storybook-player.md` — the tap-along story reader. Status: built.
@@ -34,7 +35,8 @@ The catalog of every page. One line each. Keep current on every ingest.
 - `raw/ideas/`
   - `cheer-button.md` — owner idea + IP decision behind the cheer-button feature.
   - `book-animations.md` — owner idea: page-turn + lift-the-flap peek-a-boo.
-- `raw/prds/` — (drop feature PRDs here)
+- `raw/prds/`
+  - `0001-adaptive-arc-v1.md` — Adaptive Arc v1: tagging, dyad profile, telemetry, discovery, noticing prompts.
 - `raw/research/`
   - `gopnik-notes.md` — notes on Gopnik's work underpinning the arc.
   - `age-1-baseline.md` — what a 1-year-old is doing developmentally (the starting point).
@@ -43,8 +45,10 @@ The catalog of every page. One line each. Keep current on every ingest.
   - `books/mind-in-the-making.md` — Galinsky: seven essential life skills.
   - `books/how-to-talk-little-kids.md` — Faber & King: responsive talk techniques (adapted to ~12mo).
   - `famous-books.md` — beloved 1–2yo books worldwide + original story-theme ideas.
+  - `bilingual-early-years.md` — bilingualism science for mixed-language households (sourced).
   - `videos/thrive-by-five-molly-wright.md` — TED talk (serve-and-return; connect, talk, play).
   - `videos/felt-flaps-peekaboo.md` — felt-flap peek-a-boo board book (page-turn + lift-the-flap ref).
+  - `videos/copilotkit-self-improving-agents.md` — CLHF / in-context learning pattern for self-learning systems.
 
 ## Backlog / open questions
 - See `log.md` for the running timeline.

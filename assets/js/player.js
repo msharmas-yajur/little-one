@@ -9,6 +9,28 @@
   const stories = child.stories || [];
   const games   = child.games   || [];
 
+  /* ---- adaptive telemetry (silent; entirely no-ops without a dyad profile) ---- */
+  const DY = window.LO_DYAD || null;
+  const openedThisSession = new Set();
+  function tel(fn){ try{ if(DY && DY.exists && DY.exists()) fn(DY); }catch(e){} }
+  function telOpen(c){
+    tel(D=>{
+      D.recordActivity();
+      if(c && c.id){
+        if(openedThisSession.has(c.id)) D.bumpSignal(c.id,'repeats');
+        else openedThisSession.add(c.id);
+        D.bumpSignal(c.id,'opens');
+      }
+      ((c && c.skills) || []).forEach(s=>D.bumpDomain(s,'exposure'));   // exposure on serve
+    });
+  }
+  function telEngage(c, key){
+    tel(D=>{
+      if(c && c.id) D.bumpSignal(c.id, key||'taps');
+      ((c && c.skills) || []).forEach(s=>D.bumpDomain(s,'engagement')); // engagement on interaction
+    });
+  }
+
   const bg = { morning:'#CDEAF2', day:'#DFF1F6', garden:'#E4F3DD', night:'#3B3A63', rain:'#C3D8E0' };
   const inkOn = { rain:'#33404A' };
 
@@ -235,6 +257,7 @@
   let curStory=null, pageIdx=0;
   function openStory(i){
     curStory = stories[i]; pageIdx = 0;
+    telOpen(curStory);
     show('storyScreen'); renderPage();
   }
   function renderPage(){
@@ -310,7 +333,7 @@
   function nextPage(){
     if(!curStory) return;
     if(pageIdx<curStory.pages.length-1) turnPage(1, ()=>{ pageIdx++; renderPage(); });
-    else backToMenu();
+    else { telEngage(curStory,'completes'); backToMenu(); }   // reached the end = completed
   }
   function prevPage(){ if(pageIdx>0) turnPage(-1, ()=>{ pageIdx--; renderPage(); }); }
 
@@ -319,6 +342,7 @@
   const cheers=['Yay! 🎉','You found it! 💛','Hooray!','Well done! ⭐','Good job! 🌸'];
   function openGame(i){
     curGame = games[i]; score=0;
+    telOpen(curGame);
     $('gameScore').textContent='⭐ 0';
     $('gameTitle').textContent = curGame.title;
     show('gameScreen'); newRound();
@@ -341,6 +365,7 @@
           $('gameScore').textContent=`⭐ ${score}`;
           $('cheer').textContent=cheers[Math.random()*cheers.length|0];
           celebrate(target.label);
+          telEngage(curGame,'taps');
           setTimeout(newRound,1700);
         } else {
           soft(); b.classList.remove('nudge'); void b.offsetWidth; b.classList.add('nudge');
@@ -366,10 +391,15 @@
   if(sceneEl) sceneEl.addEventListener('click', ()=>{
     if(!curStory) return;
     const p = curStory.pages[pageIdx];
+    telEngage(curStory,'taps');
     if(p.flap || p.mirror){ toggleFlap(p); return; }      // peek-a-boo: lift the flap
     const h=$('heroArt'); if(!h) return;
     happy(); say(artWord(p.art)); wobble(h);
   });
+
+  /* Adult-engagement signal: grown-up expands the monthly guidance card. */
+  const gcard = document.querySelector('.grownup-card');
+  if(gcard) gcard.addEventListener('toggle', ()=>{ if(gcard.open) tel(D=>D.bumpAdult('cueDwells')); });
 
   window.addEventListener('pagehide', stopCamera);          // privacy: never leave the camera on
 

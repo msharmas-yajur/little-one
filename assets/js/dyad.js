@@ -123,6 +123,38 @@
     save();
   }
 
+  /* ---- autonomy dial + ask-first (Partnership) ----
+     auto (default): adaptive ordering applies silently.
+     ask-first: ordering stays neutral until the grown-up approves this week's
+     suggestion. Discovery always rotates regardless (it's autonomous by design). */
+  const DOMAIN_LABEL={ focus:'gentle focus play', perspective:'feelings play',
+    communicating:'naming & talking games', connections:'same-and-different play',
+    'critical-thinking':'cause-and-effect play', challenges:'just-right challenges',
+    'self-directed':'let-her-lead play' };
+  function autonomy(){ return profile ? (profile.autonomy||'auto') : 'auto'; }
+  function setAutonomy(mode){ if(profile){ profile.autonomy=(mode==='ask-first'?'ask-first':'auto'); save(); } }
+  function suggestDomain(){
+    if(!profile) return null;
+    let best=null, bestE=-1;
+    DOMAINS.forEach(d=>{ const e=(profile.domains[d]||{}).engagement||0; if(e>bestE){ bestE=e; best=d; } });
+    return (bestE>0)?best:focusDomain();
+  }
+  function suggestLabel(){ const d=suggestDomain(); return d?(DOMAIN_LABEL[d]||d):null; }
+  function weekKey(){ weekReset(); return profile?profile.prompts.weekStart:null; }
+  function applyAdaptive(){                             // should renderMenu use rankContent?
+    if(!profile) return false;
+    if(phase()==='discovery') return true;             // discovery always rotates
+    if(autonomy()!=='ask-first') return true;          // auto → always
+    const a=profile.approve||{};
+    return a.week===weekKey() && a.ok===true;          // ask-first → only if approved this week
+  }
+  function askFirstPending(){                           // show the ask-first card?
+    if(!profile || autonomy()!=='ask-first' || phase()==='discovery') return false;
+    const a=profile.approve||{};
+    return a.week!==weekKey();                          // this week not decided yet
+  }
+  function approveThisWeek(ok){ if(profile){ profile.approve={ week:weekKey(), ok:!!ok }; save(); } }
+
   /* ---- content ranking (the policy layer) ----
      Reorders the menu for THIS dyad. Never hides anything — ordering only.
      - discovery: rotate a leading skill domain per session + nudge fresh
@@ -218,6 +250,10 @@
       '<h2>For grown-ups</h2>'+
       '<p class="dyad-sub">'+(p?'Her journey lives only on this device.':'No profile yet on this device.')+' Nothing is ever uploaded.</p>'+
       (p?('<p class="dyad-sub">Age: ~'+(ageMonths()!=null?ageMonths()+' months':'—')+' · Languages: '+((p.child.languages||[]).join(', ')||'—')+' · Phase: '+p.phase+'</p>'):'')+
+      (p?('<label>How should it adapt?</label><div class="dyad-auto">'+
+          '<button class="dyad-autobtn'+(autonomy()==='auto'?' on':'')+'" data-a="auto">Automatically</button>'+
+          '<button class="dyad-autobtn'+(autonomy()==='ask-first'?' on':'')+'" data-a="ask-first">Ask me first</button>'+
+          '</div>'):'')+
       '<p class="dyad-msg" id="dyadMsg" hidden></p>'+
       '<div class="dyad-actions" style="flex-wrap:wrap;">'+
         (p?'<button class="dyad-skip" id="dyadExport">Export</button>':'')+
@@ -228,9 +264,13 @@
         '<button class="dyad-save" id="dyadClose">Done</button>'+
       '</div></div>';
     document.body.appendChild(wrap);
-    const close=()=>wrap.remove();
+    const close=()=>{ if(window.LO && window.LO.renderMenu) window.LO.renderMenu(); wrap.remove(); };
     const msg=(t)=>{ const m=document.getElementById('dyadMsg'); if(m){ m.textContent=t; m.hidden=false; } };
     document.getElementById('dyadClose').onclick=close;
+    wrap.querySelectorAll('.dyad-autobtn').forEach(b=>b.onclick=()=>{
+      setAutonomy(b.getAttribute('data-a'));
+      wrap.querySelectorAll('.dyad-autobtn').forEach(x=>x.classList.toggle('on', x===b));
+    });
     const exp=document.getElementById('dyadExport'); if(exp) exp.onclick=exportProfile;
     const s2=document.getElementById('dyadSetup2'); if(s2) s2.onclick=()=>{ close(); openSetup(saved=>{ if(saved) location.reload(); }); };
     const rst=document.getElementById('dyadReset'); if(rst) rst.onclick=()=>{ reset(); clearDismissed(); close(); location.reload(); };
@@ -246,6 +286,7 @@
     sig, bumpSignal, bumpDomain, bumpAdult,
     recordActivity, ageMonths, ageBand, phase, rankContent, focusDomain,
     promptBudgetOk, pickHypothesis, recordPromptShown, answerPrompt,
+    autonomy, setAutonomy, suggestLabel, applyAdaptive, askFirstPending, approveThisWeek,
     exportProfile, importProfile,
     openSetup, openSettings, dismissed, setDismissed,
     DOMAINS

@@ -237,7 +237,9 @@
      to the original data order when there's no profile. openStory/openGame use
      the ORIGINAL array index, so we map each ranked item back via indexOf. */
   function orderedFor(list){
-    return (DY && DY.exists && DY.exists() && DY.rankContent) ? DY.rankContent(list) : list.slice();
+    // applyAdaptive() is false without a profile, and false in ask-first mode
+    // until the grown-up approves this week → then the menu stays in neutral order.
+    return (DY && DY.applyAdaptive && DY.applyAdaptive() && DY.rankContent) ? DY.rankContent(list) : list.slice();
   }
   function renderMenu(){
     const wrap = $('menu');
@@ -259,6 +261,30 @@
       html += `</div>`;
     }
     wrap.innerHTML = html;
+    maybeAskFirst();
+  }
+
+  /* ---- ask-first (Partnership): let the grown-up approve this week's emphasis
+     before the ordering changes. Non-blocking card, at most once per week. ---- */
+  function maybeAskFirst(){
+    tel(D=>{ if(D.askFirstPending && D.askFirstPending()) showAskCard(D); });
+  }
+  function showAskCard(D){
+    const menu=$('menu'); if(!menu || document.getElementById('askCard')) return;
+    const label = (D.suggestLabel && D.suggestLabel()) || 'a little more variety';
+    const card=document.createElement('div'); card.id='askCard'; card.className='notice-card';
+    card.innerHTML =
+      '<p class="notice-q">This week, shall I lean into <b>'+label+'</b> for her?</p>'+
+      '<div class="notice-actions">'+
+        '<button data-a="yes">Yes please</button>'+
+        '<button data-a="no">Not now</button>'+
+      '</div>';
+    menu.parentNode.insertBefore(card, menu);
+    card.querySelectorAll('button').forEach(b=>b.onclick=()=>{
+      D.approveThisWeek(b.getAttribute('data-a')==='yes');
+      card.remove();
+      renderMenu();     // Yes → adaptive ordering applies now; No → stays neutral
+    });
   }
 
   /* ---- STORY ---- */
@@ -396,7 +422,9 @@
      Never blocks (the menu is fully usable underneath); shows at most rarely,
      only in calibration/partnership, only when a hypothesis exists. ---- */
   function maybeNotice(){
+    if(document.getElementById('askCard')) return;      // resolve the ask-first card first
     tel(D=>{
+      if(D.askFirstPending && D.askFirstPending()) return;
       if(!D.promptBudgetOk || !D.promptBudgetOk()) return;
       const hyp = D.pickHypothesis((stories||[]).concat(games||[]));
       if(hyp) showNotice(D, hyp);

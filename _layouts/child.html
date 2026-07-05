@@ -102,7 +102,7 @@ window.CHILD = {
       {%- if childRec.stories == 'all' -%}{%- assign inc = true -%}
       {%- else -%}{%- for sid in childRec.stories -%}{%- if sid == s.id -%}{%- assign inc = true -%}{%- endif -%}{%- endfor -%}{%- endif -%}
       {%- if inc -%}
-      { title: {{ s.title | jsonify }}, age: {{ s.age | jsonify }}, pages: [
+      { id: {{ s.id | jsonify }}, title: {{ s.title | jsonify }}, age: {{ s.age | jsonify }}, age_band: {{ s.age_band | jsonify }}, skills: {{ s.skills | jsonify }}, lang: {{ s.lang | jsonify }}, culture: {{ s.culture | jsonify }}, pages: [
         {%- for p in s.pages -%}
         { sky: {{ p.sky | jsonify }}, line: {{ p.line | jsonify }}, art: {{ p.art | jsonify }}, cue: {{ p.cue | jsonify }}, flap: {{ p.flap | jsonify }}, mirror: {{ p.mirror | jsonify }}, reveal: {{ p.reveal | jsonify }} },
         {%- endfor -%}
@@ -116,7 +116,7 @@ window.CHILD = {
       {%- if childRec.games == 'all' -%}{%- assign inc = true -%}
       {%- else -%}{%- for gid in childRec.games -%}{%- if gid == g.id -%}{%- assign inc = true -%}{%- endif -%}{%- endfor -%}{%- endif -%}
       {%- if inc -%}
-      { title: {{ g.title | jsonify }}, age: {{ g.age | jsonify }}, items: [
+      { id: {{ g.id | jsonify }}, title: {{ g.title | jsonify }}, age: {{ g.age | jsonify }}, age_band: {{ g.age_band | jsonify }}, skills: {{ g.skills | jsonify }}, lang: {{ g.lang | jsonify }}, culture: {{ g.culture | jsonify }}, items: [
         {%- for it in g.items -%}
         { art: {{ it.art | jsonify }}, label: {{ it.label | jsonify }} },
         {%- endfor -%}

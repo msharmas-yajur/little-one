@@ -9,6 +9,9 @@
 - id: animal-friends
   title: "Animal friends"
   age: "1+"
+  # Adaptive tags — see _data/stories.yml header for the vocabulary.
+  age_band: [12-24m]
+  skills: [communicating, focus, connections]
   items:
     - art: dog
       label: "the puppy"
@@ -26,6 +29,8 @@
 - id: out-in-the-world
   title: "Out in the world"
   age: "1+"
+  age_band: [12-24m]
+  skills: [communicating, focus, connections]
   items:
     - art: sun
       label: "the sun"
@@ -43,6 +48,8 @@
 - id: things-i-know
   title: "Things I know"
   age: "1+"
+  age_band: [12-24m]
+  skills: [communicating, focus, connections, self-directed]
   items:
     - art: apple
       label: "the apple"

@@ -31,6 +31,62 @@
   const happy = ()=>{[523,659,784].forEach((f,i)=>tone(f,0.2,'triangle',i*0.09));};
   const soft  = ()=>tone(380,0.16,'sine');
 
+  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---- reinforcing voice (browser speech; no files, no third-party character) ---- */
+  function say(text){
+    try{
+      if(!('speechSynthesis' in window)) return;
+      const u = new SpeechSynthesisUtterance(text);
+      u.rate = 0.95; u.pitch = 1.25; u.volume = 0.9;   // warm, gentle, a little playful
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(u);
+    }catch(e){}
+  }
+
+  /* ---- confetti: original, dependency-free burst (respects reduced-motion) ---- */
+  const CONFETTI = ['#F6C453','#F28C7A','#8FCFE0','#B79BD6','#8DC08A','#5BB0C7'];
+  function confetti(){
+    if(reduceMotion) return;
+    let cvs = document.getElementById('confettiCanvas');
+    if(!cvs){
+      cvs = document.createElement('canvas'); cvs.id='confettiCanvas';
+      cvs.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:9999;';
+      document.body.appendChild(cvs);
+    }
+    const ctx = cvs.getContext('2d');
+    const W = cvs.width = window.innerWidth, H = cvs.height = window.innerHeight;
+    const parts = Array.from({length:100}, ()=>({
+      x: W*0.5 + (Math.random()-0.5)*W*0.55, y: H*0.32 + (Math.random()-0.5)*40,
+      vx: (Math.random()-0.5)*9, vy: -7 - Math.random()*7, g: 0.28 + Math.random()*0.14,
+      size: 6 + Math.random()*8, rot: Math.random()*6.28, vr: (Math.random()-0.5)*0.3,
+      color: CONFETTI[Math.random()*CONFETTI.length|0], round: Math.random()<0.5
+    }));
+    let frames = 0;
+    (function step(){
+      frames++; ctx.clearRect(0,0,W,H);
+      let alive=false; const alpha=Math.max(0,1-frames/115);
+      parts.forEach(p=>{
+        p.vy+=p.g; p.vx*=0.99; p.x+=p.vx; p.y+=p.vy; p.rot+=p.vr;
+        if(p.y < H+24) alive=true;
+        ctx.save(); ctx.globalAlpha=alpha; ctx.translate(p.x,p.y); ctx.rotate(p.rot); ctx.fillStyle=p.color;
+        if(p.round){ ctx.beginPath(); ctx.arc(0,0,p.size/2,0,6.28); ctx.fill(); }
+        else ctx.fillRect(-p.size/2,-p.size/2,p.size,p.size*0.6);
+        ctx.restore();
+      });
+      if(alive && frames<135) requestAnimationFrame(step);
+      else if(cvs&&cvs.parentNode) cvs.parentNode.removeChild(cvs);
+    })();
+  }
+
+  /* ---- celebrate a correct find: chime + confetti + warm spoken cheer ---- */
+  const sayLines = ['Yay! You found {L}!','Well done! That\'s {L}!','Hooray! You found {L}!','Good job! {L}!'];
+  function celebrate(label){
+    happy();
+    confetti();
+    say(sayLines[Math.random()*sayLines.length|0].replace('{L}', label));
+  }
+
   const $ = id => document.getElementById(id);
   function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];}return a;}
 
@@ -115,10 +171,11 @@
       b.className='choice'; b.innerHTML=svgWrap(ART[o.art]||'');
       b.onclick=()=>{
         if(o.label===target.label){
-          happy(); b.classList.add('right'); score++;
+          b.classList.add('right'); score++;
           $('gameScore').textContent=`⭐ ${score}`;
           $('cheer').textContent=cheers[Math.random()*cheers.length|0];
-          setTimeout(newRound,1400);
+          celebrate(target.label);
+          setTimeout(newRound,1700);
         } else {
           soft(); b.classList.remove('nudge'); void b.offsetWidth; b.classList.add('nudge');
         }

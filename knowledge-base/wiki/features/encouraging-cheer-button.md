@@ -1,7 +1,7 @@
 ---
 title: Encouraging Cheer Button
 type: feature
-status: idea
+status: built
 sources: [raw/ideas/cheer-button.md]
 related: [wiki/features/tap-and-find-game.md, wiki/features/storybook-player.md, wiki/concepts/design-principles.md, wiki/concepts/responsive-talk.md, wiki/concepts/the-12-month-arc.md]
 updated: 2026-07-05
@@ -9,11 +9,29 @@ updated: 2026-07-05
 
 # Encouraging Cheer Button
 
-**Intent.** A warm, friendly button that calls out encouragement to the little one
-— celebrating when she gets something right, and gently cheering her on
-"otherwise." Pressable by the **child** (press → happy sound = cause-and-effect
-delight and agency) or the **grown-up** (a reward moment). The child's fun comes
-first; the grown-up's use is a bonus.
+**Intent.** A warm, friendly celebration when the little one gets something right —
+and gentle cheering on "otherwise." The child's fun comes first; the grown-up's use
+is a bonus.
+
+## Shipped (first cut, 2026-07-05)
+On a **correct** tap in the tap-and-find game, the site now plays a joyful
+**celebration**: an original, dependency-free **confetti burst** (palette colours,
+falls and fades) + the existing happy chime + a warm **reinforcing voice** that
+names the find ("Yay! You found the apple!"). Wrong taps stay a kind nudge — no
+scold, no fail. Implemented in `player.js` (`confetti()`, `say()`, `celebrate()`);
+`prefers-reduced-motion` skips the confetti (voice + chime remain).
+
+**Voice source note:** v1 uses the **browser's built-in speech (Web Speech API)** —
+a real spoken voice with **no audio files and no third-party character** (legal,
+on-brand, offline-friendly). This is the pragmatic first cut of the "reinforcing
+voice"; the original-mascot + CC0/recorded-voice route below remains open.
+
+## Future enhancements (still `idea`)
+- A **pressable original mascot / cheer button** the child or grown-up can tap any
+  time (cause-and-effect delight, agency) — the original ask.
+- A **mute / volume toggle** for the voice (important once auto-voice is on).
+- Optional **CC0 clips** or a **grown-up's own recorded voice** overriding the TTS.
+- The original **"Little One" mascot** art to anchor the celebration.
 
 ## The voice source (decided)
 **An original mascot with original / CC0 sounds — not famous cartoon voices.**

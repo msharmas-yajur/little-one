@@ -39,3 +39,9 @@ Append-only. Newest at the bottom. Each entry: date · what happened.
   (copyright/trademark/publicity + breaks original-only rule) — instead an original
   mascot with original Web-Audio jingles / verified CC0 sounds. Stays forgiving
   (no scold, no fail). Updated `index.md`.
+- 2026-07-05 · Built first cut of the celebration (owner request): correct game
+  taps now trigger an original confetti burst + happy chime + a reinforcing spoken
+  voice (Web Speech API — no files, no third-party character) that names the find.
+  Reduced-motion skips confetti. `wiki/features/encouraging-cheer-button.md` →
+  status: built (mascot button / mute / CC0 voice remain future). Also enlarged the
+  tap-and-find shapes (`.choice svg` 78%→92%) so the pictures fill the boxes.

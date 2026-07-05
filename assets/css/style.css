@@ -91,7 +91,7 @@ a{color:inherit;text-decoration:none;}
 .ask b{color:var(--coral);}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%;max-width:460px;}
 .choice{border:none;cursor:pointer;background:#fff;aspect-ratio:1/1;border-radius:28px;box-shadow:0 8px 0 var(--shadow);display:flex;align-items:center;justify-content:center;overflow:hidden;transition:transform .12s,box-shadow .12s;}
-.choice svg{width:78%;height:78%;}
+.choice svg{width:92%;height:92%;}
 .choice:active{transform:translateY(4px);box-shadow:0 3px 0 var(--shadow);}
 .choice.right{animation:pop .5s ease;background:#EAF6E9;}
 .choice.nudge{animation:shake .4s ease;}

@@ -107,3 +107,16 @@ Append-only. Newest at the bottom. Each entry: date · what happened.
   `videos/copilotkit-self-improving-agents.md` (CLHF / in-context learning:
   the engine stays fixed, the context/data it reads changes — validates the
   KB-as-mutable-memory architecture; adopt the pattern, not the library).
+- 2026-07-05 · BUILT Adaptive Arc v1 (PRD 0001, all six milestones, committed
+  per-milestone). Live on the site: (1) content tagged with age_band + Galinsky-7
+  skills, injected with stable ids into window.CHILD; (2) local-first dyad profile
+  `assets/js/dyad.js` — NO name, NO network (audited: zero fetch/XHR/beacon;
+  localStorage only), setup modal + ⚙ grown-ups settings with export/import;
+  (3) silent telemetry in player.js (no-ops without a profile); (4) discovery-phase
+  menu ordering that rotates the leading skill domain per session (nothing hidden);
+  (5) calibration transition (14d + 6 sessions) + non-blocking "noticing prompt"
+  cards (≤1/session, ≤2/week; ❤️ boosts, 🌱 rests); (6) partnership adaptive
+  ordering + ask-first autonomy dial (neutral order until the grown-up approves the
+  week's emphasis). Verified in-browser end-to-end on the served build. Privacy
+  hard-line held throughout: child data never leaves the device. NEXT: Option B —
+  the Tier-2 build-time self-learning PR loop.

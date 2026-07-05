@@ -115,5 +115,9 @@ framing), and: the adaptive system serves the *gardener* — it tends the
 environment, it does not target-train the child.
 
 ## Status
-Framework decided and specced (this page). Implementation PRD:
-`raw/prds/0001-adaptive-arc-v1.md`. Build not started.
+Framework decided; **v1 built and shipped 2026-07-05** (`raw/prds/0001-adaptive-arc-v1.md`).
+Live pieces: content tagging (age band + Galinsky-7), local-first dyad profile
+(`assets/js/dyad.js`) with setup + export/import, silent telemetry, discovery-phase
+domain-rotating menu ordering, calibration + noticing prompts, partnership adaptive
+ordering + ask-first autonomy dial. **Not yet built:** weekly arc-review card,
+dual-language serving, and the Tier-2 build-time PR loop (Option B — next).

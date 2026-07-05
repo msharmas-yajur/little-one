@@ -1,6 +1,6 @@
 # PRD — Adaptive Arc v1 (dyad model, telemetry, discovery phase, noticing prompts)
 
-**Status:** specced (framework discussed & decided with owner, 2026-07-05)
+**Status:** BUILT & shipped 2026-07-05 (all six milestones; verified in-browser)
 **Date:** 2026-07-05
 **No names** (public repo). Assume: the little one is 1 year old today.
 **Compiled concept:** `wiki/concepts/adaptive-arc.md` (read it first — this PRD

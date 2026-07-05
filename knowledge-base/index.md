@@ -17,7 +17,7 @@ The catalog of every page. One line each. Keep current on every ingest.
 - `book-foundations.md` — the four source books and which arc months each informs.
 - `seven-life-skills.md` — Galinsky's seven life skills mapped to arc months.
 - `responsive-talk.md` — the grown-up's talk toolkit (serve-and-return, describe-don't-judge).
-- `adaptive-arc.md` — the self-learning framework: three loops, dyad model, discovery→partnership. Status: specced.
+- `adaptive-arc.md` — the self-learning framework: three loops, dyad model, discovery→partnership. Status: built (v1).
 
 ## Features (`wiki/features/`)
 - `storybook-player.md` — the tap-along story reader. Status: built.
@@ -36,7 +36,7 @@ The catalog of every page. One line each. Keep current on every ingest.
   - `cheer-button.md` — owner idea + IP decision behind the cheer-button feature.
   - `book-animations.md` — owner idea: page-turn + lift-the-flap peek-a-boo.
 - `raw/prds/`
-  - `0001-adaptive-arc-v1.md` — Adaptive Arc v1: tagging, dyad profile, telemetry, discovery, noticing prompts.
+  - `0001-adaptive-arc-v1.md` — Adaptive Arc v1: tagging, dyad profile, telemetry, discovery, noticing prompts. BUILT.
 - `raw/research/`
   - `gopnik-notes.md` — notes on Gopnik's work underpinning the arc.
   - `age-1-baseline.md` — what a 1-year-old is doing developmentally (the starting point).

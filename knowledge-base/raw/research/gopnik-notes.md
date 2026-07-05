@@ -7,8 +7,8 @@ Key points:
 - Warm, responsive relationships + unstructured play + language-rich everyday
   interaction + secure attachment do far more at this age than accelerated
   training. This is the field's broad consensus.
-- "The child as scientist": babies run experiments; the adult is good material
-  for those experiments, not a drill instructor. (The Scientist in the Crib.)
+- "The child as explorer": babies learn by trying things out and repeating; the
+  adult is good company for that, not a drill instructor. (The Scientist in the Crib.)
 - "Gardener vs carpenter": tending a rich environment beats shaping toward a
   target. (The Gardener and the Carpenter.)
 - Dialogic reading has the strongest evidence among concrete techniques: the

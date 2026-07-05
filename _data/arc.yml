@@ -21,20 +21,20 @@
 # ══════════════════════════════════════════════════════════════
 
 - month: 1
-  title: "Let the experiment run"
-  gopnik: "The child as scientist"
+  title: "Let her explore"
+  gopnik: "The child as explorer"
   stance: "When she drops, bangs, or repeats something, let it happen and put words to it."
   why: >
-    Repetition is not aimlessness — it's how she tests whether the world
-    behaves the same way twice. Interrupting the experiment to tidy up
-    ends the lesson she's giving herself.
+    Repetition is not aimlessness — it's how she discovers whether the world
+    behaves the same way twice. Interrupting her play to tidy up cuts short
+    the learning she's giving herself.
   story: things-that-fall
   game: animal-friends
   onsite: "This month: when she repeats something, let it run — and name what happens."
   invitations:
     - do: "Offer a few safe objects and a low box or bowl. Let her put in, take out, repeat."
-      watch: "How she does the same action again and again — that repetition IS the experiment."
-    - do: "Narrate one of her spontaneous 'experiments' aloud without stopping it: 'You dropped it — and it bounced!'"
+      watch: "How she does the same action again and again — that repetition is how she's learning."
+    - do: "Narrate one of her spontaneous discoveries aloud without stopping it: 'You dropped it — and it bounced!'"
       watch: "Whether she looks up at you when you name it — the language-and-relationship loop firing."
     - do: "Give her two things that fall differently — a soft ball and a light scarf — and let her drop both."
       watch: "Any sign she notices they fall differently. She's comparing, which is early cause-and-effect."
@@ -62,7 +62,7 @@
   stance: "Give her things where SHE makes something happen — and let her do it herself."
   why: >
     She's working out 'what makes what happen.' The learning is strongest
-    when she is the cause, not the spectator — her own action is the data.
+    when she is the cause, not the spectator — her own action is what teaches her.
   story: splish-splash
   game: things-i-know
   onsite: "This month: give her buttons to press, lids to lift — let her be the cause."
@@ -102,7 +102,7 @@
     - do: "Give her simple open objects (cups, cloths, blocks) and add nothing else."
       watch: "The uses she invents that you didn't intend. That invention is the goal."
     - do: "When she uses something 'wrong,' narrate it as if it's right: 'You're wearing the bowl as a hat!'"
-      watch: "Her delight at being understood — it fuels more experimenting."
+      watch: "Her delight at being understood — it fuels more exploring."
 
 - month: 6
   title: "The pause that makes room"
@@ -217,4 +217,4 @@
     - do: "Spend one session adding nothing — no new toy, no prompt. Just be present and follow."
       watch: "Everything she now does on her own that she couldn't a year ago."
     - do: "Return to Month 1's dropping game. See how differently she plays it now."
-      watch: "The change in her — proof of a year of her own experiments."
+      watch: "The change in her — proof of a year of her own exploring and learning."

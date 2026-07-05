@@ -15,3 +15,15 @@ Append-only. Newest at the bottom. Each entry: date · what happened.
   age-1-baseline).
 - 2026-07-05 · TODO for next session: this is a seed. Add real ideas/PRDs into
   `raw/` and ingest them. Run a first `lint` pass to confirm no names slipped in.
+- 2026-07-05 · Added four foundational books as raw sources (web-researched, sourced):
+  `raw/research/books/{scientist-in-the-crib, gardener-and-the-carpenter,
+  mind-in-the-making, how-to-talk-little-kids}.md`. Ingested them into three new
+  wiki concept pages: `book-foundations.md`, `seven-life-skills.md` (Galinsky's 7
+  mapped to arc months), `responsive-talk.md` (talk toolkit). Updated
+  `gopnik-foundation.md` provenance + `index.md` catalog.
+- 2026-07-05 · Tone/ordering change (owner request): (1) reframed the site + KB away
+  from "experiment/scientist" language to a shared *learning experience* — "the
+  child as explorer"; Month 1 retitled "Let her explore." Touched `_data/arc.yml`,
+  `_data/stories.yml`, `companion.html`, and the KB concept/research pages.
+  (2) Child-first ordering: on the child page the grown-up card now renders BELOW
+  the little one's stories/games (`_layouts/child.html`).

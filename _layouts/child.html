@@ -27,6 +27,10 @@ layout: default
     <a class="back-home" href="{{ '/' | relative_url }}">← All the little ones</a>
   </div>
 
+  <!-- CHILD FIRST: the little one's stories & games -->
+  <div class="menu-wrap"><div id="menu"></div></div>
+
+  <!-- Grown-up guidance sits BELOW the child's sections -->
   {%- if curMonth -%}
   <div class="menu-wrap">
     <details class="grownup-card">
@@ -51,8 +55,6 @@ layout: default
     </details>
   </div>
   {%- endif -%}
-
-  <div class="menu-wrap"><div id="menu"></div></div>
 </section>
 
 <!-- STORY SCREEN -->

@@ -11,9 +11,12 @@ The catalog of every page. One line each. Keep current on every ingest.
 
 ## Concepts (`wiki/concepts/`)
 - `design-principles.md` — the non-negotiable design rules for the site.
-- `gopnik-foundation.md` — the developmental-science basis (child as scientist, gardener not carpenter).
+- `gopnik-foundation.md` — the developmental-science basis (child as explorer, gardener not carpenter).
 - `the-12-month-arc.md` — the grown-up practice arc: what it is and how it's structured.
 - `privacy-model.md` — how names/identity are kept out of a public repo.
+- `book-foundations.md` — the four source books and which arc months each informs.
+- `seven-life-skills.md` — Galinsky's seven life skills mapped to arc months.
+- `responsive-talk.md` — the grown-up's talk toolkit (serve-and-return, describe-don't-judge).
 
 ## Features (`wiki/features/`)
 - `storybook-player.md` — the tap-along story reader. Status: built.
@@ -28,6 +31,10 @@ The catalog of every page. One line each. Keep current on every ingest.
 - `raw/research/`
   - `gopnik-notes.md` — notes on Gopnik's work underpinning the arc.
   - `age-1-baseline.md` — what a 1-year-old is doing developmentally (the starting point).
+  - `books/scientist-in-the-crib.md` — Gopnik/Meltzoff/Kuhl: learning through play, imitation, talk.
+  - `books/gardener-and-the-carpenter.md` — Gopnik: gardener-not-carpenter ethos.
+  - `books/mind-in-the-making.md` — Galinsky: seven essential life skills.
+  - `books/how-to-talk-little-kids.md` — Faber & King: responsive talk techniques (adapted to ~12mo).
 
 ## Backlog / open questions
 - See `log.md` for the running timeline.

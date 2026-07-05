@@ -471,10 +471,22 @@
   /* Unlock audio on the first user gesture (mobile browsers start it suspended). */
   let musicPref = false;
   try{ musicPref = localStorage.getItem('lo.music') === '1'; }catch(e){}
+  /* Best-effort fullscreen on the first tap (touch devices only; silently
+     no-ops on desktop and on iOS Safari, where "Add to Home Screen" gives
+     true fullscreen via the manifest instead). */
+  function goFullscreenMaybe(){
+    try{
+      const standalone = (window.matchMedia && window.matchMedia('(display-mode: standalone), (display-mode: fullscreen)').matches) || window.navigator.standalone;
+      const touch = window.matchMedia && window.matchMedia('(pointer:coarse)').matches;
+      const el = document.documentElement;
+      if(!standalone && touch && el.requestFullscreen) el.requestFullscreen().catch(()=>{});
+    }catch(e){}
+  }
   window.addEventListener('pointerdown', function unlock(){
     ensureAudio();
     if(musicPref && !musicOn) startMusic();     // resume the family's music choice on first tap
     reflectMusicBtn();
+    goFullscreenMaybe();
   }, {once:true, passive:true});
 
   window.LO = { openStory, openGame, nextPage, prevPage, backToMenu, toggleMusic, renderMenu };

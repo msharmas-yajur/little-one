@@ -233,19 +233,27 @@
   function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];}return a;}
 
   /* ---- HOME within a child page: choose a story or a game ---- */
+  /* Adaptive ordering: reorder for this dyad (never hides anything). Falls back
+     to the original data order when there's no profile. openStory/openGame use
+     the ORIGINAL array index, so we map each ranked item back via indexOf. */
+  function orderedFor(list){
+    return (DY && DY.exists && DY.exists() && DY.rankContent) ? DY.rankContent(list) : list.slice();
+  }
   function renderMenu(){
     const wrap = $('menu');
     let html = '';
     if(stories.length){
       html += `<h2 class="menu-head">📖 Stories</h2><div class="menu-list">`;
-      stories.forEach((s,i)=>{
+      orderedFor(stories).forEach(s=>{
+        const i = stories.indexOf(s);
         html += `<button class="menu-item story" onclick="LO.openStory(${i})">${s.title}<span class="age">${s.age||''}</span></button>`;
       });
       html += `</div>`;
     }
     if(games.length){
       html += `<h2 class="menu-head">🐤 Tap &amp; find</h2><div class="menu-list">`;
-      games.forEach((g,i)=>{
+      orderedFor(games).forEach(g=>{
+        const i = games.indexOf(g);
         html += `<button class="menu-item game" onclick="LO.openGame(${i})">${g.title}<span class="age">${g.age||''}</span></button>`;
       });
       html += `</div>`;
@@ -412,6 +420,6 @@
     reflectMusicBtn();
   }, {once:true, passive:true});
 
-  window.LO = { openStory, openGame, nextPage, prevPage, backToMenu, toggleMusic };
+  window.LO = { openStory, openGame, nextPage, prevPage, backToMenu, toggleMusic, renderMenu };
   renderMenu(); show('menuScreen'); reflectMusicBtn();
 })();

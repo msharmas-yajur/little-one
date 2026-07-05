@@ -76,6 +76,49 @@
     return profile.phase;
   }
 
+  /* ---- content ranking (the policy layer) ----
+     Reorders the menu for THIS dyad. Never hides anything — ordering only.
+     - discovery: rotate a leading skill domain per session + nudge fresh
+       content up, so all domains get surfaced over ~2 weeks.
+     - calibration/partnership: hearts & engagement first, tooEarly rested,
+       under-exposed domains surfaced. */
+  const BANDS=['6-12m','12-24m','2-3y','3-4y','4-5y'];
+  const bandIdx = b => BANDS.indexOf(b);
+  function seededJitter(id, seed){                 // deterministic small [0,1)
+    let h=2166136261; const s=(id||'')+'|'+seed;
+    for(let i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=Math.imul(h,16777619); }
+    return ((h>>>0)%1000)/1000;
+  }
+  function focusDomain(){ return DOMAINS[(profile? (profile.sessions||0):0) % DOMAINS.length]; }
+  function rankContent(items){
+    if(!profile || !Array.isArray(items)) return (items||[]).slice();
+    const ph=profile.phase, band=ageBand(), focus=focusDomain(), seed=profile.sessions||0;
+    const scored = items.map((it,i)=>{
+      let s=0; const skills=it.skills||[];
+      if(it.age_band && band){                     // age fit
+        const bi=bandIdx(band);
+        if(it.age_band.some(b=>b===band)) s+=3;
+        else if(it.age_band.some(b=>Math.abs(bandIdx(b)-bi)===1)) s+=1;
+        else s-=1;
+      }
+      if(ph==='discovery'){
+        if(skills.indexOf(focus)>=0) s+=2.5;       // this session's leading domain
+        const opens=(profile.signals[it.id]||{}).opens||0;
+        s += Math.max(0, 1.5 - opens*0.4);         // fresh content up
+        s += seededJitter(it.id, seed);            // vary across sessions
+      } else {
+        const sig=profile.signals[it.id]||{};
+        s += (sig.hearts||0)*3 - (sig.tooEarly||0)*3;
+        s += (sig.completes||0)*0.5 + (sig.taps||0)*0.1;
+        let domBoost=0; skills.forEach(sk=>{ const d=profile.domains[sk]; if(d) domBoost += 1/(1+(d.exposure||0)); });
+        s += domBoost*0.5 + seededJitter(it.id, seed)*0.5;   // surface under-exposed domains
+      }
+      return {it, s, i};
+    });
+    scored.sort((a,b)=> (b.s-a.s) || (a.i-b.i));   // ties keep original order
+    return scored.map(x=>x.it);
+  }
+
   /* ---- export / import (local only) ---- */
   function exportProfile(){
     if(!profile) return;
@@ -154,7 +197,7 @@
   window.LO_DYAD = {
     exists, get, update, reset, save,
     sig, bumpSignal, bumpDomain, bumpAdult,
-    recordActivity, ageMonths, ageBand, phase,
+    recordActivity, ageMonths, ageBand, phase, rankContent, focusDomain,
     exportProfile, importProfile,
     openSetup, openSettings, dismissed, setDismissed,
     DOMAINS

@@ -25,9 +25,11 @@ The catalog of every page. One line each. Keep current on every ingest.
 - `companion-guide.md` — the on-site + docx full guide. Status: built.
 - `per-child-structure.md` — multi-child registry & neutral URLs. Status: built.
 - `bilingual-first-words.md` — name things in two languages (English + home language). Status: idea.
+- `encouraging-cheer-button.md` — original-mascot cheer button (no famous voices). Status: idea.
 
 ## Raw sources (`raw/`)
-- `raw/ideas/` — (drop loose ideas here)
+- `raw/ideas/`
+  - `cheer-button.md` — owner idea + IP decision behind the cheer-button feature.
 - `raw/prds/` — (drop feature PRDs here)
 - `raw/research/`
   - `gopnik-notes.md` — notes on Gopnik's work underpinning the arc.

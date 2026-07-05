@@ -33,3 +33,9 @@ Append-only. Newest at the bottom. Each entry: date · what happened.
   (status: idea) — highest-value new idea surfaced. Updated `index.md`. Noted
   existing backlog item (animal sounds on tap) already on the storybook-player
   page. Copyright note: reproduce none of the referenced books; write originals.
+- 2026-07-05 · Ingested owner idea `raw/ideas/cheer-button.md` → compiled
+  `wiki/features/encouraging-cheer-button.md` (status: idea): a warm cheer button
+  the child or grown-up can press. Decision recorded: NOT famous cartoon voices
+  (copyright/trademark/publicity + breaks original-only rule) — instead an original
+  mascot with original Web-Audio jingles / verified CC0 sounds. Stays forgiving
+  (no scold, no fail). Updated `index.md`.

@@ -189,6 +189,9 @@ jobs:
 
           git config user.name "gardener[bot]"
           git config user.email "gardener[bot]@users.noreply.github.com"
+          # The action rewrites origin's auth to a non-pushable token; restore a
+          # valid push credential using this workflow's GITHUB_TOKEN (contents:write).
+          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git"
           git checkout -b "$branch"
           git add -A
           git commit -m "🌱 $title"

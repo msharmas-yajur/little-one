@@ -192,3 +192,12 @@ Append-only. Newest at the bottom. Each entry: date · what happened.
   checked first: all `raw/` files are already reflected in the wiki, so fill-a-gap
   was the highest-value action. Past-PR fates: #1 MERGED (the challenges story) —
   no closed idea to avoid.
+- 2026-07-06 · TAP & FIND expansion + engine tweak (direct session build, not the
+  Gardener — includes an engine edit). player.js: optional per-game `ask:` template
+  ({label} slot), serialized via _layouts/child.html. New games in wordgames.yml:
+  `who-says` (sounds game — "Who says woof?", companion to chatter-chatter) and
+  `weather-and-sky` (uses the last unused art key, `rain`; pairs with splish-splash).
+  All 17 art keys now appear in a game. Updated wiki/features/tap-and-find-game.md
+  with the `ask:` mechanic and a 2-5y roadmap (colours / odd-one-out / opposites /
+  first-letters / sorting / feelings — each needs new art or a new mechanic).
+  Verified in-browser: "Who says quack?" renders the four animals correctly.

@@ -59,3 +59,41 @@
       label: "the car"
     - art: boat
       label: "the boat"
+
+# A sounds game — the companion to the story "Chatter, Chatter". Instead of
+# "Can you find X?", it asks "Who says woof?" (the optional `ask:` template).
+# The grown-up makes the sound; the little one finds who made it.
+- id: who-says
+  title: "Who says…?"
+  age: "1+"
+  age_band: [12-24m]
+  skills: [communicating, focus, connections]
+  ask: "Who says {label}?"
+  items:
+    - art: dog
+      label: "woof"
+    - art: cat
+      label: "meow"
+    - art: duck
+      label: "quack"
+    - art: bird
+      label: "tweet"
+
+# Weather & sky — uses the "rain" picture (the only art not yet in a game) and
+# pairs with the story "Splish, Splash!".
+- id: weather-and-sky
+  title: "Weather & sky"
+  age: "1+"
+  age_band: [12-24m]
+  skills: [communicating, focus, connections]
+  items:
+    - art: sun
+      label: "the sun"
+    - art: cloud
+      label: "the cloud"
+    - art: rain
+      label: "the rain"
+    - art: star
+      label: "the star"
+    - art: moon
+      label: "the moon"

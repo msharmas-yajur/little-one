@@ -491,7 +491,10 @@
     const n = Math.min(4, pool.length);
     const options = shuffle(pool.slice(0,n));
     const target = options[Math.random()*options.length|0];
-    $('ask').innerHTML = `Can you find <b>${target.label}</b>?`;
+    // A game may pose its own question via an optional `ask:` template with a
+    // {label} slot (e.g. "Who says {label}?"); default is the classic find prompt.
+    const askTpl = curGame.ask || 'Can you find {label}?';
+    $('ask').innerHTML = askTpl.replace('{label}', `<b>${target.label}</b>`);
     const grid=$('grid'); grid.innerHTML='';
     grid.style.gridTemplateColumns = n<=2 ? '1fr 1fr' : '1fr 1fr';
     options.forEach(o=>{

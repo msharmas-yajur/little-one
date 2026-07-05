@@ -198,6 +198,20 @@
     return scored.map(x=>x.it);
   }
 
+  /* ---- auto-guided "next": the app leads the child through pending content ----
+     Picks the best not-yet-finished story (in adaptive order); if every story is
+     done, gently re-visits the least-recently-seen one (repetition is good at
+     this age). This is what lets the app create the next step, not a menu. */
+  function nextUp(stories){
+    if(!profile || !Array.isArray(stories) || !stories.length) return null;
+    const ranked=rankContent(stories);
+    const pending=ranked.find(s=> ((profile.signals[s.id]||{}).completes||0)===0 );
+    if(pending) return { kind:'story', id:pending.id, title:pending.title, fresh:true };
+    let lru=ranked[0], lruT=Infinity;                    // all done → least-recently-seen re-visit
+    ranked.forEach(s=>{ const ls=(profile.signals[s.id]||{}).lastSeen; const t=ls?new Date(ls).getTime():0; if(t<lruT){ lruT=t; lru=s; } });
+    return { kind:'story', id:lru.id, title:lru.title, fresh:false };
+  }
+
   /* ---- export / import (local only) ---- */
   function exportProfile(){
     if(!profile) return;
@@ -284,7 +298,7 @@
   window.LO_DYAD = {
     exists, get, update, reset, save,
     sig, bumpSignal, bumpDomain, bumpAdult,
-    recordActivity, ageMonths, ageBand, phase, rankContent, focusDomain,
+    recordActivity, ageMonths, ageBand, phase, rankContent, focusDomain, nextUp,
     promptBudgetOk, pickHypothesis, recordPromptShown, answerPrompt,
     autonomy, setAutonomy, suggestLabel, applyAdaptive, askFirstPending, approveThisWeek,
     exportProfile, importProfile,

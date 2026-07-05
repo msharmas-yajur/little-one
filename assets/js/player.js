@@ -270,8 +270,23 @@
   function renderMenu(){
     const wrap = $('menu');
     let html = '';
+    // Auto-guided "Next": the app leads to the next pending story (a big CTA on top).
+    let hasHero = false;
+    if(DY && DY.exists && DY.exists() && DY.nextUp){
+      const nx = DY.nextUp(stories);
+      const s = nx && stories.find(x=>x.id===nx.id);
+      if(s){
+        const i = stories.indexOf(s);
+        const eyebrow = nx.fresh ? ('Next for '+(child.name||'you')) : 'A favourite again';
+        html += `<button class="next-hero" onclick="LO.openStory(${i})">`+
+                `<span class="nh-eyebrow">${eyebrow}</span>`+
+                `<span class="nh-title">${s.title}</span>`+
+                `<span class="nh-go">▶</span></button>`;
+        hasHero = true;
+      }
+    }
     if(stories.length){
-      html += `<h2 class="menu-head">📖 Stories</h2><div class="menu-list">`;
+      html += `<h2 class="menu-head">${hasHero?'📖 Or choose a story':'📖 Stories'}</h2><div class="menu-list">`;
       orderedFor(stories).forEach(s=>{
         const i = stories.indexOf(s);
         html += `<button class="menu-item story" onclick="LO.openStory(${i})">${s.title}<span class="age">${s.age||''}</span></button>`;

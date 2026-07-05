@@ -8,6 +8,7 @@ The catalog of every page. One line each. Keep current on every ingest.
 
 ## Schema
 - `CLAUDE.md` — operating rules for any LLM session working here.
+- `GARDENER.md` — charter for the Gardener pass (the automated improvement loop).
 
 ## Concepts (`wiki/concepts/`)
 - `design-principles.md` — the non-negotiable design rules for the site.
@@ -30,6 +31,7 @@ The catalog of every page. One line each. Keep current on every ingest.
 - `audio-music-and-voice.md` — generative background-music toggle (built) + the voice roadmap. Status: built.
 - `page-turn-animation.md` — board-book page-turn flip on advancing. Status: built.
 - `peekaboo-flaps.md` — lift-the-flap "Where's …?" reveal + camera-mirror finale. Status: built.
+- `gardener-loop.md` — Tier-2 self-learning loop: one reviewed PR per manual run. Status: specced.
 
 ## Raw sources (`raw/`)
 - `raw/ideas/`
@@ -37,6 +39,7 @@ The catalog of every page. One line each. Keep current on every ingest.
   - `book-animations.md` — owner idea: page-turn + lift-the-flap peek-a-boo.
 - `raw/prds/`
   - `0001-adaptive-arc-v1.md` — Adaptive Arc v1: tagging, dyad profile, telemetry, discovery, noticing prompts. BUILT.
+  - `0002-gardener-loop.md` — the Gardener: manual-dispatch CLHF loop, one PR per run. SPECCED.
 - `raw/research/`
   - `gopnik-notes.md` — notes on Gopnik's work underpinning the arc.
   - `age-1-baseline.md` — what a 1-year-old is doing developmentally (the starting point).

@@ -140,3 +140,15 @@ Append-only. Newest at the bottom. Each entry: date · what happened.
   instead of a bare word (player.js sayArt). (2) Music reworked again to UPBEAT/
   bouncy per "Wheels on the Bus" — an oom-pah (bass on beat + triad off-beat),
   major key, faster tempos, per-story themes kept.
+- 2026-07-05 · SPECCED THE GARDENER LOOP (Option B / Tier-2, designed on Fable with
+  owner). Decisions: manual workflow_dispatch only (cron after 3–4 trusted runs);
+  runner = Claude Code headless GitHub Action; one-of-three charter (ingest raw/
+  drop, fill biggest age_band×skills content gap, small KB tend); ONE PR per run,
+  doing nothing is valid; automated lint gate (privacy grep, tag vocabulary, art
+  keys, banned framing, build); owner merge/close fates are read by the next run
+  (CLHF); charter-as-data at knowledge-base/GARDENER.md. Hard exclusions: no
+  telemetry, no arc/engine edits, no issue/comment triggers (injection surface).
+  New: raw/prds/0002-gardener-loop.md, GARDENER.md, wiki/features/gardener-loop.md.
+- 2026-07-05 · Added docs/product-plan.html — a reviewer-facing HTML presentation
+  of both PRDs (Adaptive Arc v1 = live; Gardener = planned), served on the site
+  (not linked from the child-facing UI). Presents only already-public KB content.

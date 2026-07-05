@@ -25,7 +25,9 @@ The catalog of every page. One line each. Keep current on every ingest.
 - `companion-guide.md` — the on-site + docx full guide. Status: built.
 - `per-child-structure.md` — multi-child registry & neutral URLs. Status: built.
 - `bilingual-first-words.md` — name things in two languages (English + home language). Status: idea.
-- `encouraging-cheer-button.md` — original-mascot cheer button (no famous voices). Status: idea.
+- `encouraging-cheer-button.md` — celebration on correct taps (confetti + voice). Status: built.
+- `page-turn-animation.md` — board-book page-turn flip on advancing. Status: built.
+- `peekaboo-flaps.md` — lift-the-flap "Where's …?" reveal in some books. Status: specced.
 
 ## Raw sources (`raw/`)
 - `raw/ideas/`
@@ -40,6 +42,7 @@ The catalog of every page. One line each. Keep current on every ingest.
   - `books/how-to-talk-little-kids.md` — Faber & King: responsive talk techniques (adapted to ~12mo).
   - `famous-books.md` — beloved 1–2yo books worldwide + original story-theme ideas.
   - `videos/thrive-by-five-molly-wright.md` — TED talk (serve-and-return; connect, talk, play).
+  - `videos/felt-flaps-peekaboo.md` — felt-flap peek-a-boo board book (page-turn + lift-the-flap ref).
 
 ## Backlog / open questions
 - See `log.md` for the running timeline.

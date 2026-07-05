@@ -34,12 +34,37 @@
 
   const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* ---- reinforcing voice (browser speech; no files, no third-party character) ---- */
+  /* ---- reinforcing voice (browser speech; no files, no third-party character) ----
+     Prefer a pleasant, soothing FEMALE English voice where the device offers one.
+     Available voices vary by device/OS; we choose the best match and soften it. */
+  let preferredVoice = null;
+  function pickVoice(){
+    try{
+      const voices = window.speechSynthesis.getVoices() || [];
+      if(!voices.length) return null;
+      const en = voices.filter(v => /^en([-_]|$)/i.test(v.lang));
+      const pool = en.length ? en : voices;
+      const wish = ['Samantha','Karen','Moira','Tessa','Serena','Fiona','Victoria',
+        'Allison','Ava','Susan','Google UK English Female','Microsoft Zira',
+        'Microsoft Aria','Microsoft Jenny','female'];
+      for(const w of wish){
+        const hit = pool.find(v => (v.name+' '+(v.voiceURI||'')).toLowerCase().includes(w.toLowerCase()));
+        if(hit) return hit;
+      }
+      return pool.find(v => /female|woman/i.test(v.name+' '+(v.voiceURI||''))) || null;
+    }catch(e){ return null; }
+  }
+  function ensureVoice(){ if(!preferredVoice) preferredVoice = pickVoice(); return preferredVoice; }
+  if('speechSynthesis' in window){
+    ensureVoice();
+    window.speechSynthesis.onvoiceschanged = ()=>{ preferredVoice = pickVoice(); };
+  }
   function say(text){
     try{
       if(!('speechSynthesis' in window)) return;
       const u = new SpeechSynthesisUtterance(text);
-      u.rate = 0.95; u.pitch = 1.25; u.volume = 0.9;   // warm, gentle, a little playful
+      const v = ensureVoice(); if(v){ u.voice = v; u.lang = v.lang; }
+      u.rate = 0.9; u.pitch = 1.15; u.volume = 0.9;   // soft, warm, soothing
       window.speechSynthesis.cancel();
       window.speechSynthesis.speak(u);
     }catch(e){}
@@ -156,8 +181,34 @@
     const hint=$('tapHint'); if(hint) hint.textContent='👆 Tap the picture!';
     const heroEl=$('heroArt'); if(heroEl) setTimeout(()=>wobble(heroEl), 350); // invite a tap
   }
-  function nextPage(){ if(pageIdx<curStory.pages.length-1){pageIdx++;renderPage();} else backToMenu(); }
-  function prevPage(){ if(pageIdx>0){pageIdx--;renderPage();} }
+  /* ---- board-book page-turn: soft two-phase flip on the scene ---- */
+  let turning=false;
+  function turnPage(dir, apply){
+    const s=$('scene');
+    if(reduceMotion || !s || typeof s.animate!=='function'){ apply(); return; }
+    if(turning) return;
+    turning=true;
+    let applied=false;
+    const doApply=()=>{ if(!applied){ applied=true; apply(); } };   // swap the page once
+    setTimeout(()=>{ doApply(); turning=false; }, 650);             // safety: always advance & clear
+    const out=s.animate([
+      {transform:'perspective(1200px) rotateY(0deg)',   opacity:1},
+      {transform:`perspective(1200px) rotateY(${dir>0?-90:90}deg)`, opacity:.3}
+    ],{duration:200, easing:'ease-in'});
+    out.onfinish=()=>{
+      doApply();                                        // swap while edge-on
+      s.animate([
+        {transform:`perspective(1200px) rotateY(${dir>0?90:-90}deg)`, opacity:.3},
+        {transform:'perspective(1200px) rotateY(0deg)', opacity:1}
+      ],{duration:220, easing:'ease-out'}).onfinish=()=>{ turning=false; };
+    };
+  }
+  function nextPage(){
+    if(!curStory) return;
+    if(pageIdx<curStory.pages.length-1) turnPage(1, ()=>{ pageIdx++; renderPage(); });
+    else backToMenu();
+  }
+  function prevPage(){ if(pageIdx>0) turnPage(-1, ()=>{ pageIdx--; renderPage(); }); }
 
   /* ---- GAME ---- */
   let curGame=null, score=0;

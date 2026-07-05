@@ -57,3 +57,15 @@ Append-only. Newest at the bottom. Each entry: date · what happened.
   (Molly Wright TED, "How Every Child Can Thrive by Five" — serve-and-return:
   connect, talk, play; the five things; games→skills). Cross-linked from
   `responsive-talk.md`; updated `index.md`.
+- 2026-07-05 · Added video source `raw/research/videos/felt-flaps-peekaboo.md`
+  (Felt Flaps "Where's Mrs Cat?" board book) as reference for board-book feels.
+  Ingested owner idea `raw/ideas/book-animations.md` → two feature pages:
+  `page-turn-animation.md` (BUILT: soft two-phase flip on page navigation, Web
+  Animations API, reduced-motion falls back to instant) and `peekaboo-flaps.md`
+  (SPECCED: lift-the-flap "Where's …?" reveal; original art only). Peekaboo mirror
+  finale idea (owner): live FRONT-CAMERA mirror in the circle — recorded in the
+  spec with hard privacy rules (local only, never recorded/uploaded, permission-
+  gated, graceful fallback).
+- 2026-07-05 · Voice change (owner request): the reinforcing voice now prefers a
+  pleasant/soothing FEMALE English voice where the device offers one (rate 0.9,
+  pitch 1.15). Available voices depend on the device/OS. `player.js` (`pickVoice`).

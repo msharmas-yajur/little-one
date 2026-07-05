@@ -145,31 +145,57 @@ jobs:
           echo "--- git status --porcelain (uncommitted edits, if any) ---"; git status --porcelain 2>/dev/null || true
           echo "--- .gardener-out.json ---"; cat .gardener-out.json 2>/dev/null || echo "(absent)"
 
-      # If the Gardener proposed something, open the PR from its branch.
-      - name: Open pull request
-        if: ${{ steps.gardener.outputs.branch_name != '' }}
+      # The action edits files but does NOT commit in direct-prompt mode, so the
+      # workflow owns git: if the Gardener acted and actually changed tracked
+      # files, branch + commit + push + open the PR. The git-excluded scratch
+      # files (.gardener-*) are never staged.
+      - name: Commit and open pull request
+        if: ${{ steps.gardener.conclusion == 'success' }}
         env:
           GH_TOKEN: ${{ github.token }}
-          BRANCH: ${{ steps.gardener.outputs.branch_name }}
           REPO: ${{ github.repository }}
           RUN_ID: ${{ github.run_id }}
+          RUN_NUM: ${{ github.run_number }}
         run: |
           set -euo pipefail
+
+          acted="false"
           if [ -f .gardener-out.json ] && jq -e . .gardener-out.json >/dev/null 2>&1; then
-            title=$(jq -r '.pr_title // "Gardener proposal"' .gardener-out.json)
-            jq -r '.pr_body // ""' .gardener-out.json > /tmp/pr_body.md
-          else
-            title="Gardener proposal"
-            echo "The Gardener produced changes but no structured summary — review the diff directly." > /tmp/pr_body.md
+            acted=$(jq -r '.acted // false' .gardener-out.json)
           fi
+          changes=$(git status --porcelain)
+
+          if [ "$acted" != "true" ] || [ -z "$changes" ]; then
+            summary=""
+            [ -f .gardener-out.json ] && summary=$(jq -r '.summary // ""' .gardener-out.json 2>/dev/null || echo "")
+            {
+              echo "### 🌱 Gardener: quiet garden"
+              echo "No proposal this run — a healthy outcome. ${summary}"
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          title=$(jq -r '.pr_title // "Gardener proposal"' .gardener-out.json)
+          jq -r '.pr_body // ""' .gardener-out.json > /tmp/pr_body.md
           {
             echo ""
             echo "---"
-            echo "_Proposed by the Gardener (workflow run ${RUN_ID}). Manual, human-gated: review, then merge to ship or close to decline. This decision is read by the next run._"
+            echo "_Proposed by the Gardener (run ${RUN_ID}). Manual, human-gated: merge to ship or close to decline; the next run reads that fate._"
           } >> /tmp/pr_body.md
 
-          if gh pr create --base main --head "$BRANCH" --title "🌱 $title" --body-file /tmp/pr_body.md; then
-            url=$(gh pr view "$BRANCH" --json url --jq '.url')
+          slug=$(printf '%s' "$title" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g; s/^-+//; s/-+$//' | cut -c1-40 | sed -E 's/-+$//')
+          [ -n "$slug" ] || slug="proposal"
+          branch="gardener/${slug}-${RUN_NUM}"
+
+          git config user.name "gardener[bot]"
+          git config user.email "gardener[bot]@users.noreply.github.com"
+          git checkout -b "$branch"
+          git add -A
+          git commit -m "🌱 $title"
+          git push -u origin "$branch"
+
+          if gh pr create --base main --head "$branch" --title "🌱 $title" --body-file /tmp/pr_body.md; then
+            url=$(gh pr view "$branch" --json url --jq '.url')
             {
               echo "### 🌱 Gardener opened a pull request"
               echo "[$title]($url)"
@@ -177,20 +203,7 @@ jobs:
           else
             # Fallback if "Allow GitHub Actions to create pull requests" is disabled:
             {
-              echo "### 🌱 Gardener pushed a branch (open the PR manually)"
-              echo "Could not auto-create the PR. Open it here:"
-              echo "https://github.com/${REPO}/compare/main...${BRANCH}?expand=1"
+              echo "### 🌱 Gardener pushed branch \`$branch\` (open the PR manually)"
+              echo "https://github.com/${REPO}/compare/main...${branch}?expand=1"
             } >> "$GITHUB_STEP_SUMMARY"
           fi
-
-      - name: No proposal
-        if: ${{ steps.gardener.outputs.branch_name == '' }}
-        run: |
-          summary=""
-          if [ -f .gardener-out.json ]; then
-            summary=$(jq -r '.summary // ""' .gardener-out.json 2>/dev/null || echo "")
-          fi
-          {
-            echo "### 🌱 Gardener: quiet garden"
-            echo "No changes proposed this run — a healthy outcome. ${summary}"
-          } >> "$GITHUB_STEP_SUMMARY"

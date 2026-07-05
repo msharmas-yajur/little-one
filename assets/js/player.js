@@ -71,13 +71,17 @@
     const n=scale.length, oct=Math.floor(deg/n), idx=((deg%n)+n)%n;
     return root * Math.pow(2, (scale[idx] + oct*12)/12);
   }
-  // mel = melody scale-degrees per eighth-note (null = rest); bass = degrees per beat
+  // Upbeat, bouncy children's-song feel (Wheels-on-the-Bus vibe): major key, a
+  // singable melody, and an "oom-pah" — bass on the beat, a little triad off-beat.
+  // mel = melody scale-degrees per eighth-note (null = rest); chords = triad-root
+  // degree per BEAT (cycles). All themes use the major scale for clean triads.
+  function triad(root, scale, deg){ return [deg,deg+2,deg+4].map(x=>degToFreq(root,scale,x)); }
   const THEMES = {
-    menu:              { root:261.63, scale:'penta', bpm:96,  wave:'triangle', mel:[0,2,4,2,4,7,4,2],                         bass:[0,null,4,null] },
-    'little-ones-day': { root:293.66, scale:'major', bpm:116, wave:'triangle', mel:[4,2,0,2,4,4,5,null,4,2,0,-3,0,2,4,null],  bass:[0,null,3,null] }, // bright sunny morning
-    'splish-splash':   { root:246.94, scale:'penta', bpm:108, wave:'sine',     mel:[0,2,4,2,0,null,2,4,7,4,2,0,2,null,0,null], bass:[0,0,3,3] },        // bouncy, watery
-    'things-that-fall':{ root:329.63, scale:'penta', bpm:126, wave:'triangle', mel:[7,4,2,0,7,4,2,0,9,7,4,2,0,null,0,null],   bass:[0,null,4,null] },   // playful tumbling-down
-    peekaboo:          { root:220.00, scale:'penta', bpm:100, wave:'triangle', mel:[0,null,0,null,2,null,4,null,null,null,7,9,null,null,null,null], bass:[0,null,null,null] } // sneaky … then a peek!
+    menu:              { root:261.63, bpm:128, wave:'triangle', mel:[4,4,7,7,9,7,4,2, 4,4,7,7,9,9,7,null], chords:[0,0,4,4] },
+    'little-ones-day': { root:293.66, bpm:138, wave:'triangle', mel:[0,2,4,4,4,2,0,2, 4,5,4,2,0,2,0,null], chords:[0,3,4,0] }, // sunny bounce
+    'splish-splash':   { root:261.63, bpm:132, wave:'triangle', mel:[4,2,0,2,4,4,4,2, 5,4,2,4,0,0,0,null], chords:[0,3,0,4] }, // playful splashy
+    'things-that-fall':{ root:329.63, bpm:146, wave:'triangle', mel:[7,7,4,4,2,2,0,0, 4,4,7,7,4,2,0,null], chords:[0,4,0,4] }, // fast & tumbling
+    peekaboo:          { root:293.66, bpm:124, wave:'triangle', mel:[0,0,2,2,4,4,2,0, 7,7,4,4,2,2,0,null], chords:[0,0,4,4] }  // cheeky & bouncy
   };
   let musicOn=false, musicGain=null, musicTimer=null, musTheme=null, musStep=0;
   function playTone(freq, dur, wave, gain){
@@ -91,15 +95,17 @@
   }
   function musicTick(){
     if(!musicOn || !actx || !musicGain || !musTheme) return;
-    const T=musTheme, sc=SCALES[T.scale]||SCALES.penta;
-    const deg=T.mel[musStep % T.mel.length];
-    if(deg!=null) playTone(degToFreq(T.root, sc, deg), 0.26, T.wave, 0.08);        // melody
-    if(T.bass && (musStep % 2===0)){                                              // bass on each beat
-      const bd=T.bass[(musStep/2|0) % T.bass.length];
-      if(bd!=null) playTone(degToFreq(T.root/2, sc, bd), 0.42, 'sine', 0.055);
+    const T=musTheme, sc=SCALES.major;
+    const md=T.mel[musStep % T.mel.length];
+    if(md!=null) playTone(degToFreq(T.root, sc, md), 0.20, T.wave, 0.085);              // melody
+    const beat=musStep>>1, chordRoot=T.chords[beat % T.chords.length];
+    if(musStep % 2 === 0){                                                             // ON beat → bass "oom"
+      playTone(degToFreq(T.root/2, sc, chordRoot), 0.22, 'sine', 0.075);
+    } else {                                                                           // OFF beat → chord "pah"
+      triad(T.root, sc, chordRoot).forEach(fr=> playTone(fr, 0.13, 'triangle', 0.03));
     }
     musStep++;
-    musicTimer=setTimeout(musicTick, 60000/T.bpm/2);                              // eighth-note step
+    musicTimer=setTimeout(musicTick, 60000/T.bpm/2);                                   // eighth-note step
   }
   function musicSetTheme(name, restart){
     musTheme = THEMES[name] || THEMES.menu;
@@ -227,6 +233,13 @@
     ], {duration:520, easing:'ease'});
   }
   const artWord = key => key ? key.charAt(0).toUpperCase()+key.slice(1)+'!' : '';
+  /* Name the tapped picture in a SIMPLE SENTENCE (dialogic-reading style), not a
+     bare word — "the {word}" is grammatical for all our nouns (the sun, the rain…). */
+  const artSentences = ['Look, the {w}!', "It's the {w}!", "There's the {w}!", 'I see the {w}!', 'Can you say {w}?'];
+  function sayArt(key){
+    const w=(key||'').toLowerCase(); if(!w) return;
+    say(artSentences[Math.random()*artSentences.length|0].replace('{w}', w));
+  }
   const speakable = s => (s||'').replace(/[^\w\s,.!?'-]/g,'').replace(/\s+/g,' ').trim();
 
   /* ---- peek-a-boo camera mirror — LOCAL ONLY: the stream is shown on-device and
@@ -502,7 +515,7 @@
     telEngage(curStory,'taps');
     if(p.flap || p.mirror){ toggleFlap(p); return; }      // peek-a-boo: lift the flap
     const h=$('heroArt'); if(!h) return;
-    happy(); say(artWord(p.art)); wobble(h);
+    happy(); sayArt(p.art); wobble(h);
   });
 
   /* Adult-engagement signal: grown-up expands the monthly guidance card. */

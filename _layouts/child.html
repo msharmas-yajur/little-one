@@ -10,6 +10,13 @@ layout: default
   {%- if c.id == page.child_id -%}{%- assign childRec = c -%}{%- endif -%}
 {%- endfor -%}
 
+{%- comment -%} Resolve the current month of the arc for this child {%- endcomment -%}
+{%- assign curMonth = nil -%}
+{%- assign wantMonth = childRec.month | default: 1 -%}
+{%- for m in site.data.arc -%}
+  {%- if m.month == wantMonth -%}{%- assign curMonth = m -%}{%- endif -%}
+{%- endfor -%}
+
 <style>:root{ --accent: {{ childRec.colour | default: '#5BB0C7' }}; }</style>
 
 <!-- MENU SCREEN -->
@@ -19,6 +26,32 @@ layout: default
     <div class="child-sub">{{ childRec.greeting | default: 'Shall we read together?' }}</div>
     <a class="back-home" href="{{ '/' | relative_url }}">← All the little ones</a>
   </div>
+
+  {%- if curMonth -%}
+  <div class="menu-wrap">
+    <details class="grownup-card">
+      <summary>
+        <span class="gc-eyebrow">For the grown-up · Month {{ curMonth.month }}</span>
+        <span class="gc-title">{{ curMonth.title }}</span>
+        <span class="gc-chevron">▾</span>
+      </summary>
+      <div class="gc-body">
+        <p class="gc-onsite">{{ curMonth.onsite }}</p>
+        <p class="gc-stance">{{ curMonth.stance }}</p>
+        <div class="gc-invites">
+          {%- for inv in curMonth.invitations -%}
+          <div class="gc-invite">
+            <p class="gc-do">{{ inv.do }}</p>
+            <p class="gc-watch"><span>Watch for:</span> {{ inv.watch }}</p>
+          </div>
+          {%- endfor -%}
+        </div>
+        <a class="gc-more" href="{{ '/companion/' | relative_url }}">Read the fuller guide →</a>
+      </div>
+    </details>
+  </div>
+  {%- endif -%}
+
   <div class="menu-wrap"><div id="menu"></div></div>
 </section>
 

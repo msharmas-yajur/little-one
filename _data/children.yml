@@ -22,6 +22,9 @@
   greeting: "Shall we read together?"
   stories: all
   games: all
+  # Which month of the 12-month arc you're currently practising (1–12).
+  # Bump this number as you move through the year.
+  month: 1
   notes: |
     First child on the site — the grand niece, around 1 year.
     Watching for: which pictures get the biggest reaction.

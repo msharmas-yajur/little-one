@@ -23,6 +23,7 @@ defaults:
       layout: child
 
 exclude:
+  - knowledge-base
   - README.md
   - HANDOFF.md
   - Gemfile

@@ -89,3 +89,27 @@ bundle exec jekyll serve
 ---
 
 Made to be read slowly, in your own voice. 💛
+## The 12-month arc (grown-up practice)
+
+The site now includes a **guided year for the grown-up**, based on Alison
+Gopnik's developmental science. It is a practice for *you*, not a curriculum for
+the child — each month is one stance to try.
+
+| File | What it holds |
+|------|----------------|
+| `_data/arc.yml` | The 12 monthly themes: stance, why, invitations, on-site prompt |
+| `companion.html` | The on-site full guide (auto-built from `arc.yml`) at `/companion/` |
+| `Little-One-Companion-Guide.docx` | The fuller printable/shareable companion doc |
+
+**How each child sees it:** each block in `_data/children.yml` has a `month:`
+field (1–12). The child's page shows that month's "For the grown-up" card. Bump
+the number as you move through the year.
+
+**To edit a month:** open `_data/arc.yml`, change the stance, why, or
+invitations. Each invitation is a `do:` (what you set up) and a `watch:` (what
+her learning looks like). The on-site card and the `/companion/` page both
+rebuild from this file, so they never drift apart.
+
+**The companion .docx** is generated separately (see `gen-companion.js`). If you
+change `arc.yml` and want the Word doc regenerated to match, that's a quick
+re-run — ask and it can be rebuilt.

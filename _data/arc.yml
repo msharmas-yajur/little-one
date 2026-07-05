@@ -1,0 +1,220 @@
+# ══════════════════════════════════════════════════════════════
+#  THE 12-MONTH ARC  —  "practices," one per month
+#
+#  Grounded in Alison Gopnik's developmental science (The Scientist
+#  in the Crib; The Gardener and the Carpenter). Each month is a
+#  STANCE THE GROWN-UP PRACTISES, not a lesson the child must pass.
+#  The child's only job is to play and respond.
+#
+#  Sequenced to roughly track a child through the second year, but
+#  the order is a suggestion — follow the real child, not the calendar.
+#
+#  Each month links to:
+#    story:      an id in stories.yml that embodies the theme
+#    game:       an id in wordgames.yml that fits (optional)
+#  and carries:
+#    stance:     the one-line practice
+#    why:        plain-language reason (the science, briefly)
+#    invitations: things the GROWN-UP sets up, each with a "watch"
+#                 note — what to notice as evidence of her learning
+#    onsite:     the short prompt shown on the site's grown-up card
+# ══════════════════════════════════════════════════════════════
+
+- month: 1
+  title: "Let the experiment run"
+  gopnik: "The child as scientist"
+  stance: "When she drops, bangs, or repeats something, let it happen and put words to it."
+  why: >
+    Repetition is not aimlessness — it's how she tests whether the world
+    behaves the same way twice. Interrupting the experiment to tidy up
+    ends the lesson she's giving herself.
+  story: things-that-fall
+  game: animal-friends
+  onsite: "This month: when she repeats something, let it run — and name what happens."
+  invitations:
+    - do: "Offer a few safe objects and a low box or bowl. Let her put in, take out, repeat."
+      watch: "How she does the same action again and again — that repetition IS the experiment."
+    - do: "Narrate one of her spontaneous 'experiments' aloud without stopping it: 'You dropped it — and it bounced!'"
+      watch: "Whether she looks up at you when you name it — the language-and-relationship loop firing."
+    - do: "Give her two things that fall differently — a soft ball and a light scarf — and let her drop both."
+      watch: "Any sign she notices they fall differently. She's comparing, which is early cause-and-effect."
+
+- month: 2
+  title: "Follow her lantern"
+  gopnik: "Lantern attention (broad, not narrow)"
+  stance: "Let her attention lead. Join what she's already looking at instead of redirecting it."
+  why: >
+    Young children attend broadly, taking in everything at once, rather
+    than focusing narrowly the way adults do. Following her focus teaches
+    her that her interests matter and are worth sharing.
+  story: little-ones-day
+  game: out-in-the-world
+  onsite: "This month: notice what SHE is looking at, and join it."
+  invitations:
+    - do: "For one whole play session, don't introduce anything. Watch what she reaches for, and go there with her."
+      watch: "How her interest moves — she may flit between things. That breadth is the lantern, not distraction."
+    - do: "When she points or stares at something, name it and wait."
+      watch: "Whether she vocalises back. Turn-taking begins here."
+
+- month: 3
+  title: "Cause and effect, in her hands"
+  gopnik: "Causal learning through action"
+  stance: "Give her things where SHE makes something happen — and let her do it herself."
+  why: >
+    She's working out 'what makes what happen.' The learning is strongest
+    when she is the cause, not the spectator — her own action is the data.
+  story: splish-splash
+  game: things-i-know
+  onsite: "This month: give her buttons to press, lids to lift — let her be the cause."
+  invitations:
+    - do: "Offer a toy or object where an action gives a clear result (a press, a shake, a lid)."
+      watch: "The pause after she acts — she's checking the result. That pause is thinking."
+    - do: "Roll a ball to her and wait for her to send it back."
+      watch: "Turn-taking and the idea that SHE can act on you, not just objects."
+
+- month: 4
+  title: "Do it in front of her"
+  gopnik: "Learning through imitation and relationship"
+  stance: "Do everyday things slowly and out loud where she can watch — she learns from trusted people."
+  why: >
+    Children learn what to do by watching people they trust, then copying.
+    Narrated everyday tasks are richer lessons than any toy.
+  story: little-ones-day
+  onsite: "This month: let her watch you do simple things, and say what you're doing."
+  invitations:
+    - do: "Let her watch you stir, fold, or sweep. Describe it simply as you go."
+      watch: "Any attempt to copy the motion — imitation is deep learning, not mimicry."
+    - do: "Make an exaggerated happy face, wait, and see if she tries it back."
+      watch: "Early social imitation and emotion-sharing."
+
+- month: 5
+  title: "Wider, not righter"
+  gopnik: "Variability over correctness"
+  stance: "Offer open-ended things with no single right answer. Resist teaching the 'correct' use."
+  why: >
+    Exploration beats drilling. A block is a tower, a phone, a boat, a
+    hat. Letting the use stay open keeps her inventing rather than
+    performing.
+  story: things-that-fall
+  game: animal-friends
+  onsite: "This month: offer open-ended things — and don't correct how she uses them."
+  invitations:
+    - do: "Give her simple open objects (cups, cloths, blocks) and add nothing else."
+      watch: "The uses she invents that you didn't intend. That invention is the goal."
+    - do: "When she uses something 'wrong,' narrate it as if it's right: 'You're wearing the bowl as a hat!'"
+      watch: "Her delight at being understood — it fuels more experimenting."
+
+- month: 6
+  title: "The pause that makes room"
+  gopnik: "Serve-and-return; child as conversation partner"
+  stance: "After you say or do something, pause a long beat and leave space for her turn."
+  why: >
+    Language and thinking grow in the back-and-forth. The silence you
+    leave is an invitation for her to fill — and she will, in her own way.
+  story: splish-splash
+  game: out-in-the-world
+  onsite: "This month: say something, then wait — leave a long pause for her turn."
+  invitations:
+    - do: "In any exchange, count silently to three after you speak before you speak again."
+      watch: "What she does with the gap — a sound, a look, a gesture. That's her taking a turn."
+    - do: "Copy a sound she makes, then wait for her to do it again."
+      watch: "A back-and-forth 'conversation' of sounds building."
+
+- month: 7
+  title: "Naming the inside weather"
+  gopnik: "Understanding minds and feelings"
+  stance: "Put simple words to her feelings and yours, without fixing or judging them."
+  why: >
+    Children are working out that people have inner states. Naming
+    feelings gives her the tools to understand herself and others later.
+  story: little-ones-day
+  onsite: "This month: name feelings simply — hers and yours — as they happen."
+  invitations:
+    - do: "When she's frustrated or delighted, name it calmly: 'You're cross the tower fell.'"
+      watch: "Whether naming it settles her a little. Being understood regulates."
+    - do: "Name your own feeling out loud sometimes: 'I'm happy sitting with you.'"
+      watch: "Her attention to your face — she's reading you."
+
+- month: 8
+  title: "Pretend opens a door"
+  gopnik: "Counterfactual thinking / early pretend"
+  stance: "Follow and gently extend any hint of pretend — feeding a toy, 'talking' on a block."
+  why: >
+    Pretend play is the child rehearsing possibilities — imagining things
+    that aren't real is the same muscle used later for planning and
+    invention.
+  story: splish-splash
+  game: animal-friends
+  onsite: "This month: join her pretend — feed the toy, answer the 'phone.'"
+  invitations:
+    - do: "Offer a cup to a toy and 'give it a drink,' then hand it to her."
+      watch: "Whether she continues the pretend. Extending it is imaginative leap-making."
+    - do: "Make a block 'ring' and hold it to your ear."
+      watch: "Any imitation of the pretend — she's entering the as-if world."
+
+- month: 9
+  title: "Small choices, real agency"
+  gopnik: "Autonomy and self-directed exploration"
+  stance: "Offer genuine small choices and honour whichever she picks."
+  why: >
+    Self-direction builds the persistence and confidence that predict
+    later flourishing far more than early academics do.
+  story: little-ones-day
+  game: things-i-know
+  onsite: "This month: offer real small choices — and follow her pick."
+  invitations:
+    - do: "Hold up two options (this book or that one?) and go with her choice."
+      watch: "The seriousness with which she chooses — agency matters to her."
+    - do: "Let her set the pace of an activity, even if it's slower than you'd like."
+      watch: "How long she'll persist when it's her own direction."
+
+- month: 10
+  title: "Words for the world"
+  gopnik: "Rich language input; labelling"
+  stance: "Name things generously and specifically as you move through the day together."
+  why: >
+    The sheer amount and richness of words she hears strongly shapes
+    later language. Specific words ('sparrow,' not just 'bird') widen her
+    world.
+  story: things-that-fall
+  game: out-in-the-world
+  onsite: "This month: name things richly and specifically as you go."
+  invitations:
+    - do: "On a slow walk, name what you both see, a little more specifically than usual."
+      watch: "Words she tries to echo. Attempts, not accuracy, are the milestone."
+    - do: "Use real words alongside baby words: 'doggie — a big brown dog!'"
+      watch: "Which words she reaches for first."
+
+- month: 11
+  title: "Let her solve it"
+  gopnik: "Problem-solving through productive struggle"
+  stance: "When she's stuck, wait before helping — a little struggle is the learning."
+  why: >
+    Jumping in too fast removes the very challenge that builds
+    persistence. A beat of struggle, with you nearby, is where grit
+    starts.
+  story: splish-splash
+  game: things-i-know
+  onsite: "This month: when she's stuck, pause — let her try before you help."
+  invitations:
+    - do: "When something's just out of reach or a lid won't come, wait a few seconds before stepping in."
+      watch: "The strategies she tries. The trying is the point, not the success."
+    - do: "Offer the smallest possible help — a hint, not a rescue — then step back again."
+      watch: "Whether she finishes it herself with just a nudge."
+
+- month: 12
+  title: "Look how far — and keep going"
+  gopnik: "The gardener's long view"
+  stance: "Step back and see who she's becoming; let her lead you, and add nothing you don't need to."
+  why: >
+    The gardener tends the soil rather than carving the plant. A year in,
+    the practice is trusting the environment you've built and the person
+    she's growing into — on her own timeline.
+  story: little-ones-day
+  game: animal-friends
+  onsite: "This month: step back, watch who she's becoming, and follow her lead."
+  invitations:
+    - do: "Spend one session adding nothing — no new toy, no prompt. Just be present and follow."
+      watch: "Everything she now does on her own that she couldn't a year ago."
+    - do: "Return to Month 1's dropping game. See how differently she plays it now."
+      watch: "The change in her — proof of a year of her own experiments."

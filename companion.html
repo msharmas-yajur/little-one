@@ -1,0 +1,54 @@
+---
+layout: default
+title: The Companion Guide
+permalink: /companion/
+---
+<div class="companion">
+  <a class="back-home" href="{{ '/' | relative_url }}">← Home</a>
+  <h1>The <span>Companion</span> Guide</h1>
+  <p class="lede">Twelve months of gentle practice — for the grown-up, not the child.</p>
+
+  <p>This guide is built on the developmental science of Alison Gopnik
+  (<em>The Scientist in the Crib</em>, <em>The Gardener and the Carpenter</em>).
+  Its central idea: a young child isn't clay to be shaped toward a target. She's
+  already a little scientist, running experiments on the world. Your job isn't to
+  train her — it's to be rich soil she can grow in.</p>
+
+  <p>So there is no curriculum for her. Each month gives <strong>you</strong> one
+  stance to practise. She just plays and responds; that response is all the
+  success there is. Move at her pace, not the calendar's — the months are a
+  suggestion, and repeating one is fine.</p>
+
+  <h2>How to use it</h2>
+  <p>Read the month you're on. Try the invitations when they fit into ordinary
+  time together — none of them need special materials or a set-aside "lesson."
+  The <em>Watch for</em> notes tell you what her learning looks like as it
+  happens, so you can see it rather than test for it. When you notice something
+  worth remembering, jot it down — it's how each child's plan becomes their own.</p>
+
+  {% assign arc = site.data.arc | sort: "month" %}
+  {% for m in arc %}
+  <div class="month-block" id="month-{{ m.month }}">
+    <span class="mb-eyebrow">Month {{ m.month }} · {{ m.gopnik }}</span>
+    <h3>{{ m.title }}</h3>
+    <p class="mb-stance">{{ m.stance }}</p>
+    <p>{{ m.why }}</p>
+    {% for inv in m.invitations %}
+    <div class="mb-invite">
+      {{ inv.do }}
+      <div class="w"><b>Watch for:</b> {{ inv.watch }}</div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endfor %}
+
+  <h2>A closing note</h2>
+  <p>If a month doesn't land, let it go and follow what she's actually doing.
+  The whole point of the gardener's approach is that she's growing herself — the
+  best thing you bring is warm, unhurried attention. That you're doing this at
+  all is the thing that matters most.</p>
+
+  <blockquote>This guide offers the general research picture, not advice tailored
+  to one child. For anything specific to her development, her parents and
+  pediatrician are the right people to ask.</blockquote>
+</div>

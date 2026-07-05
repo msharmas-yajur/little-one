@@ -67,3 +67,32 @@
       line: "And up jumps a tree, tall and round."
       art: tree
       cue: "Stretch up tall together like the tree."
+
+- id: things-that-fall
+  title: "Things That Fall"
+  age: "1+"
+  pages:
+    - sky: day
+      line: "Little One holds a bright red ball."
+      art: ball
+      cue: "Hold something up together, then let it go."
+    - sky: day
+      line: "She opens her hand… down it goes!"
+      art: ball
+      cue: "Say “down!” as it drops. This is her experiment."
+    - sky: garden
+      line: "An apple falls, thud, from the tree."
+      art: apple
+      cue: "A soft “thud!” — heavy things land with a thump."
+    - sky: day
+      line: "A leaf floats slowly, side to side."
+      art: tree
+      cue: "Float your hand down slowly — leaves take their time."
+    - sky: day
+      line: "Some things go thud and some things float."
+      art: cloud
+      cue: "Wonder aloud: “Which one floats?” No right answer needed."
+    - sky: garden
+      line: "Do it again! What will fall now?"
+      art: ball
+      cue: "Repeating IS the learning. Let her lead the next drop."

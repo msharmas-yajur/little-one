@@ -19,6 +19,7 @@ layout: default
 
 <style>:root{ --accent: {{ childRec.colour | default: '#5BB0C7' }}; }</style>
 
+<button id="dyadBtn" class="dyad-btn" onclick="LO_DYAD.openSettings()" aria-label="For grown-ups">⚙</button>
 <button id="musicBtn" class="music-btn off" onclick="LO.toggleMusic()" aria-label="Turn music on">🔇</button>
 
 <!-- MENU SCREEN -->
@@ -127,4 +128,5 @@ window.CHILD = {
 };
 </script>
 <script src="{{ '/assets/js/art.js' | relative_url }}"></script>
+<script src="{{ '/assets/js/dyad.js' | relative_url }}"></script>
 <script src="{{ '/assets/js/player.js' | relative_url }}"></script>

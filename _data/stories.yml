@@ -108,6 +108,34 @@
       art: ball
       cue: "Repeating IS the learning. Let her lead the next drop."
 
+- id: try-try-again
+  title: "Try, Try Again"
+  age: "1+"
+  age_band: [12-24m]
+  skills: [challenges, self-directed, focus]
+  evidence: books/mind-in-the-making.md
+  pages:
+    - sky: day
+      line: "The ball rolls off — away, away it goes!"
+      art: ball
+      cue: "Pause. Let her set off after it — the trying is hers."
+    - sky: garden
+      line: "Little One crawls. So close now… almost THERE!"
+      art: ball
+      cue: "Cheer the effort first: “You're trying so hard!” Wait before you help."
+    - sky: garden
+      line: "An apple hangs high. Can she stretch, stretch, and reach?"
+      art: apple
+      cue: "Let her strain a little before you lift her — the reach is the win."
+    - sky: day
+      line: "A little bird tries, and tries — then up she flies!"
+      art: bird
+      cue: "Flap slowly together: “She tried and tried, and did it!”"
+    - sky: night
+      line: "You tried so hard. Goodnight, little star."
+      art: star
+      cue: "A whisper for the last line. Praise the trying, not just the winning."
+
 # ── PEEK-A-BOO ── flap pages hide a picture; tap to lift the flap and reveal it.
 #  A page with `flap: true` hides its `art` under a flap ("Where's the …?" → tap →
 #  reveal + `reveal:` line). A page with `mirror: true` opens to the front camera

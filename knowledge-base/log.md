@@ -167,3 +167,15 @@ Append-only. Newest at the bottom. Each entry: date · what happened.
   content skill, so 12-24m×challenges is the default gap). Feature page → built.
   Not yet run (manual, ~$1–5/press). Auto-PR needs the repo "Actions may create
   PRs" toggle; falls back to a compare link if off.
+- 2026-07-06 · GARDENER RUN (fill-gap): added story `try-try-again` ("Try, Try
+  Again") to `_data/stories.yml` — the first content anywhere tagged skill
+  `challenges`, which had zero content in the coverage matrix (biggest gap;
+  age_band 12-24m). Five pages framed as a "just-right challenge" (chasing a
+  rolled ball, reaching a high apple, a bird that tries and tries), with grown-up
+  cues that let her struggle briefly and praise the effort over the outcome.
+  Provenance: Galinsky life-skill #6 "Taking on Challenges"
+  (`raw/research/books/mind-in-the-making.md`) as mapped in
+  `wiki/concepts/seven-life-skills.md` (M11 "let her solve it"). Existing art keys
+  only (ball/apple/bird/star); house style matched (couplet rhythm, curly-quote
+  cues, no scold/fail framing). Ingest queue empty and KB consistent this run, so
+  fill-gap was the highest-value option.

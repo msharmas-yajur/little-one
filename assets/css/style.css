@@ -70,8 +70,10 @@ a{color:inherit;text-decoration:none;}
 
 /* ---- screens ---- */
 .screen{display:none;flex:1;flex-direction:column;min-height:0;}
-/* Story + game must fit the screen with NO scrolling — confusing for a toddler. */
-#storyScreen.active,#gameScreen.active{height:100dvh;overflow:hidden;}
+/* The game "find X" page must NEVER scroll (confuses a child) — hard-clip it.
+   The story is sized to fit too, but keeps a scroll fallback so the Turn-the-page
+   button is never hidden on very short screens. */
+#gameScreen.active{height:100dvh;overflow:hidden;}
 .screen.active{display:flex;}
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;}
 .pill{border:none;cursor:pointer;background:#fff;font-family:'Fredoka';font-weight:600;color:var(--ink);font-size:1rem;padding:12px 20px;border-radius:100px;box-shadow:0 4px 0 var(--shadow);}
@@ -82,7 +84,7 @@ a{color:inherit;text-decoration:none;}
 /* ---- story ---- */
 .stage{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 20px 14px;gap:12px;}
 /* cap the square scene by width AND height so the whole page fits without scroll */
-.scene{width:min(92vw, 520px, calc(100dvh - 300px));aspect-ratio:1/1;border-radius:36px;position:relative;overflow:hidden;box-shadow:0 12px 30px var(--shadow);flex:none;}
+.scene{width:min(92vw, 520px, calc(100dvh - 360px));aspect-ratio:1/1;border-radius:36px;position:relative;overflow:hidden;box-shadow:0 12px 30px var(--shadow);flex:none;}
 .scene svg{width:100%;height:100%;display:block;}
 .tappable{cursor:pointer;transition:transform .15s;transform-origin:center;transform-box:fill-box;}
 .tappable:active{transform:scale(.9);}
@@ -150,7 +152,7 @@ a{color:inherit;text-decoration:none;}
 .dyad-autobtn{flex:1;border:2px solid #e6ded2;cursor:pointer;font-family:'Fredoka',sans-serif;font-weight:600;
   padding:10px;border-radius:14px;background:#fff;color:var(--ink-soft);font-size:.92rem;}
 .dyad-autobtn.on{border-color:var(--accent);color:var(--ink);background:#fff;box-shadow:0 3px 0 var(--shadow);}
-.nav{display:flex;gap:14px;padding:0 20px 26px;align-items:center;justify-content:center;}
+.nav{display:flex;gap:14px;padding:0 20px 14px;align-items:center;justify-content:center;}
 .navbtn{border:none;cursor:pointer;width:66px;height:66px;border-radius:50%;font-size:1.7rem;color:#fff;box-shadow:0 6px 0 var(--shadow);display:flex;align-items:center;justify-content:center;transition:transform .1s;}
 .navbtn:active{transform:translateY(4px);box-shadow:0 2px 0 var(--shadow);}
 .navbtn.prev{background:var(--grape);}

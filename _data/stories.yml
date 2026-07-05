@@ -176,3 +176,34 @@
       line: "And where's… YOU?"
       reveal: "Peek-a-boo — it's you! 💛"
       cue: "Open the last flap to find the little one in the mirror."
+
+# ── For the youngest (6–12m): a serve-and-return sound story. Each page offers a
+#  sound to make together, then a PAUSE for the baby's babble — the grown-up's
+#  voice (never the app) is the language mechanism.
+- id: chatter-chatter
+  title: "Chatter, Chatter"
+  age: "6m+"
+  age_band: [6-12m, 12-24m]
+  skills: [communicating, connections]
+  evidence: videos/thrive-by-five-molly-wright.md
+  pages:
+    - sky: morning
+      line: "The puppy says woof. Now… what will YOU say?"
+      art: dog
+      cue: "Make the “woof,” then pause. Whatever sound comes back is her turn — say it right back to her."
+    - sky: garden
+      line: "The kitty says mew — then waits for you."
+      art: cat
+      cue: "Mew, then wait, just like the line does. Copy the babble she offers — that's a real little conversation."
+    - sky: rain
+      line: "The duck says quack-quack, and splashes away!"
+      art: duck
+      cue: "Quack, then leave a gap. Her babble is a word finding its way out — greet it warmly."
+    - sky: day
+      line: "A little bird tweets from a branch up high."
+      art: bird
+      cue: "Point up and tweet. Serve a sound, then give her a beat to send one back to you."
+    - sky: night
+      line: "You chattered all day. Goodnight, sleepy sky."
+      art: moon
+      cue: "Whisper goodnight — then wait, and let her have the very last word."

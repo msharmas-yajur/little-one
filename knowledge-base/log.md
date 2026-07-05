@@ -179,3 +179,16 @@ Append-only. Newest at the bottom. Each entry: date · what happened.
   only (ball/apple/bird/star); house style matched (couplet rhythm, curly-quote
   cues, no scold/fail framing). Ingest queue empty and KB consistent this run, so
   fill-gap was the highest-value option.
+- 2026-07-06 · GARDENER (session-mode, no metered API call — executed by an
+  interactive Claude session against the charter, not the paid Action). Filled the
+  biggest post-merge gap: coverage showed `6-12m × communicating` empty (youngest
+  band). Added one story `chatter-chatter` ("Chatter, Chatter") to
+  `_data/stories.yml` — a serve-and-return sound game (woof/mew/quack/tweet) whose
+  cues model the "make the sound, then wait for her turn" pause, tagged
+  `age_band: [6-12m, 12-24m]`, `skills: [communicating, connections]`, citing
+  `videos/thrive-by-five-molly-wright.md` (serve-and-return). Also refreshed the
+  stale "Current stories" catalog on `wiki/features/storybook-player.md`. Gate
+  (lint.rb + allowlist + build) run locally before the PR. Priority-1 ingest was
+  checked first: all `raw/` files are already reflected in the wiki, so fill-a-gap
+  was the highest-value action. Past-PR fates: #1 MERGED (the challenges story) —
+  no closed idea to avoid.

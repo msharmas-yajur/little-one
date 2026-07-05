@@ -145,6 +145,45 @@ jobs:
           echo "--- git status --porcelain (uncommitted edits, if any) ---"; git status --porcelain 2>/dev/null || true
           echo "--- .gardener-out.json ---"; cat .gardener-out.json 2>/dev/null || echo "(absent)"
 
+      # Gate the proposal in-workflow. Bot-created PRs don't trigger the
+      # pull_request lint workflow (GitHub's GITHUB_TOKEN anti-recursion rule),
+      # so run the SAME checks here BEFORE opening the PR: a failing gate fails
+      # the run and (because the step below requires success) opens no PR — a bad
+      # proposal never reaches the human. Human PRs still hit gardener-lint.yml.
+      - name: Gate the proposal
+        if: ${{ steps.gardener.conclusion == 'success' }}
+        run: |
+          set -euo pipefail
+          changes=$(git status --porcelain | sed -E 's/^...//')
+          if [ -z "$changes" ]; then
+            echo "No changes to gate."
+            exit 0
+          fi
+          echo "Changed files:"; echo "$changes"
+
+          # 1. changed-files allowlist — content + knowledge base only
+          bad=""
+          while IFS= read -r f; do
+            [ -z "$f" ] && continue
+            case "$f" in
+              _data/stories.yml|_data/wordgames.yml) : ;;
+              knowledge-base/*)                       : ;;
+              *) bad="$bad $f" ;;
+            esac
+          done <<< "$changes"
+          if [ -n "$bad" ]; then
+            echo "::error::Gardener changed forbidden files:$bad (content + knowledge-base only)"
+            exit 1
+          fi
+
+          # 2. content lint (schema, art keys, vocabulary, framing, PII)
+          ruby .github/gardener/lint.rb
+
+          # 3. the site must still build
+          bundle exec jekyll build
+        env:
+          JEKYLL_ENV: production
+
       # The action edits files but does NOT commit in direct-prompt mode, so the
       # workflow owns git: if the Gardener acted and actually changed tracked
       # files, branch + commit + push + open the PR. The git-excluded scratch

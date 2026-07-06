@@ -46,10 +46,28 @@ parentese voice that carries the little one through the **5-year journey**.
 **Alternative:** a family member records the phrase list (most personal, fully
 private, free) — see `encouraging-cheer-button.md`.
 
-**Needs from owner:** an ElevenLabs (or similar) API key for the build-time render,
-OR a decision to record the family voice. A fully real-time, conversational voice
-was considered and set aside: it needs a backend + streaming TTS + mic, real
+**Provider chosen (2026-07-06): Sarvam AI** (`POST https://api.sarvam.ai/text-to-speech`,
+auth header `api-subscription-key`, model `bulbul:v3`, 30+ voices, `pace`,
+`output_audio_codec: mp3`, ~2500 char/req). Chosen over ElevenLabs because Sarvam
+is **Indian-language-first**: `target_language_code` covers en-IN (warm
+Indian-accent English) plus hi-IN, bn-IN, gu-IN, kn-IN, ml-IN, mr-IN, od-IN,
+pa-IN, ta-IN, te-IN — matching the app's language pills and, crucially,
+**unlocking bilingual voice** (the same line rendered in English AND the home
+language → ties into `bilingual-first-words.md`). Not covered by Sarvam: Spanish,
+Mandarin, Arabic, French, Urdu — those keep the device-TTS fallback.
+
+**Needs from owner:** a **`SARVAM_API_KEY`** as a GitHub repo secret (like the
+Gardener/Council use `ANTHROPIC_API_KEY`), and a chosen `speaker` (one warm voice
+reused across the 5-year journey). A fully real-time, conversational voice was
+considered and set aside: it needs a backend + streaming TTS + mic, real
 cost/safety review, and is overkill for this age (warm consistent narration wins).
+
+**Pipeline (build-time, static clips):** a render script collects the
+already-approved `line:`/`cue:` strings, calls Sarvam once per unique string
+(en-IN, chosen speaker) → decodes the base64 mp3 → commits small clips under
+`assets/voice/` with a hash→file manifest; the player plays the matching clip on
+tap and falls back to the current Web Speech device voice when a clip is missing.
+The Review Council's Voice Seat QAs renders (says the text? artifacts? loudness?).
 
 ## Still open
 - A **voice mute** (now that taps also speak) — quick add alongside the music toggle.

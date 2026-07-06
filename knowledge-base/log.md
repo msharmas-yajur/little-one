@@ -237,3 +237,12 @@ Append-only. Newest at the bottom. Each entry: date · what happened.
   locally via --dry-run (prompt assembly + all seat sources resolve) and a
   decision-rule unit check. New: council/{review.py,README.md}, workflow, wiki
   status → review-mode built.
+- 2026-07-06 · VOICE PROVIDER DECIDED: Sarvam AI (owner choice). API verified:
+  POST https://api.sarvam.ai/text-to-speech, header api-subscription-key, model
+  bulbul:v3, output mp3, en-IN + 10 Indic languages. Chosen over ElevenLabs for
+  Indian-language-first coverage (matches the language pills; unlocks bilingual
+  voice → bilingual-first-words). Needs SARVAM_API_KEY repo secret + a chosen
+  speaker. Pipeline recorded in audio-music-and-voice.md (build-time render →
+  static mp3 clips in assets/voice/ + manifest; device-TTS fallback; Council
+  Voice Seat QAs the renders). PRD 0003 milestone 1 (voice) is now unblocked
+  pending the key.

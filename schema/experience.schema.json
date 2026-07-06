@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://msharmas-yajur.github.io/little-one/schema/experience.schema.json",
+  "title": "Little One — Experience Schema v1",
+  "description": "The capability-bounded declarative language that the fixed engine (assets/js/player.js) renders. Generated content produces INSTANCES that conform to these experience TYPES; adding a new TYPE (a new branch here) is a class change and is human-gated. SAFETY MODEL: a closed field vocabulary + additionalProperties:false everywhere means the language literally cannot express a network call, storage write, or script — no such field exists — so generated UI is sandboxed by what the schema can SAY, not by trusting a reviewer to catch a bad line of code. This file is the contract the Gardener generates against and the gate validates (schema/validate.py, the Guardian's mechanical arm). Art-key EXISTENCE and content-safety (framing/PII) are enforced separately by .github/gardener/lint.rb.",
+
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+    "ageBand": { "type": "string", "enum": ["6-12m", "12-24m", "2-3y", "3-4y", "4-5y"] },
+    "skill": { "type": "string", "enum": ["focus", "perspective", "communicating", "connections", "critical-thinking", "challenges", "self-directed"] },
+    "sky": { "type": "string", "enum": ["morning", "day", "garden", "night", "rain"] },
+    "artKey": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+$",
+      "description": "A picture key. Must exist in assets/js/art.js — existence is enforced by lint.rb (the Guardian's registry check), not by this schema."
+    },
+
+    "storyPage": {
+      "description": "One page of a story. Exactly one of three TYPES: a plain tap-along page, a lift-the-flap page, or the on-device camera-mirror page.",
+      "oneOf": [
+        {
+          "title": "plain page",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["line", "art"],
+          "properties": {
+            "sky": { "$ref": "#/$defs/sky" },
+            "line": { "type": "string" },
+            "art": { "$ref": "#/$defs/artKey" },
+            "cue": { "type": "string" }
+          }
+        },
+        {
+          "title": "flap page",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["flap", "art", "line", "reveal"],
+          "properties": {
+            "sky": { "$ref": "#/$defs/sky" },
+            "flap": { "const": true },
+            "art": { "$ref": "#/$defs/artKey" },
+            "line": { "type": "string" },
+            "reveal": { "type": "string" },
+            "cue": { "type": "string" }
+          }
+        },
+        {
+          "title": "mirror page",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["mirror", "line", "reveal"],
+          "properties": {
+            "sky": { "$ref": "#/$defs/sky" },
+            "mirror": { "const": true },
+            "line": { "type": "string" },
+            "reveal": { "type": "string" },
+            "cue": { "type": "string" }
+          }
+        }
+      ]
+    },
+
+    "story": {
+      "description": "A tap-along story: pages the grown-up reads aloud while the child taps the picture.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "pages"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "title": { "type": "string" },
+        "age": { "type": "string", "description": "human hint, e.g. '1+' or '6m+'" },
+        "age_band": { "type": "array", "items": { "$ref": "#/$defs/ageBand" }, "minItems": 1 },
+        "skills": { "type": "array", "items": { "$ref": "#/$defs/skill" } },
+        "evidence": { "type": "string", "description": "relative path under raw/research/ backing a developmental claim" },
+        "pages": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/storyPage" } }
+      }
+    },
+
+    "gameItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["art", "label"],
+      "properties": {
+        "art": { "$ref": "#/$defs/artKey" },
+        "label": { "type": "string" }
+      }
+    },
+
+    "game": {
+      "description": "A forgiving Tap & Find game: 'can you find X?' among picture choices; the right tap cheers, a wrong tap nudges. No fail state.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "items"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "title": { "type": "string" },
+        "age": { "type": "string" },
+        "age_band": { "type": "array", "items": { "$ref": "#/$defs/ageBand" }, "minItems": 1 },
+        "skills": { "type": "array", "items": { "$ref": "#/$defs/skill" } },
+        "ask": { "type": "string", "description": "optional prompt template with a {label} slot, e.g. 'Who says {label}?'" },
+        "items": { "type": "array", "minItems": 2, "items": { "$ref": "#/$defs/gameItem" } }
+      }
+    }
+  }
+}

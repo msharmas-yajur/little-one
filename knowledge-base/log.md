@@ -246,3 +246,22 @@ Append-only. Newest at the bottom. Each entry: date · what happened.
   static mp3 clips in assets/voice/ + manifest; device-TTS fallback; Council
   Voice Seat QAs the renders). PRD 0003 milestone 1 (voice) is now unblocked
   pending the key.
+- 2026-07-06 · OWNER DECISION (telemetry granularity): aggregate cohort signals
+  ONLY for the shared app; raw per-child never leaves the device; true per-child
+  learning reserved for the future BYO-key tier. Sharpened privacy-model.md into
+  the "three-line rule" (raw per-child stays local / only aggregate anonymized
+  threshold-gated cohort signals leave, opt-in / per-child learning = family's own
+  key+data). Principle now: generation is global, personalization is local, the
+  feedback connecting them is anonymized + aggregate.
+- 2026-07-06 · BUILT THE EXPERIENCE SCHEMA v1 (PRD 0003 milestone 3), on Opus.
+  `schema/experience.schema.json` — capability-bounded declarative contract for
+  the mechanics already shipped (story: plain/flap/mirror pages; game: items +
+  optional ask). Safety = additionalProperties:false over a closed field
+  vocabulary, so onclick/url/script/fetch/storage are unrepresentable; generated
+  UI is sandboxed by grammar. `schema/validate.py` (jsonschema) enforces it and is
+  wired into both gates (gardener-lint.yml + gardener.yml in-workflow Gate) as the
+  Guardian's mechanical arm. Classes (new field/type/schema edit) are human-gated
+  structurally (non-conforming content fails the validator). GARDENER.md bound to
+  the schema (Gardener produces instances only). Verified: 6 stories + 5 games
+  conform; poisoned onclick/off-enum page rejected. schema/ + council/ excluded
+  from the Jekyll build. Next (3b): make player.js a pure schema-driven renderer.

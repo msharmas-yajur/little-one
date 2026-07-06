@@ -24,6 +24,8 @@ defaults:
 
 exclude:
   - knowledge-base
+  - schema
+  - council
   - README.md
   - HANDOFF.md
   - Gemfile

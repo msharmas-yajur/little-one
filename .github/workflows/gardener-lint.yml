@@ -25,9 +25,17 @@ jobs:
           ruby-version: "3.3"
           bundler-cache: true
 
-      # 1. Content rules: schema, art keys, tag vocabulary, banned framing, PII.
+      # 1. Content rules: art keys, tag vocabulary, banned framing, PII.
       - name: Content lint
         run: ruby .github/gardener/lint.rb
+
+      # 1b. Experience schema: generated content must conform to the
+      #     capability-bounded declarative contract (a new field/type is a
+      #     human-gated class change). The Guardian Seat's mechanical arm.
+      - name: Experience schema validation
+        run: |
+          python3 -m pip install --quiet jsonschema pyyaml
+          python3 schema/validate.py
 
       # 2. Structural guard — ONLY for gardener/* branches: the Gardener may
       #    touch content and the knowledge base, nothing else. This is what

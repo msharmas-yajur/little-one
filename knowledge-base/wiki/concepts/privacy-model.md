@@ -16,17 +16,37 @@ The repo is public, so identity is kept out of it by design.
 The app is a **digital replica of a physical book**: the book never knows the
 child — the *lap* does. Therefore:
 
-> **Generation is global; personalization is local.**
-> Anything generated from the *published KB* (a public repo) is privacy-clean
-> by construction, no matter how generative the pipeline becomes. The one hard
-> line: **child signals are never generation input.** The on-device dyad
-> profile only *selects and parameterizes* among generated experiences — it
-> chooses from the shelf; it never phones the publisher.
+> **Generation is global; personalization is local; the feedback that connects
+> them is anonymized and aggregate.**
+> Anything generated from the *published KB* (a public repo) is privacy-clean by
+> construction. Personalization (which experience is served/composed) stays
+> on-device with no LLM. The one place data flows *out* is a deliberately narrow
+> channel — see the three-line rule below.
 
-Privacy is enforced at the **data-flow boundary** (what enters a prompt/leaves
-the device), not by restricting generative capability. Future profile sync, if
-wanted, goes through the **family's own platform account** (iCloud/Google
-app-data — their custody); we never operate an identity service.
+**The three-line rule (owner decision, 2026-07-06):**
+1. **Raw per-child behavior never leaves the device.** The dyad profile — the
+   per-child event trace — stays local, is never uploaded, and never enters a
+   prompt. Unchanged hard line.
+2. **Only aggregate, anonymized, threshold-gated *cohort* signals may leave**
+   (opt-in), and only those feed dev-level generation — e.g. "at 12–18mo the
+   `challenges` skill shows low completion." Never a raw per-child event stream,
+   never an identifier. A child's interaction *sequence* is itself a fingerprint,
+   so **per-child traces are out** for the shared app (they'd need differential
+   privacy + explicit consent). Aggregation happens on-device; only cohort
+   counts above a minimum-N threshold are emitted.
+3. **True per-child learning lives in the family's own instance** (the
+   bring-your-own-key tier): the family adds their own key, and per-child data
+   stays with them — their device, their account, their key — never touching the
+   shared app or the dev level.
+
+**No LLM ever runs on the child's device.** LLM access exists only at the
+*development* level (build-time generation from anonymized cohort signals + the
+KB), and — in the future BYO-key tier — inside the *family's own* instance on the
+*family's own* key. Privacy is enforced at the **data-flow boundary** (what
+leaves the device / enters a prompt), not by restricting generative capability.
+Profile portability, when wanted, goes through the **family's own platform
+account** (iCloud/Google app-data — their custody); we never operate an identity
+service.
 
 - **The founding fact carries no identity:** "the little one is 1 year old
   today." No name, birthdate, or location anywhere.

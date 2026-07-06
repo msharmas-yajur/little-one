@@ -33,12 +33,14 @@ The catalog of every page. One line each. Keep current on every ingest.
 - `page-turn-animation.md` — board-book page-turn flip on advancing. Status: built.
 - `peekaboo-flaps.md` — lift-the-flap "Where's …?" reveal + camera-mirror finale. Status: built.
 - `gardener-loop.md` — Tier-2 self-learning loop: one reviewed PR per manual run. Status: built & LIVE (PRs #1, #2 merged).
-- `review-council.md` — six-seat rubric-anchored judge panel + chairman; gates generated instances. Status: specced.
+- `review-council.md` — six-seat rubric-anchored judge panel + chairman; gates generated instances. Status: review-mode built.
+- `experience-schema.md` — the capability-bounded declarative UI contract the engine renders; generated UI sandboxed by grammar. Status: built (v1).
 
 ## Raw sources (`raw/`)
 - `raw/ideas/`
   - `cheer-button.md` — owner idea + IP decision behind the cheer-button feature.
   - `book-animations.md` — owner idea: page-turn + lift-the-flap peek-a-boo.
+  - `generative-ui-planes-and-telemetry.md` — owner direction: two generative-UI planes, aggregate-cohort telemetry-fed dev-level generation, BYO-key future.
 - `raw/prds/`
   - `0001-adaptive-arc-v1.md` — Adaptive Arc v1: tagging, dyad profile, telemetry, discovery, noticing prompts. BUILT.
   - `0002-gardener-loop.md` — the Gardener: manual-dispatch CLHF loop, one PR per run. BUILT & LIVE.

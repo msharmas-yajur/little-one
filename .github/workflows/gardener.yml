@@ -176,10 +176,15 @@ jobs:
             exit 1
           fi
 
-          # 2. content lint (schema, art keys, vocabulary, framing, PII)
+          # 2. content lint (art keys, vocabulary, framing, PII)
           ruby .github/gardener/lint.rb
 
-          # 3. the site must still build
+          # 3. experience schema — generated content must conform to the
+          #    capability-bounded contract (a new type is a human-gated class change)
+          python3 -m pip install --quiet jsonschema pyyaml
+          python3 schema/validate.py
+
+          # 4. the site must still build
           bundle exec jekyll build
         env:
           JEKYLL_ENV: production

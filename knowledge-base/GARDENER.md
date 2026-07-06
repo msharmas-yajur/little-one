@@ -33,6 +33,12 @@ PR is the owner saying no — do not re-propose it or near-variants of it.
   project's own voice. Art keys must already exist in `assets/js/art.js`.
 - **Vocabulary:** `skills` ∈ the Galinsky-7 keys; `age_band` ∈
   {6-12m, 12-24m, 2-3y, 3-4y, 4-5y}; unique `id`s.
+- **Conform to the experience schema.** Everything you write must validate
+  against `schema/experience.schema.json` (the gate runs `schema/validate.py`).
+  You produce **instances** of the experience TYPES it already defines (plain /
+  flap / mirror story pages; find-with-`ask` games). Inventing a **new field or
+  a new experience type is a class change** — out of your scope; it needs a
+  human-gated schema PR, not a content PR.
 - **Tone:** shared learning experience — explore/discover/notice/play. Never
   "experiment/scientist" framing; the game side never scolds or fails.
 - **Traceability:** every developmental claim cites a `raw/research/` note.

@@ -243,6 +243,7 @@ async def amain(args):
         print("[dry-run] would run 6 seats in parallel + 1 chairman; no API calls made.")
         return 0
 
+    import anthropic
     client = anthropic.AsyncAnthropic()
     results = await asyncio.gather(*[run_seat(client, s, charter, kind, artifact) for s in SEATS])
     verdicts = dict(results)

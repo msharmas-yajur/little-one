@@ -52,7 +52,8 @@
   used as a <b>shared lap activity</b>: a grown-up reads aloud, the little one taps along.
   This page presents the two product requirement documents (PRDs) that define where the
   application is going, for anyone reviewing the plan.</p>
-  <p class="meta">Prepared 5&nbsp;July&nbsp;2026 · Source of truth: the project knowledge base
+  <p class="meta">Prepared 5&nbsp;July&nbsp;2026 · Updated 6&nbsp;July&nbsp;2026 (PRD&nbsp;0002 live; PRD&nbsp;0003 added) ·
+  Source of truth: the project knowledge base
   (<code>knowledge-base/</code> in the repository) · No child data appears anywhere in this plan.</p>
 
   <div class="card">
@@ -98,10 +99,12 @@
 
   <!-- ══════════════ PRD 2 ══════════════ -->
   <div class="card">
-    <h2>PRD 0002 — The Gardener Loop <span class="pill live">BUILT · awaiting first run</span></h2>
+    <h2>PRD 0002 — The Gardener Loop <span class="pill live">LIVE · first proposals merged</span></h2>
     <p class="sub">A self-improving application whose <i>learning lives in its knowledge base</i>:
     an automated Claude session that proposes one reviewed improvement at a time — and learns from
-    which proposals the owner accepts or rejects.</p>
+    which proposals the owner accepts or rejects.
+    <b>Now proven in production:</b> its first two proposals — a story for the one skill that had
+    no content, and a story for the youngest age band — were reviewed, merged, and are live in the app.</p>
 
     <h3>One pass of the Gardener</h3>
     <div class="flow">
@@ -142,20 +145,76 @@
     </ul>
   </div>
 
+  <!-- ══════════════ PRD 3 ══════════════ -->
+  <div class="card">
+    <h2>PRD 0003 — The Generative Arc <span class="pill plan">SPECCED</span></h2>
+    <p class="sub">From static pre-generated pages to <b>generated experiences</b> — stories,
+    the interactions built on them, a warm voice, and eventually music — each one
+    <i>reviewed on the go</i> by an automated panel of judges, with the human moving from
+    gatekeeper-of-everything to approver of <i>kinds</i> of experience and auditor of samples.</p>
+
+    <h3>The principle that unlocks it</h3>
+    <p>The app is a <b>digital replica of a physical book</b>. A book never knows the child —
+    the <i>lap</i> does. So:</p>
+    <div class="note"><b>Generation is global; personalization is local.</b>
+    Everything is generated from the <i>published</i> knowledge base (already public), so the
+    generative pipeline touches no child data by construction. The one hard line kept: the
+    child’s on-device profile <b>never</b> becomes an input to generation — it only chooses and
+    paces from what was generated, like a favourite book being read more often at home.</div>
+
+    <h3>Three planes of generation</h3>
+    <div class="cols">
+      <div class="tile"><b>📖 Stories</b> Already live — the Gardener writes them (PRD 0002). This PRD scales them from one-at-a-time to reviewed <i>pools</i> of variants.</div>
+      <div class="tile"><b>🧩 Interactions (generative UI)</b> The engine becomes a fixed <i>renderer</i>; each kind of experience (flap pages, find-games, new game forms) is described as <b>data in a bounded schema</b> that simply cannot express anything unsafe — new interactions arrive as reviewable data, not code.</div>
+      <div class="tile"><b>🎙 Voice</b> Every already-approved line is rendered once with a single warm voice (kept for the whole 5-year journey) into small audio files shipped with the site — no robotic device voice, works offline. Music follows the same pipeline later.</div>
+    </div>
+
+    <h3>The Review Council — the automated panel</h3>
+    <p>Each generated piece is judged by <b>six independent “seats,”</b> each bound to a
+    specific rubric already compiled (with sources) in the knowledge base — every verdict must
+    cite the principle it passes or fails. A fixed Chairman weighs the six verdicts into one
+    decision.</p>
+    <div class="cols">
+      <div class="tile"><b>🔭 Explorer’s Seat</b> <i>(after Gopnik)</i> — invites open-ended exploration, or drills?</div>
+      <div class="tile"><b>🧭 Skills Seat</b> <i>(after Galinsky)</i> — does it truly exercise the life-skill it claims?</div>
+      <div class="tile"><b>💬 Voice Seat</b> <i>(after Kuhl; Byers-Heinlein)</i> — is the grown-up still the language teacher? serve-and-return present?</div>
+      <div class="tile"><b>🕊 Tone Seat</b> <i>(after Faber &amp; King)</i> — descriptive, feelings first, never scolds or tests.</div>
+      <div class="tile"><b>🛡 Guardian Seat</b> — privacy, no fail states, schema bounds; the strictest seat, backed by machine checks that no approval can override.</div>
+      <div class="tile"><b>🤱 Lap Seat</b> — the family’s advocate: readable aloud at 9pm by a tired grown-up with a squirming one-year-old?</div>
+    </div>
+
+    <h3>How the gate works</h3>
+    <div class="flow">
+      <div class="step"><b>Kinds are approved by a human, once.</b> A new interaction form, a new voice, a new story template — the owner approves the <i>class</i> before any instance exists.</div>
+      <div class="step"><b>Instances are approved by the Council.</b> Variants within an approved kind pass machine checks, then the six seats (unanimous to publish; any rejection or Guardian hold goes to the owner; one revision cycle allowed).</div>
+      <div class="step gate"><b>Humans audit samples.</b> Every flagged item, every first-of-its-kind, and a random sample — and <b>every overturn teaches the offending seat</b>: it becomes a calibration example in that seat’s charter, and the seat’s agreement rate with the owner is what earns it more trust.</div>
+    </div>
+
+    <h3>Build order</h3>
+    <p class="sub">1 · Voice pipeline (the cleanest proof: rendering text a human already approved) →
+    2 · the Council → 3 · the experience schema (today’s mechanics, re-expressed as data) →
+    4 · the Gardener graduates to proposing new interactions → 5 · variant pools composed
+    locally per child. Real-time generation stays out until the Council has earned it — and
+    never with child signals as input.</p>
+  </div>
+
   <div class="card">
     <h2>What comes after</h2>
     <ul>
-      <li><b>Warm voice</b> — replace the robotic device voice with pre-rendered warm narration (Claude-authored scripts + one-time neural voice render, or a family member’s recorded voice). Awaiting the owner’s choice of route.</li>
       <li><b>Bilingual first words</b> — naming in English + the home language on the same page, per the bilingualism evidence.</li>
       <li><b>Gardener on a schedule</b> — after 3–4 trusted manual runs.</li>
-      <li><b>Ages 2–5 content arcs</b> — the tagging and coverage map already anticipate the older bands; the Gardener’s gap-filling grows the library toward them.</li>
+      <li><b>Ages 2–5 content arcs</b> — the tagging, coverage map, and a recorded games roadmap (colours, odd-one-out, feelings) already anticipate the older bands.</li>
+      <li><b>Council upgrades</b> — seats on different AI models for the highest-stakes reviews; head-to-head selection among variants.</li>
+      <li><b>Family-account sync</b> — the child’s local profile carried through the family’s own iCloud/Google account; never an identity service of ours.</li>
     </ul>
     <p class="note">📚 Full detail, sources, and decision history live in the repository’s
     <code>knowledge-base/</code> — the PRDs themselves are
-    <code>raw/prds/0001-adaptive-arc-v1.md</code> and <code>raw/prds/0002-gardener-loop.md</code>.</p>
+    <code>raw/prds/0001-adaptive-arc-v1.md</code>, <code>raw/prds/0002-gardener-loop.md</code>
+    and <code>raw/prds/0003-generative-arc.md</code>; the Council’s charter is
+    <code>knowledge-base/COUNCIL.md</code>.</p>
   </div>
 
-  <footer>Little One · product plan for review · generated from the project knowledge base, 2026-07-05</footer>
+  <footer>Little One · product plan for review · generated from the project knowledge base, updated 2026-07-06</footer>
 </div>
 </body>
 </html>

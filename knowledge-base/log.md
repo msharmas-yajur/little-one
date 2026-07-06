@@ -201,3 +201,24 @@ Append-only. Newest at the bottom. Each entry: date · what happened.
   with the `ask:` mechanic and a 2-5y roadmap (colours / odd-one-out / opposites /
   first-letters / sorting / feelings — each needs new art or a new mechanic).
   Verified in-browser: "Who says quack?" renders the four animals correctly.
+- 2026-07-06 · SPECCED THE GENERATIVE ARC (PRD 0003; designed with owner on Fable).
+  Owner reframed privacy: the app is a digital replica of a physical book — the
+  book never knows the child, the lap does ⇒ "generation is global,
+  personalization is local"; the only hard line is child signals as generation
+  INPUT (dyad profile never enters a prompt); privacy enforced at the data-flow
+  boundary, not by restricting generation (privacy-model.md amended). Plan:
+  engine becomes a fixed renderer of a capability-bounded experience SCHEMA
+  (generative UI as data, sandboxed by what the language can say); graduated
+  gates (classes human-gated, instances agent-gated + human post-audit by
+  sampling); the reviewer agent = the REVIEW COUNCIL — an LLM-judge panel
+  (llm-council + LLM-as-a-Judge patterns) whose constitution IS the KB: six
+  rubric-anchored seats (Explorer/Gopnik, Skills/Galinsky, Voice/Kuhl+
+  Byers-Heinlein, Tone/Faber&King, Guardian/house-counsel-with-lint-as-arm, and
+  the owner-added LAP seat — the dyad's advocate) + a fixed Chairman; verdicts
+  must cite KB principles; adversarial charters; deterministic floor immovable;
+  calibration = CLHF on the judges (owner overturns become seat exemplars;
+  agreement rate graduates classes). Sequencing: voice pipeline → council →
+  schema v1 → Gardener graduates to mechanics-as-data → variant farms + local
+  composition. Runtime generation and multi-model seats explicitly deferred.
+  New: raw/prds/0003-generative-arc.md, COUNCIL.md, wiki/features/review-council.md.
+  Build queued for an Opus session.

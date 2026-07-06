@@ -2,14 +2,31 @@
 title: Privacy Model
 type: concept
 status: drafted
-sources: []
-related: [wiki/features/per-child-structure.md]
-updated: 2026-07-05
+sources: [raw/prds/0003-generative-arc.md]
+related: [wiki/features/per-child-structure.md, wiki/features/review-council.md]
+updated: 2026-07-06
 ---
 
 # Privacy Model
 
 The repo is public, so identity is kept out of it by design.
+
+## The governing principle (owner decision, 2026-07-06 — PRD 0003)
+
+The app is a **digital replica of a physical book**: the book never knows the
+child — the *lap* does. Therefore:
+
+> **Generation is global; personalization is local.**
+> Anything generated from the *published KB* (a public repo) is privacy-clean
+> by construction, no matter how generative the pipeline becomes. The one hard
+> line: **child signals are never generation input.** The on-device dyad
+> profile only *selects and parameterizes* among generated experiences — it
+> chooses from the shelf; it never phones the publisher.
+
+Privacy is enforced at the **data-flow boundary** (what enters a prompt/leaves
+the device), not by restricting generative capability. Future profile sync, if
+wanted, goes through the **family's own platform account** (iCloud/Google
+app-data — their custody); we never operate an identity service.
 
 - **The founding fact carries no identity:** "the little one is 1 year old
   today." No name, birthdate, or location anywhere.

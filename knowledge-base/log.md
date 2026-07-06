@@ -222,3 +222,18 @@ Append-only. Newest at the bottom. Each entry: date · what happened.
   composition. Runtime generation and multi-model seats explicitly deferred.
   New: raw/prds/0003-generative-arc.md, COUNCIL.md, wiki/features/review-council.md.
   Build queued for an Opus session.
+- 2026-07-06 · BUILT THE REVIEW COUNCIL (review-mode) — first milestone of PRD 0003,
+  on Opus. `council/review.py`: six rubric-anchored seats (Explorer/Gopnik,
+  Skills/Galinsky, Voice/Kuhl+Byers-Heinlein, Tone/Faber&King, Guardian, Lap) run
+  in parallel + independently via the Anthropic SDK (claude-opus-4-8, adaptive
+  thinking, structured-output json_schema per seat), each loading its KB
+  constitution and required to cite principles; a fixed Chairman synthesizes; the
+  publish/revise/escalate decision is computed DETERMINISTICALLY from the verdicts
+  (decision_from — Guardian hold / any reject / seat error → escalate; any revise →
+  revise; unanimous approve → publish). `.github/workflows/council.yml` (manual
+  dispatch: review a story_id or game_id → job-summary report; exit 0/20/30 encodes
+  the gate). Reordered ahead of the voice pipeline because voice is blocked on an
+  owner TTS key while the council needs none (uses ANTHROPIC_API_KEY). Verified
+  locally via --dry-run (prompt assembly + all seat sources resolve) and a
+  decision-rule unit check. New: council/{review.py,README.md}, workflow, wiki
+  status → review-mode built.

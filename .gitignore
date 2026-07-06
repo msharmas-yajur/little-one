@@ -12,3 +12,7 @@ vendor/
 bin/
 
 *.gem
+
+# Python
+__pycache__/
+*.pyc

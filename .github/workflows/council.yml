@@ -1,0 +1,83 @@
+name: Review Council
+
+# The Review Council (PRD 0003 / knowledge-base/COUNCIL.md): a panel of six
+# rubric-anchored LLM judges + a Chairman that reviews one generated artifact
+# and returns publish / revise / escalate, with every verdict citing KB
+# principles. Manual for now (its first duties are voice QA + advisory
+# second-opinions on Gardener proposals); later it becomes the instance-gate in
+# the generation pipelines. Build-time only — never runs on the child's device.
+
+on:
+  workflow_dispatch:
+    inputs:
+      story_id:
+        description: "Review a story by id (from _data/stories.yml), e.g. chatter-chatter"
+        required: false
+        type: string
+      game_id:
+        description: "OR review a word-game by id (from _data/wordgames.yml), e.g. who-says"
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: council
+  cancel-in-progress: false
+
+jobs:
+  council:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install deps
+        run: pip install --quiet anthropic pyyaml
+
+      - name: Convene the Council
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          STORY_ID: ${{ github.event.inputs.story_id }}
+          GAME_ID: ${{ github.event.inputs.game_id }}
+        run: |
+          set -uo pipefail
+          if [ -n "${STORY_ID:-}" ]; then
+            args="--story $STORY_ID"
+          elif [ -n "${GAME_ID:-}" ]; then
+            args="--game $GAME_ID"
+          else
+            echo "::error::Provide a story_id or a game_id to review."; exit 1
+          fi
+
+          set +e
+          python council/review.py $args --out /tmp/council-report.md
+          code=$?
+          set -e
+
+          # Exit codes from review.py encode the gate: 0 publish · 20 revise · 30 escalate
+          case "$code" in
+            0)  decision="🟢 PUBLISH (unanimous approve)";;
+            20) decision="🟡 REVISE (a seat asked for changes)";;
+            30) decision="🔴 ESCALATE (reject / Guardian hold / seat error)";;
+            *)  echo "::error::Council run failed (exit $code)."; cat /tmp/council-report.md 2>/dev/null; exit "$code";;
+          esac
+
+          {
+            echo "## 🏛️ Review Council decision: $decision"
+            echo ""
+            cat /tmp/council-report.md
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "Council decision: $decision"
+
+      - name: Upload report
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: council-report
+          path: /tmp/council-report.md
+          if-no-files-found: ignore

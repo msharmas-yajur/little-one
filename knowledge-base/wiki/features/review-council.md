@@ -37,7 +37,14 @@ self-preference risk; mitigated by adversarial charters, the immovable
 deterministic floor, and (later, owner decision) multi-model seats for
 mechanic reviews.
 
-**Status:** specced. Build order per PRD 0003: voice pipeline first, council
-second (first duties: voice QA + advisory second-opinions on Gardener PRs),
-then experience-schema v1, then the Gardener's graduation to proposing
-mechanics-as-data.
+**Status:** review-mode BUILT (2026-07-06, Opus). `council/review.py` +
+`.github/workflows/council.yml` (manual dispatch; review a story/game by id →
+job-summary report). Six seats run in parallel via the Anthropic SDK
+(`claude-opus-4-8`, structured outputs); the publish/revise/escalate decision
+is computed deterministically from the verdicts (the LLM never overrides the
+gate). Voice built first in the PRD order, but the voice pipeline is blocked on
+an owner TTS key, so the council (which needs no new key — uses the existing
+`ANTHROPIC_API_KEY`) was built first; its immediate duty is advisory
+second-opinions on Gardener proposals. NEXT: selection mode (best-of-N),
+CLHF calibration (owner overturns → seat exemplars), committed KB ledger,
+then wiring the council into the generation pipelines as the instance-gate.

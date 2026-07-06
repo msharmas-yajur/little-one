@@ -306,14 +306,62 @@
       .then(s=>{ camStream=s; vid.srcObject=s; if(fb) fb.hidden=true; say("Peek-a-boo! It's you!"); })
       .catch(()=>{ if(fb) fb.hidden=false; say("Peek-a-boo! It's you!"); });   // denied/unavailable → gentle fallback
   }
+  /* ---- experience TYPES (schema/experience.schema.json) ----
+     The engine renders each experience TYPE through this registry. Behaviour is
+     identical to the per-type conditionals it replaces, but a new page type is
+     now ONE registry entry (+ its schema branch) instead of edits scattered
+     through renderPage / toggleFlap / the tap handler. Story pages are three
+     types (plain / flap / mirror); the Tap & Find game is itself a single
+     declarative type (see newRound). Each entry: hint · build(scene) overlays ·
+     invite() a tap/lift · tap(p) · optional onOpen/onClose (the flap mechanic). */
+  function pageType(p){ return p.mirror ? 'mirror' : (p.flap ? 'flap' : 'plain'); }
+  function addFlap(scene, isMirror){
+    const flap=document.createElement('div'); flap.id='flapEl';
+    flap.className='flap'+(isMirror?' flap-mirror':'');
+    scene.appendChild(flap);
+  }
+  function addMirror(scene){
+    const mc=document.createElement('div'); mc.className='mirror-circle';
+    mc.innerHTML='<video id="mirrorVid" playsinline autoplay muted></video>'
+               + '<div class="mirror-fallback" id="mirrorFallback" hidden>Peek-a-boo — it\'s you! 💛</div>';
+    scene.appendChild(mc);
+  }
+  function wiggleFlap(){
+    const f=$('flapEl');
+    if(f && f.animate && !reduceMotion) setTimeout(()=>f.animate(
+      [{transform:'rotate(-1.5deg)'},{transform:'rotate(1.5deg)'},{transform:'rotate(0deg)'}],
+      {duration:520, easing:'ease'}), 350);
+  }
+  function inviteHero(){ const h=$('heroArt'); if(h) setTimeout(()=>wobble(h), 350); }
+  const PAGE_TYPES = {
+    plain: {
+      hint: '👆 Tap the picture!',
+      build(){},
+      invite: inviteHero,
+      tap(p){ const h=$('heroArt'); if(!h) return; happy(); sayArt(p.art); wobble(h); }
+    },
+    flap: {
+      hint: '👆 Lift the flap!',
+      build(scene){ addFlap(scene, false); },
+      invite: wiggleFlap,
+      tap(p){ toggleFlap(p); },
+      onOpen(p){ happy(); say(speakable(p.reveal) || 'Peek-a-boo!'); confetti(); wobble($('heroArt')); }
+    },
+    mirror: {
+      hint: '👆 Lift the flap!',
+      build(scene){ addMirror(scene); addFlap(scene, true); },
+      invite: wiggleFlap,
+      tap(p){ toggleFlap(p); },
+      onOpen(){ startCamera(); },
+      onClose(){ stopCamera(); }
+    }
+  };
   function toggleFlap(p){
     const flap=$('flapEl'); if(!flap) return;
+    const T=PAGE_TYPES[pageType(p)];
     const opening = !flap.classList.contains('flap-open');
     flap.classList.toggle('flap-open', opening);
-    if(opening){
-      if(p.mirror){ startCamera(); }
-      else { happy(); say(speakable(p.reveal) || 'Peek-a-boo!'); confetti(); wobble($('heroArt')); }
-    } else if(p.mirror){ stopCamera(); }
+    if(opening){ if(T.onOpen) T.onOpen(p); } else if(T.onClose){ T.onClose(p); }
   }
 
   const $ = id => document.getElementById(id);
@@ -412,18 +460,7 @@
     const hero = `<g class="tappable" id="heroArt" transform="translate(28,26) scale(0.46)">${ART[p.art]||''}</g>`;
     scene.innerHTML = svgWrap(`${deco}${hero}`);
 
-    /* peek-a-boo: hidden picture under a flap, or the front-camera mirror finale */
-    if(p.mirror){
-      const mc=document.createElement('div'); mc.className='mirror-circle';
-      mc.innerHTML='<video id="mirrorVid" playsinline autoplay muted></video>'
-                 + '<div class="mirror-fallback" id="mirrorFallback" hidden>Peek-a-boo — it\'s you! 💛</div>';
-      scene.appendChild(mc);
-    }
-    if(p.flap || p.mirror){
-      const flap=document.createElement('div'); flap.id='flapEl';
-      flap.className='flap'+(p.mirror?' flap-mirror':'');
-      scene.appendChild(flap);
-    }
+    PAGE_TYPES[pageType(p)].build(scene, p);   // type-specific overlays: flap / camera-mirror
 
     const line = $('storyLine');
     line.textContent = p.line;
@@ -434,16 +471,9 @@
     $('prevBtn').disabled = pageIdx===0;
     $('nextBtn').innerHTML = pageIdx===curStory.pages.length-1 ? 'The end 💛' : 'Turn the page →';
 
-    const flapPage = p.flap || p.mirror;
-    const hint=$('tapHint'); if(hint) hint.textContent = flapPage ? '👆 Lift the flap!' : '👆 Tap the picture!';
-    if(!flapPage){
-      const heroEl=$('heroArt'); if(heroEl) setTimeout(()=>wobble(heroEl), 350); // invite a tap
-    } else {
-      const f=$('flapEl');                                  // little wiggle to invite lifting
-      if(f && f.animate && !reduceMotion) setTimeout(()=>f.animate(
-        [{transform:'rotate(-1.5deg)'},{transform:'rotate(1.5deg)'},{transform:'rotate(0deg)'}],
-        {duration:520, easing:'ease'}), 350);
-    }
+    const T = PAGE_TYPES[pageType(p)];
+    const hint=$('tapHint'); if(hint) hint.textContent = T.hint;
+    T.invite(p);                                            // invite a tap (plain) or a lift (flap/mirror)
   }
   /* ---- board-book page-turn: soft two-phase flip on the scene ---- */
   let turning=false;
@@ -564,9 +594,7 @@
     if(!curStory) return;
     const p = curStory.pages[pageIdx];
     telEngage(curStory,'taps');
-    if(p.flap || p.mirror){ toggleFlap(p); return; }      // peek-a-boo: lift the flap
-    const h=$('heroArt'); if(!h) return;
-    happy(); sayArt(p.art); wobble(h);
+    PAGE_TYPES[pageType(p)].tap(p);                        // plain → say the word; flap/mirror → lift
   });
 
   /* Adult-engagement signal: grown-up expands the monthly guidance card. */

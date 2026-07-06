@@ -46,9 +46,11 @@ pip install jsonschema pyyaml       # deps (CI installs these)
 Wired into both gates: `.github/workflows/gardener-lint.yml` (human PRs) and the
 in-workflow gate in `.github/workflows/gardener.yml` (bot proposals).
 
-## Next increment (3b)
+## 3b — done
 
-The engine still renders these types with per-type code. Making `player.js` a
-**pure schema-driven renderer** — a type→renderer registry so a new type is a
-data + one-function change — is the follow-up, done with full in-browser
-regression testing of every existing story/flap/mirror/game.
+`player.js` is now a **pure schema-driven renderer**: a `PAGE_TYPES` registry
+(`plain`/`flap`/`mirror`) with one `pageType(p)` discriminator replaced the
+per-type conditionals. Adding a page type is one registry entry + its schema
+branch. Verified behaviour-identical across all four experience types in-browser.
+Next: the Gardener graduates (milestone 4) to propose a mechanic as a schema
+branch + registry entry in a reviewed, capability-bounded PR.

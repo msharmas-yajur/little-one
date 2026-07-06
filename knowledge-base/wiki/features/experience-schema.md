@@ -36,6 +36,18 @@ charter (`GARDENER.md`) now binds the Gardener to the schema.
 carrying `onclick`/`fetch` or an off-enum `sky` is rejected (the capability bound
 bites).
 
-**Next (3b):** make `player.js` a pure schema-driven renderer (type→renderer
-registry) so adding a type is a data + one-function change — done with full
-in-browser regression testing of every existing experience.
+**3b DONE (2026-07-06):** `player.js` is now a pure schema-driven renderer.
+A `PAGE_TYPES` registry (`plain`/`flap`/`mirror`) with a single `pageType(p)`
+discriminator replaced the per-type conditionals scattered through `renderPage`,
+`toggleFlap`, and the scene tap handler — each entry is `{hint, build, invite,
+tap, onOpen?, onClose?}`, so a new page type is one registry entry (+ its schema
+branch), not scattered edits. The Tap & Find game is already a single declarative
+type (`newRound` reads items + `ask`). Behaviour is byte-identical — verified
+in-browser across all four types (plain tap → say word; flap → lift/reveal +
+confetti; mirror → camera + `flap-mirror`; game → `ask` prompt + choices) via
+DOM assertions + a visual check.
+
+This is the engine-half of the generative-UI substrate: the Gardener (once
+graduated, milestone 4) proposes a new mechanic as a **schema branch + registry
+entry** in one reviewed PR; the capability bound (`additionalProperties:false`)
+and the Council gate it, and the fixed renderer picks it up.

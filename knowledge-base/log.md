@@ -265,3 +265,10 @@ Append-only. Newest at the bottom. Each entry: date · what happened.
   the schema (Gardener produces instances only). Verified: 6 stories + 5 games
   conform; poisoned onclick/off-enum page rejected. schema/ + council/ excluded
   from the Jekyll build. Next (3b): make player.js a pure schema-driven renderer.
+- 2026-07-06 · MILESTONE 3b DONE — player.js is now a pure schema-driven renderer.
+  Introduced a PAGE_TYPES registry (plain/flap/mirror) + a single pageType(p)
+  discriminator, replacing the per-type conditionals scattered through renderPage
+  / toggleFlap / the scene tap handler. Each entry = {hint, build(scene), invite,
+  tap, onOpen?, onClose?}; a new page type is one registry entry + its schema
+  branch. Behaviour byte-identical — verified in-browser (DOM assertions across
+  plain/flap/mirror/game + a visual screenshot). Pure refactor, no new capability.

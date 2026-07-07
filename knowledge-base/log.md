@@ -353,3 +353,14 @@ Append-only. Newest at the bottom. Each entry: date · what happened.
   staggered 👏 that pop with a clap-pulse and float up. Book completion = two
   rounds (24 total) over the rolling confetti + voice; a game find = a small
   round (6). Respects reduced-motion; wall-clock safety cleanup.
+- 2026-07-07 · Read-to-me hardening (owner: it read ~2 pages then stopped on the
+  3rd, and occasionally skipped a page). Root cause: the HTML5 audio 'ended' event
+  is unreliable on mobile — when it didn't fire, advance fell back to the long
+  safety timer (felt "stopped"), and if the clip hadn't actually started, that
+  page was silent (a "miss"). Verified all 32 lines across 6 stories DO have clips,
+  so it wasn't missing content. Fix: say() now schedules completion off the clip's
+  REAL duration (loadedmetadata → setTimeout(done, duration+0.3s)) in addition to
+  'ended' — a reliable timer that no longer depends on the flaky event; whichever
+  fires first wins (done is once()). The narratePage backstop was lengthened so a
+  slow-loading clip is never flipped past prematurely. Verified: the chain marches
+  1→2→3→4 driven purely by the duration path with 'ended' never firing.

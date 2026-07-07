@@ -239,12 +239,15 @@
                 : (V.manifest[DEFAULT_VOICE] && V.manifest[DEFAULT_VOICE][s]) ? DEFAULT_VOICE : null;
         if(use){
           duckMusic();
-          try{ if(clipAudio){ clipAudio.onended=clipAudio.onerror=null; clipAudio.pause(); } }catch(e){}
-          clipAudio = new Audio((V.base||'') + '/' + use + '/' + s + '.mp3');
-          clipAudio.volume = 0.95;
-          clipAudio.onended = done;
-          clipAudio.onerror = ()=>sayDevice(text, done);       // clip missing/failed → device voice
-          clipAudio.play().catch(()=>sayDevice(text, done));   // autoplay blocked → device voice
+          try{ if(clipAudio){ clipAudio.onended=clipAudio.onerror=clipAudio.onloadedmetadata=null; clipAudio.pause(); } }catch(e){}
+          const a = clipAudio = new Audio((V.base||'') + '/' + use + '/' + s + '.mp3');
+          a.volume = 0.95;
+          a.onended = done;                                    // normal completion
+          a.onerror = ()=>sayDevice(text, done);               // clip missing/failed → device voice
+          // 'ended' is unreliable on some mobile browsers — also complete off the
+          // clip's real duration (a reliable timer), whichever fires first (done is once()).
+          a.onloadedmetadata = ()=>{ if(a===clipAudio && isFinite(a.duration) && a.duration>0) setTimeout(done, a.duration*1000 + 300); };
+          a.play().catch(()=>sayDevice(text, done));           // autoplay blocked → device voice
           return;
         }
       }
@@ -620,8 +623,9 @@
       }, 900);
     };
     say(line, advance);                                         // advance only after the line is truly read
-    // safety net: if the audio never signals completion (blocked/stuck), don't stall forever
-    readTimer = setTimeout(advance, Math.max(4000, line.length*130 + 3000));
+    // last-resort backstop only (normal completion comes from the clip's real duration
+    // in say()); keep it long so a slow-loading clip is never flipped past prematurely
+    readTimer = setTimeout(advance, Math.max(9000, line.length*130 + 6000));
   }
 
   /* ---- GAME ---- */

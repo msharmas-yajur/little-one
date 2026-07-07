@@ -376,3 +376,14 @@ Append-only. Newest at the bottom. Each entry: date · what happened.
   simple fire-and-forget; clip resolution shared via clipFor(). Verified: with NO
   audio events fired at all, the chain marches 1→2→3→4 using exactly ONE reused
   audio element.
+- 2026-07-08 · Neutral-referent sweep (closing the Council's first confirmed
+  finding): ~115 gendered references reviewed across site + wiki; every
+  child-referring "her/she" replaced with "the little one" / they-them. arc.yml
+  fully rewritten (months retitled: "Let them explore", "Follow the lantern",
+  "Cause and effect, in little hands", "Do it where they can see", "Let them
+  solve it"); stories.yml 2 spoken lines + 16 cues; dyad/player UI strings;
+  wiki pages updated to match. Judgment documented: animal pronouns kept (the
+  rule protects the child; board-book convention). children.yml example note
+  no longer suggests adding a real name. 2 changed lines re-rendered (10 clips
+  in, 10 orphans pruned); schema + build green. Lesson for the future ledger:
+  a confirmed Council finding should not wait two days for a fix.

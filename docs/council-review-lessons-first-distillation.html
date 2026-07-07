@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Little One — The Council in Session II: the Librarian's lessons</title>
+<link rel="icon" href="../assets/icons/icon-192.png">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=Baloo+2:wght@600;700&display=swap');
+  :root{--cream:#FBF6EE;--sky:#5BB0C7;--sun:#F6C453;--coral:#F28C7A;--leaf:#8DC08A;--grape:#B79BD6;--ink:#4A4038;--soft:#7A6E63;--line:#EADFCE;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Fredoka',sans-serif;background:var(--cream);color:var(--ink);line-height:1.6;}
+  .wrap{max-width:900px;margin:0 auto;padding:40px 22px 80px;}
+  h1,h2,h3{font-family:'Baloo 2',cursive;line-height:1.2;}
+  h1{font-size:clamp(1.7rem,5vw,2.3rem);color:var(--sky);}
+  h1 span{color:var(--coral);}
+  .sub{color:var(--soft);margin:6px 0 8px;max-width:70ch;}
+  .meta{font-size:.8rem;color:var(--soft);}
+  h2{font-size:1.4rem;margin:0 0 4px;}
+  h3{font-size:1.05rem;margin:18px 0 6px;color:var(--sky);}
+  .card{background:#fff;border-radius:22px;padding:26px 28px;margin-top:26px;box-shadow:0 6px 0 rgba(74,64,56,.10);}
+  ul{padding-left:20px;margin:6px 0;}
+  li{margin:5px 0;}
+  code{background:var(--cream);border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-size:.85em;}
+  a{color:var(--sky);font-weight:600;}
+  .back{display:inline-block;margin-bottom:14px;font-size:.9rem;}
+  .verdict-banner{background:#fff;border-radius:22px;padding:22px 28px;margin-top:22px;box-shadow:0 6px 0 rgba(74,64,56,.10);border-left:8px solid var(--sun);}
+  .verdict-banner h2{color:#8a6d1a;}
+  .votes{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+  .vote{font-size:.8rem;font-weight:600;padding:6px 14px;border-radius:100px;background:var(--cream);border:1.5px solid var(--line);}
+  .vote.approve{border-color:var(--leaf);color:#4a7a47;}
+  .vote.revise{border-color:var(--sun);color:#8a6d1a;}
+  .seat{border-left:6px solid var(--line);margin-top:22px;}
+  .seat.approve{border-left-color:var(--leaf);}
+  .seat.revise{border-left-color:var(--sun);}
+  .seat .role{font-size:.8rem;color:var(--soft);margin:-2px 0 8px;}
+  .oneline{background:var(--cream);border-radius:14px;padding:12px 16px;font-style:italic;margin:8px 0 12px;}
+  .cites{font-size:.82rem;color:var(--soft);background:var(--cream);border:1.5px dashed var(--line);border-radius:14px;padding:10px 14px;margin:10px 0;}
+  .cites b{color:var(--ink);}
+  .concern li{list-style:none;position:relative;padding-left:26px;}
+  .concern li::before{content:"⚠️";position:absolute;left:0;font-size:.85em;}
+  .fix li{list-style:none;position:relative;padding-left:26px;}
+  .fix li::before{content:"✏️";position:absolute;left:0;font-size:.85em;}
+  .callout{background:var(--cream);border:1.5px solid var(--line);border-radius:16px;padding:14px 18px;margin:14px 0;}
+  .quote{border-left:4px solid var(--grape);padding:4px 0 4px 16px;margin:10px 0;color:var(--soft);}
+  .fn{font-size:.78rem;color:var(--soft);border-top:1.5px solid var(--line);margin-top:16px;padding-top:10px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a class="back" href="product-plan.html">← Back to the Product Plan</a>
+<h1>The Council <span>in Session II</span></h1>
+<p class="sub">The complete conversation from the Council's second sitting — this time reviewing <b>the system's own memory</b>: the Librarian's first distillation of the decision ledger, the lessons pages that steer every future generator. And this time the panel itself ran differently: <b>six parallel sub-agents inside a live working session</b> rather than a CI pipeline — same constitutions, same independence, same deterministic decision rule, different substrate.</p>
+<p class="meta">2026-07-08 · artifact <code>wiki/lessons/</code> (first distillation, PR #4) · session: in-session parallel sub-agents · permanent record: <code>knowledge-base/ledger/council/2026-07-08-lessons-first-distillation.md</code> · Session I: <a href="council-review-count-with-me.html">count-with-me →</a></p>
+
+<div class="card">
+  <h2>What was on the table</h2>
+  <p>The Librarian — the third loop, built the same day — had distilled the ledger's first full cycle into two lessons pages: <code>what-works.md</code> (8 CONFIRMED/HYPOTHESIS rules) and <code>seat-calibration.md</code> (a per-seat accuracy record, including the seats' own overturns). These pages are <b>binding steers for all future generation</b>, which is why the charter gives them the strictest gate. The pages were already merged (PR #4); this was the retro pre-read the Librarian's charter invites.</p>
+  <p class="sub" style="margin-top:8px;">The delicious recursion: the Council reviewing the pages that grade the Council. Each seat judged whether the lessons faithfully encode <i>its own constitution</i> — and whether the calibration page reports <i>its own past verdicts</i> accurately — with the ledger as evidence.</p>
+</div>
+
+<div class="verdict-banner">
+  <h2>🟡 Decision: REVISE</h2>
+  <p><i>Revise verdict(s) from: explorer, skills, voice, tone, lap — one bounce back to the generator, then the owner. (Guardian approved; no rejects.)</i></p>
+  <div class="votes">
+    <span class="vote revise">🧭 Explorer — revise</span>
+    <span class="vote revise">🎯 Skills — revise</span>
+    <span class="vote revise">🗣️ Voice — revise</span>
+    <span class="vote revise">💛 Tone — revise</span>
+    <span class="vote approve">🛡️ Guardian — approve</span>
+    <span class="vote revise">🛋️ Lap — revise</span>
+  </div>
+  <p class="sub" style="margin-top:12px;"><b>The headline:</b> the Guardian — whose non-overridable hold sank the last artifact — <i>approved</i> this one. Its two calibration exemplars, written after the owner's Session-I ruling, visibly changed its behavior: it found the same forward-bands gap the Lap Seat found, and filed it as "a note per my own forward-bands exemplar, not a hold."</p>
+</div>
+
+<div class="card">
+  <h2>Chairman's synthesis</h2>
+  <p>The decision is revise: Guardian approved, no seat rejected, and five seats returned revise, so the charter sends the lessons back to the generator for one bounce before they return to you. This is worth saying plainly: <b>not one seat found the distillation dishonest.</b> All six verified the ledger restatements they checked — the invitations lesson, the never-test encoding, the social-gating encoding, both Guardian exemplars, and every calibration entry a seat examined came back accurate. What the five revises share is a different worry: not what the pages say, but <b>what a compliant generator could get away with while obeying them</b>. These pages are binding steers for future runs, and the seats read them the way a generator will — literally, and looking for the gaps.</p>
+  <p style="margin-top:10px;">The strongest council signal is a genuine independent convergence: <b>Tone and Lap, from different constitutions, found the same hole.</b> The cycle's adopted describe-don't-judge cue style — visible in the merged artifact and named in seat-calibration.md itself — never became a lesson. The cue lesson mandates a cue's presence and a serve-and-return pause but says nothing about cue content, so a generator could ship 'good girl!' with a dutiful pause and pass every bullet. Two seats walked separate paths to that exact door. It should be closed with a CONFIRMED cue-content bullet. A second, softer convergence: Guardian (as a note) and Lap (as a revise) both flagged that the forward-age-bands lesson carries the license half of the Guardian's own exemplar without its obligation half — content must still fit its own declared band and honor the adult-stance framing. Guardian didn't hold because COUNCIL.md carries the full qualifier; Lap held because the lessons page is what a generator will actually read. That severity split is the cycle's only real disagreement between seats, and Lap has the better of it for a page whose header says 'treat CONFIRMED bullets as binding steers.'</p>
+  <p style="margin-top:10px;">The remaining three revises are one family: <b>n=1 rulings drifting into settled-fact wording.</b> Explorer caught 'consistently adopts' — a trend word on a page that declares itself first-readings-only — and wants a sufficiency caveat so invitation-framing isn't read as the whole of open-endedness. Skills caught bullet 4 compressing the constitution wrongly on two load-bearing points: the KB does not define critical thinking as cause-and-effect prediction, and the counting-to-connections retag is owner-ratified precedent from one cycle, not a definitional fact. Voice caught the unscoped app-voice allowance — the ruling permitted one mechanic's count-words, but as written it could license synthetic speech into language-teaching territory that bilingual-early-years.md explicitly forbids. Lap adds one constructive gap: the cycle confirmed a practicality baseline (about five short rounds, the 9pm shape) that merged unchanged and is captured nowhere, so generators get faults but no rhythm steer.</p>
+  <p style="margin-top:10px;">All of this is one pass of wording surgery: two new bullets, a handful of scope guards and provenance markers, one supplement-not-replace preamble line. Guardian's clean approve on the hard bounds — no names anywhere, every lesson steering toward the constraints rather than away — means nothing here escalates. One bounce, then it comes to you.</p>
+
+  <h3>Key disagreements and convergences the Chairman surfaced</h3>
+  <ul>
+    <li><b>Strongest independent convergence:</b> Tone and Lap separately found the adopted describe-don't-judge cue CONTENT style is not encoded — the cue lesson binds presence and pause only, so evaluative praise would pass every bullet.</li>
+    <li><b>The only true seat-vs-seat disagreement:</b> Guardian and Lap converged on the forward-bands lesson carrying only half its exemplar, but split on severity — Guardian a non-blocking note, Lap a revise.</li>
+    <li><b>A three-seat family pattern</b> (Explorer, Skills, Voice), reached independently: n=1 owner rulings written as settled generalities — a trend word, a retag laundered into a definition, an unscoped allowance colliding with the bilingual constitution.</li>
+    <li>Explorer's necessary-not-sufficient caveat and Tone's supplement-not-replace preamble are the same structural worry from different seats: the lessons risk being read as complete guidance.</li>
+    <li>Guardian's approve does not conflict with the five revises — its gate (privacy, bounds, restatement fidelity) passed for every seat that checked; the revises live in generator-facing scope and completeness.</li>
+    <li>Lap alone flagged the missing practicality baseline (few short rounds, the 9pm shape) — the only purely additive finding; no seat contradicts it.</li>
+    <li>Skills' definitional correction (critical thinking is "the ongoing search for reliable knowledge," not cause-and-effect prediction) stands uncontested.</li>
+  </ul>
+</div>
+
+<div class="card seat revise">
+  <h2>🧭 Explorer's Seat — 🟡 revise</h2>
+  <p class="role">Constitution: Gopnik — the child as explorer; gardener, not carpenter · <i>rejected in Session I; moderated by its calibration exemplar</i></p>
+  <div class="oneline">The lessons are faithful to my constitution and accurately report my seat's overturn, but as binding generator steers they need one sufficiency caveat so quiz-avoidance is not mistaken for the whole Explorer lens, and one trend-word tightened to honor the n=1 scope the page itself declares.</div>
+  <div class="cites"><b>Cited:</b> gopnik-foundation.md — child as explorer; not testing or drilling · gopnik-foundation.md — lantern attention · gardener-and-the-carpenter.md — model once, then free re-discovery; no quizzing · COUNCIL.md — its own calibration exemplar ("a target implies a test": artifact-vs-runtime humility) · COUNCIL.md — one overturn is an exemplar, not a trend</div>
+  <ul class="concern">
+    <li>The invitations lesson's operational check ("no right-answer question, no implied score") is a <b>necessary condition only</b> — a generator could pass the checklist yet produce fully adult-conducted, closed activities that fail child-as-explorer / lantern-attention. The unadopted Explorer suggestions from Session I must not read as settled.</li>
+    <li>The calibration page's final bullet says the owner "consistently adopts" framing faults — a trend word from one cycle, contradicting the page's own "first readings, not trends" header; on a binding page about this seat it risks biasing future runs toward under-rejecting on n=1 evidence.</li>
+    <li>Verified accurate: the calibration page's Explorer entry ("right fault, over-strong verdict") matches the ledger, dispassionately.</li>
+  </ul>
+  <ul class="fix">
+    <li>Add a sufficiency caveat: invitation framing is necessary, not sufficient; open-endedness and child-led focus are still judged per artifact.</li>
+    <li>Replace "consistently adopts" with cycle-scoped wording.</li>
+  </ul>
+</div>
+
+<div class="card seat revise">
+  <h2>🎯 Skills Seat — 🟡 revise</h2>
+  <p class="role">Constitution: Galinsky — the seven life skills; honest tagging</p>
+  <div class="oneline">The lessons' skill steers point generators in the honest direction, but one bullet compresses the constitution incorrectly on two load-bearing points — swapping Critical Thinking's application for its definition, and presenting an owner-ratified, constitution-silent counting→connections mapping as definitional fact — which a binding steer for future tagging cannot afford.</div>
+  <div class="cites"><b>Cited:</b> mind-in-the-making.md — #5 Critical Thinking is "the ongoing search for reliable knowledge"; cause-and-effect play is the ~12-month <i>application</i>, not the definition · seven-life-skills.md — one-to-one correspondence appears in neither #5 nor #4 · the Session-I ledger events — the seat's original verdict was explicitly hedged; the retag became canon by owner adoption</div>
+  <ul class="concern">
+    <li>The lessons state the KB "defines" critical thinking as "cause-and-effect prediction." It doesn't — that's the 12-month application of a broader definition. The substitution cuts both ways: over-tagging any cause-and-effect mechanic, or wrongly denying the tag to genuine prediction-testing at a forward band.</li>
+    <li>"One-to-one correspondence — a connections skill" is asserted as settled fact; the mapping is owner-ratified precedent from one cycle, and the lesson should carry that provenance so generators recheck the definitions for the next numeracy-adjacent mechanic — <b>a binding steer must not launder a hedged, owner-ratified judgment into a definitional claim.</b></li>
+    <li>Minor: "fully adopted" — the precise reading is "adopted as the retag option" (the alternative genuine-critical-thinking redesign went untaken).</li>
+  </ul>
+  <ul class="fix">
+    <li>Reword the definitional clause to the constitution's actual definition.</li>
+    <li>Mark counting→connections as ruling-derived, with a reread-the-definitions steer.</li>
+  </ul>
+</div>
+
+<div class="card seat revise">
+  <h2>🗣️ Voice Seat — 🟡 revise</h2>
+  <p class="role">Constitution: responsive talk, social gating — the grown-up is the language mechanism</p>
+  <div class="oneline">The voice lessons faithfully encode social gating and the calibration page reports my seat's cycle accurately, but the unscoped "app may keep its spoken labels" allowance in a CONFIRMED binding steer leaves a door open to synthetic pronunciation in language-teaching contexts that my constitution explicitly closes.</div>
+  <div class="cites"><b>Cited:</b> bilingual-early-years.md — social gating: the grown-up on the lap is the language mechanism; the app must never position itself as the teacher · bilingual-early-years.md — bilingual words are the grown-up's; no synthetic pronunciation · responsive-talk.md — serve-and-return: answer the turn, then wait</div>
+  <ul class="concern">
+    <li>The "app is support, never the teacher" lesson records the owner's allowance ("app may keep its gentle spoken labels and count-words") <b>without a scope guard</b> — a future generator could extend synthetic app speech into language-teaching contexts (e.g. voicing second-language words), which the constitution explicitly forbids. The allowance was a ruling on one mechanic's count-words, not a general license.</li>
+    <li>The lessons are silent on bilingual steers (the code-mixing rule) — not dishonest, but the gap will bind the moment two-language content is generated.</li>
+    <li>Verified accurate: the calibration page's Voice entry matches the ledger, including the partial adoption of the strongest form.</li>
+  </ul>
+  <ul class="fix">
+    <li>Scope the allowance: gentle in-mechanic labels only; never license for language-teaching pronunciation.</li>
+    <li>Optional: encode the full serve-and-return loop (answer the turn, then wait), not just the pause.</li>
+  </ul>
+</div>
+
+<div class="card seat revise">
+  <h2>💛 Tone Seat — 🟡 revise</h2>
+  <p class="role">Constitution: Faber &amp; King — describe don't judge; never test</p>
+  <div class="oneline">The never-test lesson is a faithful encoding and the calibration page's account of my seat is verified accurate, but the lessons omit the adopted describe-don't-judge cue direction — a gap that would let a compliant generator produce evaluative, judging copy.</div>
+  <div class="cites"><b>Cited:</b> responsive-talk.md — "Describe, don't judge" is the house style for all cue lines · how-to-talk-little-kids.md — descriptive praise; report specifics, never verdicts; feelings first · the merged artifact itself — <code>_data/wordgames.yml</code>'s apple-round cue ("describe it: 'you tapped an apple!'")</div>
+  <ul class="concern">
+    <li>The adopted describe-don't-judge cue style is <b>not encoded as a lesson</b> even though the merged artifact contains it and the calibration page itself says the direction merged — an internal inconsistency between the two pages. A compliant generator could write evaluative praise ("well done!" as a verdict) while passing every lesson.</li>
+    <li>The lessons never state they <b>supplement rather than replace</b> the constitutions; silence invites treating them as sufficient tone guidance, dropping un-exercised principles like feelings-first.</li>
+    <li>Verified accurate: the invitations lesson, the 5-of-6 convergence claim, and the calibration Tone entry all trace to the ledger.</li>
+  </ul>
+  <ul class="fix">
+    <li>Add a CONFIRMED cue-content bullet: descriptive, never evaluative — report what the little one does.</li>
+    <li>Add a supplement-not-replace preamble line.</li>
+  </ul>
+</div>
+
+<div class="card seat approve">
+  <h2>🛡️ Guardian Seat — ✅ approve</h2>
+  <p class="role">Constitution: hard rules — privacy, founding fact, no-fail floor, class decisions · <i>held in Session I; its exemplars visibly moderated it here</i></p>
+  <div class="oneline">No PII, names, or identifying details anywhere in the lessons; every lesson steers generators toward the no-fail, invitation-not-quiz, privacy-clean bounds rather than away from them; all restatements of the Session-I ruling — including both of my calibration exemplars and my own overturns — check out against the ledger, leaving only two non-blocking precision notes.</div>
+  <div class="cites"><b>Cited:</b> knowledge-base/CLAUDE.md — No names. Ever. · privacy-model.md — no identity in the repo · design-principles.md — no fail states; adult-stance framing · COUNCIL.md — both Guardian calibration exemplars · COUNCIL.md — honest uncertainty</div>
+  <ul class="concern">
+    <li>Non-blocking: the forward-age-bands lesson carries the license without the exemplar's residual qualifier (content must still fit its OWN declared band and honor adult-stance framing) — <b>"a note per my own forward-bands exemplar, not a hold."</b></li>
+    <li>Non-blocking: "the art-key verification ask stood" is soft provenance — the decision event records it neither as adopted nor overruled.</li>
+    <li>Abstention: the developmental-science correctness of the restatements is outside this constitution; verified only that they accurately restate the owner's ruling, which they do.</li>
+  </ul>
+  <ul class="fix">
+    <li>Append the band-fit qualifier to the forward-age-bands bullet.</li>
+    <li>Soften "stood" to "was not overruled; the deterministic gates passed."</li>
+  </ul>
+</div>
+
+<div class="card seat revise">
+  <h2>🛋️ Lap Seat — 🟡 revise</h2>
+  <p class="role">Constitution: the 9pm reality — a tired grown-up, a squirming child, one lap</p>
+  <div class="oneline">The distillation is honest, well-cited, and keeps the dyad central — but as the strictest gate it omits the adopted cue-content house style and the band-fit qualifier, gaps a generator would walk straight through.</div>
+  <div class="cites"><b>Cited:</b> responsive-talk.md — "Describe, don't judge" as the house style for cue lines · design-principles.md — shared lap activity; forgiving; adult practice, not child curriculum · the-12-month-arc.md — follow the real child, not the calendar · COUNCIL.md — the forward-bands exemplar's obligation half</div>
+  <ul class="concern">
+    <li>The cue lesson mandates PRESENCE and a pause but omits cue CONTENT style — a cue with a dutiful pause that still tests or judges would pass (independent convergence with Tone).</li>
+    <li>The forward-bands lesson carries only half its exemplar — license without the fit obligation (convergence with the Guardian's note; held at revise because <i>the lessons page is what a generator actually reads</i>).</li>
+    <li>The page distills only faults: the cycle's confirmed practicality baseline — about five short rounds, one concrete big-target gesture, the shape a tired grown-up can hold at 9pm, merged unchanged — is captured nowhere.</li>
+    <li>Minor: the Lap calibration entry collapses band-scope (overruled) with curriculum-vs-stance framing (resolved by the adopted reframe).</li>
+  </ul>
+  <ul class="fix">
+    <li>Bind cue content, not just presence.</li>
+    <li>Complete the forward-bands lesson with the fit qualifier.</li>
+    <li>Add a HYPOTHESIS practicality-baseline lesson (few short rounds, one concrete gesture, the 9pm shape).</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2>🔁 What happens next</h2>
+  <p>By the charter: <b>one bounce back to the generator</b> — the same Librarian agent, resumed with the Council's notes — then the revised lessons return to the owner as a human-gated PR. A second failure would escalate. The revision, the gate results, and the owner's ruling will be recorded in the ledger like everything else.</p>
+  <div class="callout"><b>Why this session matters beyond its verdict.</b> Three firsts: the Council reviewed <i>the system's own compiled memory</i> (the recursive gate the architecture promised); the calibration loop demonstrably worked (both Session-I rejecters moderated, correctly, citing their own exemplars); and the panel ran as <b>in-session parallel sub-agents</b> — proving the review layer is substrate-independent: same constitutions, same independence, same deterministic rule, whether it runs in CI or beside a working session.</div>
+  <p class="fn">Transcript note: verdicts reproduced from the in-session run of 2026-07-08 (six parallel sub-agents + a Chairman, decision computed mechanically). The seats' constitutions are documented in <a href="council-review-count-with-me.html">Session I's appendix</a>; permanent machine-readable record: <code>knowledge-base/ledger/council/2026-07-08-lessons-first-distillation.md</code>.</p>
+</div>
+
+<p class="meta" style="margin-top:26px;"><a href="council-review-count-with-me.html">← Session I: count-with-me</a> · <a href="product-plan.html">Product Plan</a> · Little One · a shared lap activity, growing carefully</p>
+
+</div>
+</body>
+</html>

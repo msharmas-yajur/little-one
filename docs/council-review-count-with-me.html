@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Little One — The Council in Session: count-with-me</title>
+<link rel="icon" href="../assets/icons/icon-192.png">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=Baloo+2:wght@600;700&display=swap');
+  :root{--cream:#FBF6EE;--sky:#5BB0C7;--sun:#F6C453;--coral:#F28C7A;--leaf:#8DC08A;--grape:#B79BD6;--ink:#4A4038;--soft:#7A6E63;--line:#EADFCE;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Fredoka',sans-serif;background:var(--cream);color:var(--ink);line-height:1.6;}
+  .wrap{max-width:900px;margin:0 auto;padding:40px 22px 80px;}
+  h1,h2,h3{font-family:'Baloo 2',cursive;line-height:1.2;}
+  h1{font-size:clamp(1.7rem,5vw,2.3rem);color:var(--sky);}
+  h1 span{color:var(--coral);}
+  .sub{color:var(--soft);margin:6px 0 8px;max-width:70ch;}
+  .meta{font-size:.8rem;color:var(--soft);}
+  h2{font-size:1.4rem;margin:0 0 4px;}
+  h3{font-size:1.05rem;margin:18px 0 6px;color:var(--sky);}
+  .card{background:#fff;border-radius:22px;padding:26px 28px;margin-top:26px;box-shadow:0 6px 0 rgba(74,64,56,.10);}
+  ul{padding-left:20px;margin:6px 0;}
+  li{margin:5px 0;}
+  code{background:var(--cream);border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-size:.85em;}
+  a{color:var(--sky);font-weight:600;}
+  .back{display:inline-block;margin-bottom:14px;font-size:.9rem;}
+  .verdict-banner{background:#fff;border-radius:22px;padding:22px 28px;margin-top:22px;box-shadow:0 6px 0 rgba(74,64,56,.10);border-left:8px solid var(--coral);}
+  .verdict-banner h2{color:var(--coral);}
+  .votes{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+  .vote{font-size:.8rem;font-weight:600;padding:6px 14px;border-radius:100px;background:var(--cream);border:1.5px solid var(--line);}
+  .vote.reject{border-color:var(--coral);color:var(--coral);}
+  .vote.revise{border-color:var(--sun);color:#8a6d1a;}
+  .seat{border-left:6px solid var(--line);margin-top:22px;}
+  .seat.reject{border-left-color:var(--coral);}
+  .seat.revise{border-left-color:var(--sun);}
+  .seat .role{font-size:.8rem;color:var(--soft);margin:-2px 0 8px;}
+  .oneline{background:var(--cream);border-radius:14px;padding:12px 16px;font-style:italic;margin:8px 0 12px;}
+  .cites{font-size:.82rem;color:var(--soft);background:var(--cream);border:1.5px dashed var(--line);border-radius:14px;padding:10px 14px;margin:10px 0;}
+  .cites b{color:var(--ink);}
+  .concern li{list-style:none;position:relative;padding-left:26px;}
+  .concern li::before{content:"⚠️";position:absolute;left:0;font-size:.85em;}
+  .fix li{list-style:none;position:relative;padding-left:26px;}
+  .fix li::before{content:"✏️";position:absolute;left:0;font-size:.85em;}
+  .callout{background:var(--cream);border:1.5px solid var(--line);border-radius:16px;padding:14px 18px;margin:14px 0;}
+  .ruling{border-left:8px solid var(--leaf);}
+  .ruling h2{color:var(--leaf);}
+  .adopted{color:var(--leaf);font-weight:600;}
+  .rejected{color:var(--coral);font-weight:600;}
+  .quote{border-left:4px solid var(--grape);padding:4px 0 4px 16px;margin:10px 0;color:var(--soft);}
+  .fn{font-size:.78rem;color:var(--soft);border-top:1.5px solid var(--line);margin-top:16px;padding-top:10px;}
+  table{width:100%;border-collapse:collapse;font-size:.9rem;margin-top:8px;}
+  td,th{padding:8px 10px;border-bottom:1.5px solid var(--line);text-align:left;vertical-align:top;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<a class="back" href="product-plan.html">← Back to the Product Plan</a>
+<h1>The Council <span>in Session</span></h1>
+<p class="sub">The complete conversation from the Review Council's first <b>escalation</b> — six independent LLM-judge seats reviewing the Mechanic's first proposal, the <code>count</code> game (<code>count-with-me</code>), and sending it to the human. This page is the transcript teams should read to understand how the panel actually behaves.</p>
+<p class="meta">2026-07-08 · artifact <code>wordgame/count-with-me</code> · proposed by the Mechanic (PR #3) · CI run 28868285280 · permanent record: <code>knowledge-base/ledger/council/2026-07-08-count-with-me.md</code></p>
+
+<div class="card">
+  <h2>What was on the table</h2>
+  <p>The Mechanic loop's first-ever proposal: a new game <i>type</i>, <code>count</code> — the engine shows a small set (2–4) of one picture and the original prompt asked <i>"How many ducks? Tap each one!"</i>; each tap counts aloud (one, two, three…) and the total is cheered. It had already passed the two deterministic gates (schema validation, JS capability lint). The owner chose Council-first review before merging.</p>
+  <p class="sub" style="margin-top:8px;">How the panel works: six seats, each with a different <i>constitution</i> compiled from the knowledge base, judge independently — they never see each other's verdicts. A Chairman synthesises but cannot vote. The publish/revise/escalate decision is computed <b>deterministically</b> from the votes; the Guardian's hold can never be overridden by any number of approvals.</p>
+</div>
+
+<div class="verdict-banner">
+  <h2>🔴 Decision: ESCALATE</h2>
+  <p><i>The Guardian Seat did not approve — escalates to the owner (the Guardian's hold cannot be overridden).</i></p>
+  <div class="votes">
+    <span class="vote reject">🧭 Explorer — reject</span>
+    <span class="vote revise">🎯 Skills — revise</span>
+    <span class="vote revise">🗣️ Voice — revise</span>
+    <span class="vote revise">💛 Tone — revise</span>
+    <span class="vote reject">🛡️ Guardian — reject</span>
+    <span class="vote revise">🛋️ Lap — revise</span>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Chairman's synthesis</h2>
+  <p>The mechanical decision is escalate: the Guardian did not approve, and by charter its hold cannot be overridden by any number of approvals. This word-game goes to you, not back to the generator.</p>
+  <p style="margin-top:10px;">The council is strikingly aligned on the core problem. <b>Five of six seats independently flagged the same fault:</b> the 'count' mode's 'How many ducks? Tap each one!' prompt is a quiz with a right answer. Explorer and Guardian call this fatal and reject; Skills, Voice, Tone, and Lap call it fixable and ask for a revise. The convergence matters — when seats grounded in different constitutions (child-as-explorer, no-fail design, never-test tone, the lap dyad) all land on the same line independently, that is the strongest signal the council can produce.</p>
+  <p style="margin-top:10px;">The Guardian adds two structural blocks that only the owner can clear: (1) the artifact targets ages 2–4, outside the founding fact that fixes the little one at 1 year old with an arc forward; and (2) 'count' is a new mechanic, and new mechanics are class-level decisions reserved to you, never the council's to approve. The Guardian also notes it could not verify the art keys against the registry and PII is clean.</p>
+  <p style="margin-top:10px;">Secondary, honest notes: Skills says the <code>focus</code> tag is defensible but <code>critical-thinking</code> over-claims — counting exercises one-to-one correspondence, closer to Making Connections, not the cause-and-effect prediction the KB defines as Critical Thinking. Voice flags there is no grown-up <code>cue:</code> line at all: the prompt speaks to the child, positioning the app as the counting voice — a social-gating inversion — with no serve-and-return pause.</p>
+  <p style="margin-top:10px;">In short: even setting aside the reframe question, this cannot publish. Two class-level decisions (the age band and the 'count' mechanic) are yours alone, and the deterministic art-key check has not been run.</p>
+
+  <h3>Key disagreements the Chairman surfaced</h3>
+  <ul>
+    <li><b>Reject vs. revise on the same fault.</b> Explorer and Guardian treat the right-answer counting mechanic as a categorical exclusion (carpenter drilling / no-fail red-line) and reject; Skills, Voice, Tone, and Lap treat it as salvageable copy that one bounce could fix. This is the difference between 'redesign the mechanic' and 'reword the prompt' — but moot for the decision, since the Guardian's hold escalates regardless.</li>
+    <li><b>What counting <i>is</i>, developmentally.</b> Skills reads the mechanic as one-to-one correspondence/quantity (Making Connections at most, not Critical Thinking), while the generator tagged it critical-thinking. A live question about which skill, if any, a counting task honestly exercises.</li>
+    <li><b>Scope of the age concern.</b> Guardian and Lap treat age 2–4 as a hard conflict with the 1-year-old founding fact; Skills abstains as out-of-lens; the tone/voice seats don't raise it. Only the Guardian frames it as a blocking class decision — which is the one that governs.</li>
+  </ul>
+</div>
+
+<div class="card seat reject">
+  <h2>🧭 Explorer's Seat — ❌ reject</h2>
+  <p class="role">Constitution: Gopnik — the child as explorer; gardener, not carpenter</p>
+  <div class="oneline">A fixed-count 'how many, tap each one' mechanic is a carpenter drilling toward a target answer, which my constitution explicitly excludes as testing/drilling rather than open-ended, child-led exploration.</div>
+  <div class="cites"><b>Cited:</b> gopnik-foundation.md — "child as explorer… a shared learning experience, not testing or drilling"; gopnik-foundation.md — "The adult's job is to let that play run and put words to it, not to correct or redirect"; gardener-and-the-carpenter.md — "A carpenter works from a blueprint, shaping raw material toward a fixed outcome"; gardener-and-the-carpenter.md — "no quizzing, no goal but warmth and presence"</div>
+  <ul class="concern">
+    <li>The 'count' mode with a fixed <code>count</code> per round encodes a single correct answer — this is a quiz/drill toward a target, the carpenter's blueprint, not open-ended exploration.</li>
+    <li>'How many ducks? Tap each one!' directs the child toward a right-answer procedure rather than following the child's own lantern focus; the adult becomes an examiner, not a co-explorer.</li>
+    <li>The mechanic treats the child as raw material to be shaped toward numeracy outcomes, contradicting the arc's core ethos that it is a practice of warmth/presence, not a child curriculum with measurable outputs.</li>
+    <li>Nothing here invites the child to drop, repeat, compare, or discover on her own terms — the interaction is closed and outcome-scored.</li>
+  </ul>
+  <ul class="fix">
+    <li>Reframe from 'how many / tap each one' to open naming and following the child's focus (e.g., point-and-name whatever she fixates on, no target count), so the grown-up puts words to her play rather than testing recall.</li>
+    <li>If counting is desired, present it as the grown-up modeling counting aloud once and then letting the child bang/tap/re-discover freely, with no correct-count gate — matching the 'model once, then let her explore' principle.</li>
+    <li>Remove the implicit right-answer scoring entirely; ensure no round can be 'failed' or completed 'wrong.'</li>
+  </ul>
+</div>
+
+<div class="card seat revise">
+  <h2>🎯 Skills Seat — 🟡 revise</h2>
+  <p class="role">Constitution: Galinsky — the seven essential life skills; honest tagging</p>
+  <div class="oneline">The <code>focus</code> tag is honest but the <code>critical-thinking</code> tag over-claims — a counting/tapping game does not exercise the cause-and-effect, prediction-testing 'search for reliable knowledge' that my constitution defines as Critical Thinking.</div>
+  <div class="cites"><b>Cited:</b> seven-life-skills.md (#5 Critical Thinking); mind-in-the-making.md (Critical Thinking → cause-and-effect play; Focus &amp; Self-Control); seven-life-skills.md (#1 Focus &amp; Self-Control)</div>
+  <ul class="concern">
+    <li>The <code>critical-thinking</code> tag is not honest against my constitution. Critical Thinking in the KB is 'the ongoing search for reliable knowledge' exercised through cause-and-effect play (peekaboo, drop-and-retrieve, lift-the-flap) and anticipating what happens next. A fixed-count tap-and-count game exercises one-to-one correspondence and quantity, not cause-and-effect reasoning — nothing here surprises, tests a prediction, or rewards a search for reliable knowledge. The tag over-claims.</li>
+    <li>The <code>focus</code> tag IS defensible: 'Tap each one' requires sustained attention and tracking which items have been counted — Focus &amp; Self-Control (attention, remembering, resisting distraction). This tag can stand.</li>
+    <li>Counting is closer to Making Connections (same/different, sorting, quantity linking) than to Critical Thinking — the generator may have reached for the wrong tag.</li>
+    <li>Out of lens: the age (2+) sits outside the 12-month arc my constitution is written around — I abstain on age-appropriateness and defer to the Guardian/Lap seats.</li>
+  </ul>
+  <ul class="fix">
+    <li>Drop the <code>critical-thinking</code> tag — it is not exercised by a static counting task as defined in seven-life-skills.md.</li>
+    <li>If a second tag is wanted, consider <code>connections</code> (skill #4: sorting, same/different, quantity linking) — a more honest fit for counting — OR redesign a round to genuinely exercise critical thinking (e.g. a hidden/appearing item that lets the child anticipate the next count).</li>
+    <li>Keep the <code>focus</code> tag — it is honestly exercised by the tap-each-one mechanic.</li>
+  </ul>
+</div>
+
+<div class="card seat revise">
+  <h2>🗣️ Voice Seat — 🟡 revise</h2>
+  <p class="role">Constitution: responsive talk, social gating — the grown-up is the language mechanism</p>
+  <div class="oneline">No bilingual claims are made so nothing is dishonest there, but the game has no grown-up cue and no serve-and-return, and its prompt positions the app as the counting voice — a social-gating failure that requires revision.</div>
+  <div class="cites"><b>Cited:</b> responsive-talk.md (cue lines must model descriptive talk and serve-and-return pauses; a good cue tells the grown-up what to say AND to wait for the child's turn); bilingual-early-years.md (social gating / Kuhl: the grown-up on the lap is the language mechanism; the app must never position itself as the teacher)</div>
+  <ul class="concern">
+    <li>The artifact contains no grown-up <code>cue:</code> line at all. The prompt ('How many ducks? Tap each one!') speaks directly to the child, positioning the app — not the grown-up — as the voice conducting the game. This inverts the social-gating principle: the grown-up should be the mechanism, the app should prompt the grown-up.</li>
+    <li>No serve-and-return is present or supported anywhere: no built-in pause, no direction to the grown-up to answer the child's count/point and then wait. The counting mode as written is a child-to-screen tap loop — the exact anti-pattern social gating warns against.</li>
+    <li>'Tap each one!' directs the child to interact with the device rather than with the grown-up, further sidelining the dyad.</li>
+  </ul>
+  <ul class="fix">
+    <li>Add a grown-up <code>cue:</code> line for each round that models descriptive, serve-and-return talk (e.g., 'Point to each duck together — "one… two…" — then wait for the little one to try.') so the grown-up voices the counting, not the app.</li>
+    <li>Reframe the prompt as an instruction to the grown-up rather than a command to the child, keeping the grown-up as the language mechanism.</li>
+    <li>Add an explicit pause / wait-for-the-turn beat so the claimed interaction is genuinely serve-and-return, not tap-response.</li>
+  </ul>
+</div>
+
+<div class="card seat revise">
+  <h2>💛 Tone Seat — 🟡 revise</h2>
+  <p class="role">Constitution: Faber &amp; King — describe don't judge; never test</p>
+  <div class="oneline">The counting prompt is structured as a test with a correct answer, which directly violates the never-test / describe-don't-judge principles; it can be salvaged by reframing to descriptive, feelings-first narration on one bounce.</div>
+  <div class="cites"><b>Cited:</b> how-to-talk-little-kids.md — "Keep cues warm and non-corrective (never test)" / "Describe, don't judge"; responsive-talk.md — "Describe, don't judge", "Acknowledge feelings first", "Serve and return … then wait"</div>
+  <ul class="concern">
+    <li>The core prompt 'How many {label}? Tap each one!' is framed as a quiz with a single correct answer — it tests the child, which my constitution explicitly forbids. A right/wrong count implies an implicit fail state if the child taps the wrong number.</li>
+    <li>No descriptive-talk modeling: there is no grown-up cue that reports what the child actually does ('You tapped the duck!') rather than judging correctness — misses the house style that all cue lines should be descriptive, not evaluative.</li>
+    <li>No feelings-first acknowledgement and no serve-and-return pause is built into the prompt; the artifact drives toward an answer rather than honoring the child's turn.</li>
+    <li>Note on scope: 'count' mode / age 2+ band may be a new mechanic-class question outside my lens — flagging for the owner/Guardian, not approving it here.</li>
+  </ul>
+  <ul class="fix">
+    <li>Reframe the prompt from an evaluative question to descriptive, playful narration: cue the grown-up to name and point ('Look — a duck… and another duck!') and celebrate the tap descriptively ('You tapped the duck!') regardless of count, so there is no correct/incorrect outcome.</li>
+    <li>Add an explicit grown-up cue line that acknowledges feeling and models a serve-and-return pause ('Point together — then wait for the tap'), per responsive-talk.md.</li>
+    <li>Ensure the mechanic has no scorekeeping or fail branch for a 'wrong' count; every tap should be honored warmly.</li>
+  </ul>
+</div>
+
+<div class="card seat reject">
+  <h2>🛡️ Guardian Seat — ❌ reject</h2>
+  <p class="role">Constitution: hard rules — privacy, founding fact, no-fail floor, class decisions. The Guardian's hold cannot be overridden.</p>
+  <div class="oneline">The artifact targets ages 2–4 (outside the 1-year-old founding fact) and its count-to-a-target mechanic reads as a test with a right answer, which violates the no-fail/never-test design principle; both the age band and the new 'count' mode are also class decisions reserved to the owner.</div>
+  <div class="cites"><b>Cited:</b> knowledge-base/CLAUDE.md (the founding fact: the little one is 1 year old today); design-principles.md (no fail states / never test the child / the arc is a practice for the ADULT, not a curriculum); privacy-model.md (no PII — passes); COUNCIL.md hard rule: classes are never the Council's to approve</div>
+  <ul class="concern">
+    <li><b>Age red-line:</b> the founding fact fixes the little one at 1 year old with an arc forward; <code>age_band</code> 2-3y and 3-4y (age 2+) falls outside the project's scope and cannot be approved by the Guardian without owner sign-off.</li>
+    <li><b>Fail-state / testing risk:</b> a 'count' mode asking 'How many ducks?' with a fixed target count implies a correct answer and a wrong answer — design-principles.md forbids pass/fail tasks, tests, and any curriculum-for-the-child framing. Nothing in the artifact specifies the forgiving, no-fail behavior for an incorrect count.</li>
+    <li><b>New mechanic:</b> mode 'count' is not an approved existing mechanic — new mechanics/schema modes are a class decision reserved to the owner, not the council.</li>
+    <li><b>Art-key verification:</b> I cannot deterministically confirm the art keys exist in the registry. This must pass the schema validator before any seat opines; I have no registry to check against here.</li>
+    <li><b>PII:</b> none present — this point passes.</li>
+  </ul>
+  <ul class="fix">
+    <li>Escalate to owner: both the age band (2–4y) and the 'count' mode are class-level decisions outside council approval authority.</li>
+    <li>If a counting-style experience is pursued, redesign it to remove any correct/target count so it cannot function as a test — success must equal engagement, not a right answer.</li>
+    <li>Run the art keys through the deterministic allowlist/schema validator and attach the result before re-review.</li>
+  </ul>
+</div>
+
+<div class="card seat revise">
+  <h2>🛋️ Lap Seat — 🟡 revise</h2>
+  <p class="role">Constitution: the 9pm reality — a tired grown-up, a squirming child, one lap</p>
+  <div class="oneline">The rounds are short and the tap cue is lap-practical, but the 'How many? / count' framing turns bedtime reading into a quiz, which conflicts with the no-test, adult-stance-not-child-curriculum principles.</div>
+  <div class="cites"><b>Cited:</b> design-principles.md; the-12-month-arc.md</div>
+  <ul class="concern">
+    <li>The prompt 'How many {label}? Tap each one!' frames a right-answer quiz. <b>At 9pm a tired grown-up with a squirming child will read this as a test and be pulled toward correcting a wrong count</b> — this cuts against 'the game is forgiving — no fail states… never test.' The counting-quiz cadence serves an abstract instructional goal, not the warm lap dyad.</li>
+    <li>Scope/rhythm: the artifact is age 2+, while the 12-month arc frames practices for the grown-up starting at age 1 as a shared stance, not a curriculum. A numeracy 'count' mechanic reads as curriculum-for-the-child rather than an adult stance, which the arc explicitly rejects.</li>
+    <li>Practicality is otherwise fine: five short rounds (counts 2,3,3,4,2) is a sensible length, and 'Tap each one!' is a concrete, big-target-friendly gesture — no length or motion objection here.</li>
+  </ul>
+  <ul class="fix">
+    <li>Reframe the prompt away from the quiz form ('How many?') toward a shared, unfalsifiable invitation, e.g. <b>'Let's tap the {label} together!'</b> — so a wrong tap wobbles and delights rather than failing the child.</li>
+    <li>If a counting stance is intended, express it as a grown-up practice (a stance line the adult reads) per the 12-month arc, not as a scored task the child must get right.</li>
+    <li>Confirm the age band is intentional and that the mechanic still honours the no-test / no-fail floor for the older dyad; if kept at 2+, ensure the copy never implies a correct answer the parent must enforce.</li>
+  </ul>
+</div>
+
+<div class="card ruling">
+  <h2>⚖️ The owner's ruling: revise, then merge</h2>
+  <p class="sub">The escalation went to the human — as designed. The full record lives at <code>knowledge-base/ledger/decisions/2026-07-08-pr3.md</code>, including what was adopted <i>and</i> what was overruled. Recording both is deliberate: the disagreements are calibration data for the judges.</p>
+
+  <h3>Adopted from the seats</h3>
+  <ul>
+    <li><span class="adopted">✔ Prompt reframed from quiz to invitation</span> — <i>"Let's count the ducks — together!"</i> replaces <i>"How many ducks? Tap each one!"</i> (the 5/6-seat convergence; the final copy is nearly the Lap Seat's exact suggestion).</li>
+    <li><span class="adopted">✔ Grown-up cue restored to the dyad</span> (Voice Seat) — an optional per-round <code>cue</code> added to the schema and renderer, with five serve-and-return cues written: <i>"You count aloud, the little one taps. Pause after each number — the pause is the turn."</i></li>
+    <li><span class="adopted">✔ Honest tags</span> (Skills Seat) — <code>critical-thinking</code> → <code>connections</code>: counting is one-to-one correspondence, not cause-and-effect prediction.</li>
+  </ul>
+
+  <h3>The two class rulings (the Guardian's escalation grounds)</h3>
+  <ul>
+    <li><b>Forward age-bands (2–3y/3–4y) are in scope.</b> The founding fact fixes where the little one is <i>today</i>; the schema and roadmap deliberately plan forward. Rubric note queued for <code>COUNCIL.md</code>: forward-band content is not an age red-line by itself.</li>
+    <li><b>The <code>count</code> mechanic is approved as a class.</b> The owner's merge <i>is</i> the class decision the charter reserves.</li>
+  </ul>
+
+  <h3>Overruled — and why (this is the calibration data)</h3>
+  <ul>
+    <li><span class="rejected">✘ "Counting-to-a-target is a fail-state test"</span> (Explorer/Guardian) — reviewed against the <i>code</i>, which the Council never sees, an incorrect count is <b>impossible</b>: the child never states a number; taps only ever count up; repeat taps are gentle no-ops. There is no input that can be wrong. The Council reviews the YAML artifact, not the renderer — a scope limit worth remembering when weighing categorical rejections.</li>
+    <li><span class="rejected">✘ "The app should not voice the counting"</span> (Voice Seat, strongest form) — partially adopted. The app keeps its gentle spoken count-words, consistent with find-mode speaking labels everywhere else; the new cues make the grown-up the primary counting voice with the pause as the turn.</li>
+  </ul>
+
+  <div class="callout"><b>Why this page exists.</b> This was the system's first full CLHF cycle: generate → deterministic gates → six independent judges → deterministic decision rule → human escalation → human ruling → revisions → merge — with every step now recorded in the append-only ledger (<code>knowledge-base/ledger/</code>). The convergence of five differently-constituted seats on one line of copy, the Guardian's non-overridable hold doing exactly its job, and the owner's documented disagreements with two findings are precisely the artifacts the Librarian loop (PRD 0004) will learn from.</div>
+
+  <p class="fn">Transcript note: seat verdicts are reproduced verbatim from CI run 28868285280 (2026-07-07). The run predates the neutral-referent sweep, so some quoted KB principle lines contain the old gendered phrasing ("never test her") that has since been corrected repo-wide — including, fittingly, by the Council's own earlier finding.</p>
+</div>
+
+<p class="meta" style="margin-top:26px;"><a href="product-plan.html">← Back to the Product Plan</a> · Little One · a shared lap activity, growing carefully</p>
+
+</div>
+</body>
+</html>

@@ -435,3 +435,11 @@ Append-only. Newest at the bottom. Each entry: date · what happened.
   Both the Council report and the sovereign decision (with adopted AND
   rejected findings — calibration data) are recorded in knowledge-base/ledger/
   — arcs 1+2 of PRD 0004, seeded with a real event on day one.
+- 2026-07-08 · Council transcript published for the teams (owner request): the
+  complete first-escalation conversation — all six seat verdicts with citations
+  and suggested fixes, the Chairman's synthesis, the key disagreements, and the
+  owner's ruling (adopted vs overruled, with reasons) — as a readable sub-page
+  docs/council-review-count-with-me.html, linked from the product plan's
+  Review Council section. Verbatim from run 28868285280 with a transcript note
+  (the run predates the referent sweep, so quoted principle lines keep the old
+  phrasing).

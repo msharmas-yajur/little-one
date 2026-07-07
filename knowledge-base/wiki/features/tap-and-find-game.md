@@ -14,12 +14,19 @@ right tap cheers and moves on; wrong taps nudge and let her try again.
 
 - Data: `_data/wordgames.yml` (themed sets of items: `art` + `label`).
 - Current sets: animal-friends, out-in-the-world, things-i-know, **who-says**,
-  **weather-and-sky**, **which-is-different**.
-- **Two game TYPES now** (schema-driven, 2026-07-06): `find` (default —
-  name → picture) and **`odd-one-out`** (`mode: odd-one-out`, `groups:` of art
-  keys → "which one is different?"). The engine dispatches via a `GAME_TYPES`
+  **weather-and-sky**, **which-is-different**, **count-with-me**.
+- **Three game TYPES now** (schema-driven): `find` (default — name → picture),
+  **`odd-one-out`** (`mode: odd-one-out`, `groups:` of art keys → "which one is
+  different?"), and **`count`** (`mode: count`, `rounds:` of `{art,label,count}`
+  → "how many? tap each one"). The engine dispatches via a `GAME_TYPES`
   registry (mirrors `PAGE_TYPES`); a new game mechanic is one schema branch +
   one registry entry, per `schema/experience.schema.json`.
+- **`count` (early numeracy, 2026-07-07)**: the engine shows a small set (2–4)
+  of ONE picture; tapping EACH one counts it aloud (one, two, three…) and cheers
+  the total. A shared lap activity — the grown-up counts along. No wrong tap: a
+  repeat tap is a gentle no-op, never a penalty (see design-principles). First
+  counting mechanic and the first-ever `3-4y` content (`count-with-me`, tagged
+  `critical-thinking, focus`). No new art — counts the existing nouns.
 - **No fail state** (see design-principles): never scold, never end, no timer.
 - **Optional `ask:` template** (added 2026-07-06): a set may pose its own
   question with a `{label}` slot, e.g. `ask: "Who says {label}?"`. Default is
@@ -40,10 +47,11 @@ categories (colours, shapes, body, feelings, opposites) need **new artwork**;
 broader skills (`critical-thinking`, `perspective`, `challenges`) need a **new
 mechanic**, not just a new noun list.
 
-## Roadmap — games for 2–5y (the empty older bands)
-All content today is `6-12m`/`12-24m`; `2-3y`, `3-4y`, `4-5y` are empty. Each
-older-band game idea below needs either new art or a new mechanic — an owner
-decision, not a quick data add:
+## Roadmap — games for 2–5y (the older bands)
+The older bands are opening up: `2-3y` now has `which-is-different` +
+`count-with-me`, and `3-4y` has its first content (`count-with-me`); `4-5y` is
+still empty. Each older-band game idea below needs either new art or a new
+mechanic — an owner decision, not a quick data add:
 
 | Idea | Age | Skill it adds | Needs |
 |---|---|---|---|

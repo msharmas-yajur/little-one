@@ -124,9 +124,39 @@
       }
     },
 
+    "countGame": {
+      "description": "TYPE 'count' — 'how many?': the engine shows a small set (2–4) of ONE picture; tapping each one counts it aloud (one, two, three…) and cheers once every one is counted. Early numeracy done as a shared lap activity; no fail state, no wrong tap (a repeat tap is a gentle no-op, never a penalty).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "mode", "rounds"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "title": { "type": "string" },
+        "age": { "type": "string" },
+        "age_band": { "type": "array", "items": { "$ref": "#/$defs/ageBand" }, "minItems": 1 },
+        "skills": { "type": "array", "items": { "$ref": "#/$defs/skill" } },
+        "mode": { "const": "count" },
+        "prompt": { "type": "string", "description": "optional prompt template with a {label} slot; default 'How many {label}? Tap each one!'" },
+        "rounds": {
+          "type": "array", "minItems": 1,
+          "description": "each round is a small set of ONE picture to count together",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["art", "label", "count"],
+            "properties": {
+              "art": { "$ref": "#/$defs/artKey" },
+              "label": { "type": "string", "description": "the plural thing being counted, e.g. 'ducks'" },
+              "count": { "type": "integer", "minimum": 2, "maximum": 4, "description": "how many to show; capped at 4 to keep the proven 2x2 no-scroll footprint" }
+            }
+          }
+        }
+      }
+    },
+
     "anyGame": {
       "description": "A word-game is exactly one game TYPE. Adding a new type here is a class change (human-gated).",
-      "oneOf": [ { "$ref": "#/$defs/game" }, { "$ref": "#/$defs/oddOneOutGame" } ]
+      "oneOf": [ { "$ref": "#/$defs/game" }, { "$ref": "#/$defs/oddOneOutGame" }, { "$ref": "#/$defs/countGame" } ]
     }
   }
 }

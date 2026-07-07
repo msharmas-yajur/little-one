@@ -512,3 +512,20 @@ Append-only. Newest at the bottom. Each entry: date · what happened.
   curriculum-vs-stance framing (resolved by the adopted reframe). Both pages
   now cite the lessons-review council event in sources. Cap: 2/5 pages,
   157/250 lines; referent lint clean.
+- 2026-07-08 · COUNCIL SESSION II, full cycle, entirely in-session (owner:
+  emulate the seats as parallel sub-agents). Six seat sub-agents reviewed the
+  Librarian's merged lessons at the strictest gate — the Council reviewing the
+  system's own compiled memory. Decision (deterministic): REVISE — Guardian
+  APPROVED (its Session-I exemplars visibly moderated it), five revises, no
+  dishonesty found anywhere; strongest signal = Tone+Lap independently
+  converging on the un-encoded cue-content style. Chairman synthesized; the
+  full report is ledger/council/2026-07-08-lessons-first-distillation.md and
+  a public transcript (docs/council-review-lessons-first-distillation.html,
+  cross-linked as Session II). The SAME Librarian agent was resumed for the
+  one bounce, applied all seven revisions (157/250 lines), and the revision
+  merged as PR #5 — recorded automatically by ledger-decision.yml. Process
+  note, honestly kept: a git add -A in the main session raced the background
+  Librarian and briefly swept its what-works.md edits into a docs commit;
+  withdrawn from main and re-landed through the gated PR so the audit trail
+  stays truthful. Session lesson: stage explicit paths while agents share the
+  working tree.

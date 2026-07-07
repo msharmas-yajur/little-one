@@ -298,6 +298,32 @@ Append-only. Newest at the bottom. Each entry: date · what happened.
   Safety: always human-gated (only opens PR); bounded allowlist FORBIDS editing
   the validators/charters/raw (can't weaken its own gate); Council pre-read on the
   example. Next: first live mechanic run.
+- 2026-07-07 · MECHANIC RUN #1 (Gardener-graduated, human-gated PR) — new game
+  TYPE `count` ("Count with me!"). The engine shows a small set (2–4) of ONE
+  picture and asks "how many?"; tapping EACH one counts it aloud (one, two,
+  three…) and cheers the total — early numeracy as a shared lap activity, with
+  NO wrong tap (a repeat tap is a gentle no-op, never a penalty). A genuinely new
+  interaction (tap-each-to-count vs the existing choose-one of `find`/
+  `odd-one-out`) that unlocks a developmental door neither naming nor
+  categorising reaches, and the first-ever `3-4y` content. Built the
+  schema-driven way, mirroring the `odd-one-out` reference: ONE schema branch
+  (`countGame` + added to the `anyGame` oneOf, with `count` bounded 2–4 to hold
+  the proven 2x2 no-scroll footprint) + ONE `GAME_TYPES` registry entry in
+  player.js (+ a `count` branch on the `gameMode` discriminator — minimal wiring;
+  `find`/`odd-one-out` stay byte-identical) + serialization (`rounds` on the game
+  object in child.html, mirroring `groups`) + one example (`count-with-me`,
+  `_data/wordgames.yml`: rounds of 2–4 ducks/stars/apples/flowers/balls, tagged
+  `age_band: [2-3y, 3-4y]`, `skills: [critical-thinking, focus]`). No new art —
+  counts the existing nouns. Renderer composes existing engine primitives only
+  ($/svgWrap/ART/shuffle/wobble/say/happy/confetti/telEngage/setTimeout/
+  createElement) — no network, storage, code-eval, or external URL (mechanic_lint
+  clean). Provenance: Galinsky life-skill #5 Critical Thinking + #1 Focus
+  (`wiki/concepts/seven-life-skills.md` ← `raw/research/books/mind-in-the-making.md`);
+  counting small sets together is emergent-numeracy play, kept no-fail per
+  `wiki/concepts/design-principles.md`. Updated `wiki/features/tap-and-find-game.md`
+  (three game types now; roadmap age-band note). Every existing experience
+  byte-identical. Human-gated PR — owner to run the Review Council on the example
+  before merge.
 - 2026-07-07 · BUILT THE VOICE PIPELINE (PRD 0003 milestone 1), Sarvam AI. Default
   voice = anushka (owner pick). voice/render.py renders a bounded approved-phrase set
   (17 deterministic art-naming sentences + peek-a-boo + count words + preview greeting)

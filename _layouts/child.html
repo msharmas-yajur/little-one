@@ -68,14 +68,18 @@ layout: default
     <span class="progress" id="storyProgress"></span>
   </div>
   <div class="stage">
-    <div class="scene" id="scene"></div>
+    <div class="scene-wrap">
+      <button class="pageturn prev" id="prevBtn" onclick="LO.prevPage()" aria-label="Page before">‹</button>
+      <div class="scene" id="scene"></div>
+      <button class="pagecurl" id="pageCurl" onclick="LO.nextPage()" aria-label="Turn the page"></button>
+      <button class="pageturn next" id="nextBtn" onclick="LO.nextPage()" aria-label="Next page">›</button>
+    </div>
     <div class="tap-hint" id="tapHint">👆 Tap the picture!</div>
     <div class="line" id="storyLine"></div>
     <div class="cue" id="storyCue"></div>
   </div>
-  <div class="nav">
-    <button class="navbtn prev" id="prevBtn" onclick="LO.prevPage()">←</button>
-    <button class="navbtn next" id="nextBtn" onclick="LO.nextPage()">Turn the page →</button>
+  <div class="readrow">
+    <button class="readbtn" id="readBtn" onclick="LO.toggleRead()">▶&nbsp; Read to me</button>
   </div>
 </section>
 

@@ -45,8 +45,18 @@ def render_set() -> dict[str, str]:
         t = sentence_for(w)
         out[slug(t)] = t
     for t in ["Peek-a-boo!", "Peek-a-boo! It's you!", "one", "two", "three", "four",
-              "Hello, little one!"]:                        # phrases + a per-voice preview greeting
+              "Hello, little one!",                         # phrases + a per-voice preview greeting
+              "You finished the whole book! Hooray, little one!"]:   # end-of-book celebration
         out[slug(t)] = t
+    # story lines — so "Read to me" narrates in the warm voice (player says the raw line)
+    try:
+        import yaml
+        for s in (yaml.safe_load((ROOT / "_data" / "stories.yml").read_text()) or []):
+            for p in (s.get("pages") or []):
+                if p.get("line"):
+                    out[slug(p["line"])] = p["line"]
+    except Exception as e:  # pragma: no cover
+        print(f"  (skipping story lines: {e})")
     return out
 
 

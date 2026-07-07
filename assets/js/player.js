@@ -260,17 +260,18 @@
 
   /* ---- confetti: original, dependency-free burst (respects reduced-motion) ---- */
   const CONFETTI = ['#F6C453','#F28C7A','#8FCFE0','#B79BD6','#8DC08A','#5BB0C7'];
-  function confetti(){
+  function confetti(opts){
+    opts = opts || {};
     if(reduceMotion) return;
-    let cvs = document.getElementById('confettiCanvas');
-    if(!cvs){
-      cvs = document.createElement('canvas'); cvs.id='confettiCanvas';
-      cvs.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:9999;';
-      document.body.appendChild(cvs);
-    }
+    const count = opts.count||100, life = opts.life||115, cap = opts.cap||135;
+    const cvs = document.createElement('canvas');   // own layer per burst → waves can overlap
+    cvs.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:9999;';
+    document.body.appendChild(cvs);
     const ctx = cvs.getContext('2d');
+    const remove = ()=>{ if(cvs.parentNode) cvs.parentNode.removeChild(cvs); };
+    const safety = setTimeout(remove, (cap/60)*1000 + 800);   // always clean up, even if a bg tab throttles rAF
     const W = cvs.width = window.innerWidth, H = cvs.height = window.innerHeight;
-    const parts = Array.from({length:100}, ()=>({
+    const parts = Array.from({length:count}, ()=>({
       x: W*0.5 + (Math.random()-0.5)*W*0.55, y: H*0.32 + (Math.random()-0.5)*40,
       vx: (Math.random()-0.5)*9, vy: -7 - Math.random()*7, g: 0.28 + Math.random()*0.14,
       size: 6 + Math.random()*8, rot: Math.random()*6.28, vr: (Math.random()-0.5)*0.3,
@@ -279,7 +280,7 @@
     let frames = 0;
     (function step(){
       frames++; ctx.clearRect(0,0,W,H);
-      let alive=false; const alpha=Math.max(0,1-frames/115);
+      let alive=false; const alpha=Math.max(0,1-frames/life);
       parts.forEach(p=>{
         p.vy+=p.g; p.vx*=0.99; p.x+=p.vx; p.y+=p.vy; p.rot+=p.vr;
         if(p.y < H+24) alive=true;
@@ -288,9 +289,15 @@
         else ctx.fillRect(-p.size/2,-p.size/2,p.size,p.size*0.6);
         ctx.restore();
       });
-      if(alive && frames<135) requestAnimationFrame(step);
-      else if(cvs&&cvs.parentNode) cvs.parentNode.removeChild(cvs);
+      if(alive && frames<cap) requestAnimationFrame(step);
+      else { clearTimeout(safety); remove(); }
     })();
+  }
+  /* a fuller, longer party — rolling waves — for finishing a whole book (~3.8s, matches the return) */
+  function bigConfetti(){
+    confetti({count:160, life:180, cap:200});
+    setTimeout(()=>confetti({count:130, life:170, cap:190}), 600);
+    setTimeout(()=>confetti({count:110, life:160, cap:180}), 1200);
   }
 
   /* ---- celebrate a correct find: chime + confetti + warm spoken cheer ---- */
@@ -473,6 +480,7 @@
   let curStory=null, pageIdx=0;
   function openStory(i){
     curStory = stories[i]; pageIdx = 0;
+    stopRead();                              // start fresh, never mid-read from a prior story
     telOpen(curStory);
     musicSetTheme(curStory.id, true);        // this story's own tune
     show('storyScreen'); renderPage();
@@ -500,12 +508,16 @@
     $('storyCue').textContent = p.cue ? '💡 ' + p.cue : '';
     $('storyTitle').textContent = curStory.title;
     $('storyProgress').textContent = `${pageIdx+1} / ${curStory.pages.length}`;
-    $('prevBtn').disabled = pageIdx===0;
-    $('nextBtn').innerHTML = pageIdx===curStory.pages.length-1 ? 'The end 💛' : 'Turn the page →';
+    const last = pageIdx===curStory.pages.length-1;
+    $('prevBtn').hidden = pageIdx===0;                      // no "back" on the very first page
+    const nb=$('nextBtn'); nb.innerHTML = last ? '♥' : '›'; nb.classList.toggle('end', last);
+    const pc=$('pageCurl'); if(pc) pc.hidden = last;        // last page: nothing behind it to peel
+    clearInvite();                                          // fresh page: stop any pulsing turn-cue
 
     const T = PAGE_TYPES[pageType(p)];
     const hint=$('tapHint'); if(hint) hint.textContent = T.hint;
     T.invite(p);                                            // invite a tap (plain) or a lift (flap/mirror)
+    if(readMode) narratePage();                             // "Read to me" is on → narrate + auto-turn
   }
   /* ---- board-book page-turn: soft two-phase flip on the scene ---- */
   let turning=false;
@@ -532,9 +544,47 @@
   function nextPage(){
     if(!curStory) return;
     if(pageIdx<curStory.pages.length-1) turnPage(1, ()=>{ pageIdx++; renderPage(); });
-    else { telEngage(curStory,'completes'); backToMenu(); }   // reached the end = completed
+    else finishStory();                                        // reached the end = completed
+  }
+  /* ---- finishing the whole book: a longer party + a warm spoken congratulation ---- */
+  const COMPLETE_LINE = 'You finished the whole book! Hooray, little one!';
+  let finishing=false;
+  function finishStory(){
+    if(finishing) return; finishing=true;                      // guard against double-taps on ♥
+    stopRead();
+    telEngage(curStory,'completes');
+    happy();                                                   // celebratory chime
+    bigConfetti();                                             // rolling confetti waves
+    say(COMPLETE_LINE);                                        // warm voice, in this story's speaker
+    setTimeout(()=>{ finishing=false; backToMenu(); }, 3800);  // let the party + voice finish first
   }
   function prevPage(){ if(pageIdx>0) turnPage(-1, ()=>{ pageIdx--; renderPage(); }); }
+
+  /* ---- turn-the-page affordance: pulse the chevron + corner-curl after a tap ---- */
+  function clearInvite(){ ['nextBtn','pageCurl'].forEach(id=>{ const e=$(id); if(e) e.classList.remove('invite'); }); }
+  function inviteNext(){
+    if(!curStory || pageIdx>=curStory.pages.length-1) return;   // nothing to turn to on the last page
+    ['nextBtn','pageCurl'].forEach(id=>{ const e=$(id); if(e) e.classList.add('invite'); });
+  }
+
+  /* ---- "Read to me": narrate the line in the warm voice, then turn the page ---- */
+  let readMode=false, readTimer=null;
+  function reflectReadBtn(){ const b=$('readBtn'); if(!b) return;
+    b.innerHTML = readMode ? '⏸&nbsp; Reading…' : '▶&nbsp; Read to me'; b.classList.toggle('on', readMode); }
+  function stopRead(){ readMode=false; clearTimeout(readTimer); reflectReadBtn(); }
+  function toggleRead(){ readMode=!readMode; reflectReadBtn(); readMode ? narratePage() : clearTimeout(readTimer); }
+  function narratePage(){
+    if(!readMode || !curStory) return;
+    const line = curStory.pages[pageIdx].line || '';
+    say(line);                                                 // warm clip if rendered, else device voice
+    clearTimeout(readTimer);
+    const ms = Math.max(2200, line.length*95 + 1700);          // rough read time + a beat to look
+    readTimer = setTimeout(()=>{
+      if(!readMode) return;
+      if(pageIdx<curStory.pages.length-1) nextPage();          // → renderPage → narratePage (chains on)
+      else stopRead();                                          // reached the end, stop reading
+    }, ms);
+  }
 
   /* ---- GAME ---- */
   let curGame=null, score=0;
@@ -606,7 +656,7 @@
       const el=$(s); if(el) el.classList.toggle('active', s===id);
     });
   }
-  function backToMenu(){ show('menuScreen'); musicSetTheme('menu', true); maybeNotice(); }
+  function backToMenu(){ stopRead(); show('menuScreen'); musicSetTheme('menu', true); maybeNotice(); }
 
   /* ---- noticing prompt: a gentle one-tap card at the session-end pause.
      Never blocks (the menu is fully usable underneath); shows at most rarely,
@@ -643,12 +693,25 @@
      Listener lives on the persistent .scene div (reliable on mobile; the whole
      picture becomes one big tap target for little fingers). */
   const sceneEl = $('scene');
-  if(sceneEl) sceneEl.addEventListener('click', ()=>{
-    if(!curStory) return;
-    const p = curStory.pages[pageIdx];
-    telEngage(curStory,'taps');
-    PAGE_TYPES[pageType(p)].tap(p);                        // plain → say the word; flap/mirror → lift
-  });
+  if(sceneEl){
+    let sx=0, sy=0, st=0, swiped=false;
+    sceneEl.addEventListener('pointerdown', e=>{ sx=e.clientX; sy=e.clientY; st=Date.now(); swiped=false; });
+    sceneEl.addEventListener('pointerup', e=>{
+      const dx=e.clientX-sx, dy=e.clientY-sy;               // a horizontal drag = turn the page, like a real book
+      if(Math.abs(dx)>45 && Math.abs(dx)>Math.abs(dy)*1.4 && Date.now()-st<700){
+        swiped=true;
+        if(dx<0) nextPage(); else prevPage();
+      }
+    });
+    sceneEl.addEventListener('click', ()=>{
+      if(swiped){ swiped=false; return; }                   // the swipe already turned the page
+      if(!curStory) return;
+      const p = curStory.pages[pageIdx];
+      telEngage(curStory,'taps');
+      PAGE_TYPES[pageType(p)].tap(p);                        // plain → say the word; flap/mirror → lift
+      inviteNext();                                          // then gently pulse the turn-the-page cue
+    });
+  }
 
   /* Adult-engagement signal: grown-up expands the monthly guidance card. */
   const gcard = document.querySelector('.grownup-card');
@@ -677,6 +740,6 @@
     goFullscreenMaybe();
   }, {once:true, passive:true});
 
-  window.LO = { openStory, openGame, nextPage, prevPage, backToMenu, toggleMusic, renderMenu };
+  window.LO = { openStory, openGame, nextPage, prevPage, backToMenu, toggleMusic, renderMenu, toggleRead };
   renderMenu(); show('menuScreen'); reflectMusicBtn();
 })();

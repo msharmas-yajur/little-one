@@ -320,3 +320,23 @@ Append-only. Newest at the bottom. Each entry: date · what happened.
   Re-rendered 120 clips (24×5). Verified: default→ritu clip, per-content→priya,
   picker shows Ritu/Kavya/Priya/Pooja/Shreya. Note: temperature caps at 1 (docs
   said 2); anushka/vidya not valid in v3.
+- 2026-07-07 · Story navigation redesigned (owner: the bottom text-arrows were
+  hard for a child to read/find). Replaced the buried prev/next buttons with a
+  richer, more discoverable model — all three approaches the owner picked:
+  (1) SWIPE left/right on the picture to turn the page (real-book gesture,
+  reuses the existing page-flip; a swipe is distinguished from a tap so tapping
+  still says the word); (2) thumb-zone CHEVRONS at the card edges (‹ back, hidden
+  on page 1; › next, → ♥ on the last page) that gently PULSE after the child taps
+  the picture, tying the turn-cue into the reward loop; (3) a folded page-corner
+  CURL at the bottom-right (tap to turn, hidden on the last page). Plus a
+  "Read to me" mode: narrates each line in the warm voice and auto-advances,
+  stopping at the end. Rendered all story lines as clips (57 phrases × 5 voices)
+  so Read-to-me uses the Sarvam voice, not the device voice.
+- 2026-07-07 · End-of-book celebration added (owner request): finishing a book
+  now fires a longer, rolling confetti party (three waves, ~3.8s) + a warm spoken
+  congratulation ("You finished the whole book! Hooray, little one!") in the
+  story's own voice, then returns to the menu. New celebration clip rendered for
+  all 5 voices; confetti refactored to a per-burst canvas with a wall-clock
+  safety cleanup (bg-tab rAF throttling no longer leaks canvases). Verified
+  in-browser: swipe/chevron/curl/heart states, tap-says-word without turning,
+  read-mode narration, and the completion party + double-tap guard.

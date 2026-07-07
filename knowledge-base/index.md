@@ -22,6 +22,10 @@ The catalog of every page. One line each. Keep current on every ingest.
 - `responsive-talk.md` — the grown-up's talk toolkit (serve-and-return, describe-don't-judge).
 - `adaptive-arc.md` — the self-learning framework: three loops, dyad model, discovery→partnership. Status: built (v1).
 
+## Lessons (`wiki/lessons/`) — distilled by the Librarian from the ledger
+- `what-works.md` — binding steers for Gardener/Mechanic runs, distilled from the ledger's first full cycle (count-game escalation + PR #3 ruling).
+- `seat-calibration.md` — per-Council-seat record of where the sovereign decision agreed or disagreed, PR #3 cycle; recommendations only.
+
 ## Features (`wiki/features/`)
 - `storybook-player.md` — the tap-along story reader. Status: built.
 - `tap-and-find-game.md` — the forgiving word game. Status: built.

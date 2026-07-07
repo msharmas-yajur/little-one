@@ -226,48 +226,41 @@
   function activeVoice(){
     return pickedVoice() || (curStory && curStory.voice) || (curGame && curGame.voice) || DEFAULT_VOICE;
   }
-  let clipAudio=null;
-  /* say(text, onDone?) — onDone fires once when the utterance actually finishes
-     (or fails). Read-to-me uses it to advance only after a page is truly read. */
-  function say(text, onDone){
-    const done = once(onDone);
-    try{
-      const V = window.VOICE;
-      if(V && V.manifest){
-        const s = slugText(text), voice = activeVoice();
-        let use = (V.manifest[voice] && V.manifest[voice][s]) ? voice
+  /* clipFor(text) → the mp3 URL for the active voice (falling back to the default
+     voice), or null if no clip exists. Shared by say() and read-to-me. */
+  function clipFor(text){
+    const V = window.VOICE;
+    if(!(V && V.manifest)) return null;
+    const s = slugText(text), av = activeVoice();
+    const voice = (V.manifest[av] && V.manifest[av][s]) ? av
                 : (V.manifest[DEFAULT_VOICE] && V.manifest[DEFAULT_VOICE][s]) ? DEFAULT_VOICE : null;
-        if(use){
-          duckMusic();
-          try{ if(clipAudio){ clipAudio.onended=clipAudio.onerror=clipAudio.onloadedmetadata=null; clipAudio.pause(); } }catch(e){}
-          const a = clipAudio = new Audio((V.base||'') + '/' + use + '/' + s + '.mp3');
-          a.volume = 0.95;
-          a.onended = done;                                    // normal completion
-          a.onerror = ()=>sayDevice(text, done);               // clip missing/failed → device voice
-          // 'ended' is unreliable on some mobile browsers — also complete off the
-          // clip's real duration (a reliable timer), whichever fires first (done is once()).
-          a.onloadedmetadata = ()=>{ if(a===clipAudio && isFinite(a.duration) && a.duration>0) setTimeout(done, a.duration*1000 + 300); };
-          a.play().catch(()=>sayDevice(text, done));           // autoplay blocked → device voice
-          return;
-        }
-      }
-      sayDevice(text, done);
-    }catch(e){ sayDevice(text, done); }
+    return voice ? ((V.base||'') + '/' + voice + '/' + s + '.mp3') : null;
   }
-  function sayDevice(text, onDone){
-    const done = once(onDone);
+  let clipAudio=null;
+  function say(text){   // fire-and-forget: a warm clip if one exists, else the device voice
     try{
-      if(!('speechSynthesis' in window)){ done(); return; }
+      const url = clipFor(text);
+      if(url){
+        duckMusic();
+        try{ if(clipAudio) clipAudio.pause(); }catch(e){}
+        clipAudio = new Audio(url); clipAudio.volume = 0.95;
+        clipAudio.play().catch(()=>sayDevice(text));   // autoplay blocked → device voice
+        return;
+      }
+      sayDevice(text);
+    }catch(e){ sayDevice(text); }
+  }
+  function sayDevice(text){
+    try{
+      if(!('speechSynthesis' in window)) return;
       const u = new SpeechSynthesisUtterance(text);
       const v = ensureVoice(); if(v){ u.voice = v; u.lang = v.lang; }
       u.rate = 0.9; u.pitch = 1.15; u.volume = 0.9;   // soft, warm, soothing
-      u.onend = done; u.onerror = done;
       duckMusic();
       window.speechSynthesis.cancel();
       window.speechSynthesis.speak(u);
-    }catch(e){ done(); }
+    }catch(e){}
   }
-  function once(fn){ let ran=false; return ()=>{ if(ran||!fn) return; ran=true; try{ fn(); }catch(e){} }; }
 
   /* ---- confetti: original, dependency-free burst (respects reduced-motion) ---- */
   const CONFETTI = ['#F6C453','#F28C7A','#8FCFE0','#B79BD6','#8DC08A','#5BB0C7'];
@@ -606,26 +599,44 @@
   let readMode=false, readTimer=null;
   function reflectReadBtn(){ const b=$('readBtn'); if(!b) return;
     b.innerHTML = readMode ? '⏸&nbsp; Reading…' : '▶&nbsp; Read to me'; b.classList.toggle('on', readMode); }
-  function stopRead(){ readMode=false; clearTimeout(readTimer); reflectReadBtn(); }
-  function toggleRead(){ readMode=!readMode; reflectReadBtn(); readMode ? narratePage() : clearTimeout(readTimer); }
+  function stopRead(){ readMode=false; clearTimeout(readTimer); try{ if(readAudio) readAudio.pause(); }catch(e){} reflectReadBtn(); }
+  function toggleRead(){ readMode=!readMode; reflectReadBtn(); readMode ? narratePage() : stopRead(); }
+  /* One reused <audio> element for read-to-me. Reusing (not re-creating) the
+     element is what keeps it "unlocked" on mobile after the first tap — new
+     Audio() objects created from a timer get blocked, which used to stall the
+     read after a page or two. Advancement runs on a plain timer that ALWAYS
+     fires (real clip duration when known, a generous estimate otherwise), so
+     the reading can never stop regardless of flaky audio events. */
+  let readAudio=null;
   function narratePage(){
     if(!readMode || !curStory) return;
     const myPage = pageIdx;                                     // ignore stale callbacks after a manual turn
     const line = curStory.pages[pageIdx].line || '';
     clearTimeout(readTimer);
-    const advance = ()=>{
+    const goNext = ()=>{
       if(!readMode || pageIdx!==myPage) return;                // toggled off, or the child already turned
-      clearTimeout(readTimer);
-      readTimer = setTimeout(()=>{                              // a gentle beat to look at the page
-        if(!readMode || pageIdx!==myPage) return;
-        if(pageIdx<curStory.pages.length-1) nextPage();         // → renderPage → narratePage (chains on)
-        else stopRead();                                        // reached the end, stop reading
-      }, 900);
+      if(pageIdx<curStory.pages.length-1) nextPage();          // → renderPage → narratePage (chains on)
+      else stopRead();                                          // reached the end, stop reading
     };
-    say(line, advance);                                         // advance only after the line is truly read
-    // last-resort backstop only (normal completion comes from the clip's real duration
-    // in say()); keep it long so a slow-loading clip is never flipped past prematurely
-    readTimer = setTimeout(advance, Math.max(9000, line.length*130 + 6000));
+    let armed=false;                                            // schedule the turn exactly once
+    const arm = ms => { if(armed) return; armed=true; clearTimeout(readTimer);
+      readTimer = setTimeout(goNext, Math.max(1400, ms) + 800); };   // read time + a beat to look
+
+    const url = clipFor(line);
+    if(url){
+      duckMusic();
+      if(!readAudio) readAudio = new Audio();                   // create once; unlocked on the first tap
+      readAudio.onloadedmetadata = readAudio.ondurationchange = null;
+      readAudio.src = url; readAudio.volume = 0.95;
+      const useDur = ()=>{ if(isFinite(readAudio.duration) && readAudio.duration>0) arm(readAudio.duration*1000 + 150); };
+      readAudio.onloadedmetadata = useDur;                      // learn the real length → accurate turn
+      readAudio.ondurationchange = useDur;
+      try{ readAudio.play().catch(()=>{}); }catch(e){}          // best-effort; the timer below still advances
+    } else {
+      sayDevice(line);
+    }
+    // guaranteed fallback: advances even if no audio event ever fires (arm() wins if metadata arrives first)
+    readTimer = setTimeout(()=>{ if(!armed){ armed=true; goNext(); } }, Math.max(2800, line.length*105 + 1700) + 800);
   }
 
   /* ---- GAME ---- */

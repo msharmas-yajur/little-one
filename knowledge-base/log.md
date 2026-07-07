@@ -364,3 +364,15 @@ Append-only. Newest at the bottom. Each entry: date · what happened.
   fires first wins (done is once()). The narratePage backstop was lengthened so a
   slow-loading clip is never flipped past prematurely. Verified: the chain marches
   1→2→3→4 driven purely by the duration path with 'ended' never firing.
+- 2026-07-07 · Read-to-me robustness, take 2 (owner: it still stopped after the
+  2nd page). Two real root causes, both now fixed: (1) MOBILE AUTOPLAY — the code
+  created a brand-new Audio() per page; mobile browsers only keep the element
+  unlocked during the tap gesture, so page 3's fresh element was blocked and the
+  chain stalled. Now read-to-me REUSES one <audio> element (created once, unlocked
+  on the first tap; only its .src changes per page). (2) EVENT RELIANCE — advance
+  no longer depends on any audio event ('ended'/'loadedmetadata'). It runs on a
+  plain timer that ALWAYS fires: the clip's real duration when metadata is known,
+  otherwise a generous estimate — so the reading can never stop. say() reverted to
+  simple fire-and-forget; clip resolution shared via clipFor(). Verified: with NO
+  audio events fired at all, the chain marches 1→2→3→4 using exactly ONE reused
+  audio element.

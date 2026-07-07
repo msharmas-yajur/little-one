@@ -103,6 +103,10 @@ jobs:
                  first run): short, cited, CONFIRMED/HYPOTHESIS-labelled rules
                  written for a future Gardener/Mechanic deciding what to
                  propose. Consolidate — never exceed 5 pages / 250 lines total.
+                 PARAPHRASE, NEVER QUOTE ledger text: older events contain
+                 pre-sweep gendered phrasing ("her/she") in quoted principle
+                 lines, and any gendered pronoun in a lessons page fails the
+                 lint gate. Restate in neutral words; cite events by path.
               3. Maintain the seat-calibration page (agreement/disagreement of
                  sovereign decisions with each Council seat; recommendations
                  only — never edit COUNCIL.md).

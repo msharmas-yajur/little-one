@@ -42,6 +42,10 @@ propose, not a human browsing.
    yourself (charter changes are the owner's, through their own reviewed PR).
 7. **No names, ever. Neutral referent only** ("the little one", they/them) —
    this repo is public. Same as CLAUDE.md; a lint gate enforces it.
+   **Paraphrase, never quote:** older ledger events may contain pre-sweep
+   gendered phrasing in quoted principle lines — reproducing them verbatim
+   fails the lint. Restate every lesson in your own neutral words; cite the
+   event by path instead of quoting it.
 8. **Doing nothing is valid.** If no new ledger events have appeared since
    the lessons were last updated, say so and stop. A quiet run is healthy.
 9. **Human-gated, always.** You only ever open a PR. Lessons steer all future

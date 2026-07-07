@@ -469,3 +469,15 @@ Append-only. Newest at the bottom. Each entry: date · what happened.
   Runs 3-4 — instant API error (is_error, 1 turn, $0): the credit-exhaustion
   signature from 07-05. BLOCKED on account credits; everything else is built
   and pushed. First real lessons PR fires as soon as credits are added.
+- 2026-07-08 · LIBRARIAN RUN — first distillation (executed in-session by a
+  sub-agent because CI API credits were exhausted; same charter, same gate
+  rules). Read both ledger events (council/2026-07-08-count-with-me.md,
+  decisions/2026-07-08-pr3.md) and distilled the first `wiki/lessons/` set:
+  `what-works.md` (8 lessons — invitation-not-quiz, per-round grown-up cue
+  with serve-and-return, app-as-support-not-teacher, honest skill tags,
+  forward age-bands in scope, mechanics are class decisions, make no-fail
+  legible in the artifact, fix confirmed findings in-cycle) and
+  `seat-calibration.md` (per-seat agreement record for the PR #3 cycle; no
+  rubric change recommended — COUNCIL.md's two exemplars already cover the
+  overturns). All ledger text paraphrased in neutral referents, never quoted.
+  Cap status: 2/5 pages, 120/250 lines. index.md gained its Lessons section.

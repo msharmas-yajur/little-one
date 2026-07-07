@@ -492,3 +492,23 @@ Append-only. Newest at the bottom. Each entry: date · what happened.
   proposing. Also: the transcript page gained a constitutions appendix (the
   verbatim adversarial charge, each seat's lens, linked constitution sources,
   the Chairman's charge).
+- 2026-07-08 · LIBRARIAN REVISION PASS (one bounce, in-session sub-agent,
+  after the Council reviewed the first distillation at the strictest gate —
+  decision: revise; Guardian approve, five seats revise; report at
+  ledger/council/2026-07-08-lessons-first-distillation.md). what-works.md:
+  supplement-not-replace preamble (Tone); necessary-not-sufficient caveat on
+  invitations (Explorer); NEW CONFIRMED cue-content lesson — descriptive,
+  never evaluative, citing the merged apple-round cue (Tone+Lap convergence,
+  the review's strongest signal); app-voice allowance scoped to in-mechanic
+  count-words, never language-teaching pronunciation, bilingual words are
+  the grown-up's (Voice); skill-tag lesson corrected — Critical Thinking's
+  actual KB definition restored, counting→connections marked RULING-DERIVED
+  (Skills); forward-bands lesson gained its obligation half — fit the
+  declared band, keep the adult stance (Guardian note + Lap); NEW HYPOTHESIS
+  practicality-baseline lesson (Lap). seat-calibration.md: trend word
+  cycle-scoped (Explorer); Skills entry precised to "adopted as the retag
+  option"; Guardian art-key line softened to "not overruled; deterministic
+  gates passed"; Lap entry split into band-scope (overruled) vs
+  curriculum-vs-stance framing (resolved by the adopted reframe). Both pages
+  now cite the lessons-review council event in sources. Cap: 2/5 pages,
+  157/250 lines; referent lint clean.

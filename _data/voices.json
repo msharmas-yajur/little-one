@@ -1,12 +1,13 @@
 {
   "voices": [
-    "anushka",
-    "vidya",
-    "manisha",
-    "arya"
+    "ritu",
+    "kavya",
+    "priya",
+    "pooja",
+    "shreya"
   ],
   "manifest": {
-    "anushka": {
+    "ritu": {
       "there-s-the-sun": 1,
       "there-s-the-bird": 1,
       "can-you-say-dog": 1,
@@ -32,7 +33,7 @@
       "four": 1,
       "hello-little-one": 1
     },
-    "vidya": {
+    "kavya": {
       "there-s-the-sun": 1,
       "there-s-the-bird": 1,
       "can-you-say-dog": 1,
@@ -58,7 +59,7 @@
       "four": 1,
       "hello-little-one": 1
     },
-    "manisha": {
+    "priya": {
       "there-s-the-sun": 1,
       "there-s-the-bird": 1,
       "can-you-say-dog": 1,
@@ -84,7 +85,33 @@
       "four": 1,
       "hello-little-one": 1
     },
-    "arya": {
+    "pooja": {
+      "there-s-the-sun": 1,
+      "there-s-the-bird": 1,
+      "can-you-say-dog": 1,
+      "there-s-the-cat": 1,
+      "it-s-the-fish": 1,
+      "it-s-the-moon": 1,
+      "there-s-the-star": 1,
+      "look-the-flower": 1,
+      "look-the-cloud": 1,
+      "i-see-the-butterfly": 1,
+      "i-see-the-duck": 1,
+      "look-the-apple": 1,
+      "it-s-the-ball": 1,
+      "it-s-the-rain": 1,
+      "there-s-the-tree": 1,
+      "there-s-the-boat": 1,
+      "look-the-car": 1,
+      "peek-a-boo": 1,
+      "peek-a-boo-it-s-you": 1,
+      "one": 1,
+      "two": 1,
+      "three": 1,
+      "four": 1,
+      "hello-little-one": 1
+    },
+    "shreya": {
       "there-s-the-sun": 1,
       "there-s-the-bird": 1,
       "can-you-say-dog": 1,

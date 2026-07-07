@@ -305,7 +305,7 @@
         const v=b.getAttribute('data-v');
         try{ if(v) localStorage.setItem('lo.voice', v); else localStorage.removeItem('lo.voice'); }catch(e){}
         pills.forEach(function(x){ x.classList.toggle('sel', x===b); });
-        try{ new Audio((window.VOICE.base||'')+'/'+(v||'anushka')+'/hello-little-one.mp3').play().catch(function(){}); }catch(e){}  // preview the voice
+        try{ new Audio((window.VOICE.base||'')+'/'+(v || (window.VOICE.voices&&window.VOICE.voices[0]) || 'ritu')+'/hello-little-one.mp3').play().catch(function(){}); }catch(e){}  // preview the voice
       }; });
     })();
     const close=()=>{ if(window.LO && window.LO.renderMenu) window.LO.renderMenu(); wrap.remove(); };

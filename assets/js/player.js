@@ -220,7 +220,7 @@
      picked voice (settings) › the story/game's own `voice:` › the default.
      Clips are static + offline; partial coverage is fine — anything unrendered
      speaks via the device voice. window.VOICE is embedded by child.html. ---- */
-  const DEFAULT_VOICE = 'anushka';
+  const DEFAULT_VOICE = (window.VOICE && window.VOICE.voices && window.VOICE.voices[0]) || 'ritu';
   function slugText(t){ return (t||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,''); }
   function pickedVoice(){ try{ return localStorage.getItem('lo.voice') || ''; }catch(e){ return ''; } }
   function activeVoice(){

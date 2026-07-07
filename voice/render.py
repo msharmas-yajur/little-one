@@ -23,7 +23,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 API = "https://api.sarvam.ai/text-to-speech"
 
-VOICES = ["anushka", "vidya", "manisha", "arya"]   # warm Sarvam bulbul:v2 speakers; anushka = default
+VOICES = ["ritu", "kavya", "priya", "pooja", "shreya"]   # expressive Sarvam bulbul:v3 speakers; ritu = default (owner pick), a sweet, playful, Mary-Poppins-ish read
 ART = ["sun", "bird", "dog", "cat", "fish", "moon", "star", "flower", "cloud",
        "butterfly", "duck", "apple", "ball", "rain", "tree", "boat", "car"]
 SENTENCES = ["Look, the {w}!", "It's the {w}!", "There's the {w}!", "I see the {w}!", "Can you say {w}?"]
@@ -52,8 +52,8 @@ def render_set() -> dict[str, str]:
 
 def tts(text: str, speaker: str, key: str) -> bytes:
     body = json.dumps({
-        "text": text, "target_language_code": "en-IN", "model": "bulbul:v2",
-        "speaker": speaker, "pace": 0.9, "output_audio_codec": "mp3",
+        "text": text, "target_language_code": "en-IN", "model": "bulbul:v3",
+        "speaker": speaker, "pace": 1.1, "temperature": 0.95, "output_audio_codec": "mp3",
     }).encode()
     req = urllib.request.Request(API, data=body, headers={
         "api-subscription-key": key, "content-type": "application/json"})

@@ -311,3 +311,12 @@ Append-only. Newest at the bottom. Each entry: date · what happened.
   `voice` field (capability bound made me add it). SARVAM_API_KEY stored as repo
   secret. Re-render workflow: gardener-voice.yml (dispatch → PR). Verified in-browser:
   tap plays the right clip per default/per-story/override; picker sets pref + previews.
+- 2026-07-07 · VOICE VOICES SWAPPED to expressive Sarvam bulbul:v3 (owner: "more
+  enthusiastic, Mary Poppins vibe, sweet/playful"). render.py now uses model
+  bulbul:v3, pace 1.1, temperature 0.95. New voice set (v2 anushka/vidya/manisha/
+  arya removed — they're v2-only): ritu (DEFAULT), kavya, priya, pooja, shreya.
+  DEFAULT_VOICE in player.js is now data-driven (window.VOICE.voices[0]=ritu).
+  Per-content reassigned: peekaboo=kavya, splish-splash=priya, who-says=pooja.
+  Re-rendered 120 clips (24×5). Verified: default→ritu clip, per-content→priya,
+  picker shows Ritu/Kavya/Priya/Pooja/Shreya. Note: temperature caps at 1 (docs
+  said 2); anushka/vidya not valid in v3.

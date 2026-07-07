@@ -481,3 +481,14 @@ Append-only. Newest at the bottom. Each entry: date · what happened.
   rubric change recommended — COUNCIL.md's two exemplars already cover the
   overturns). All ledger text paraphrased in neutral referents, never quoted.
   Cap status: 2/5 pages, 120/250 lines. index.md gained its Lessons section.
+- 2026-07-08 · THE LOOP CLOSED END-TO-END, in-session (owner directive: run
+  LLM loops via sub-agents while CI credits are out). A sub-agent bound to
+  LIBRARIAN.md produced the first distillation (what-works.md, 8 lessons;
+  seat-calibration.md, per-seat record); the gate was run locally and passed;
+  PR #4 opened, reviewed line-by-line, and merged with a Why: comment — and
+  ledger-decision.yml fired UNATTENDED, writing the sovereign-decision event
+  (proposer=librarian, decider, files, the why) straight to the ledger. Three
+  events on record; the next Gardener/Mechanic run reads wiki/lessons/ before
+  proposing. Also: the transcript page gained a constitutions appendix (the
+  verbatim adversarial charge, each seat's lens, linked constitution sources,
+  the Chairman's charge).

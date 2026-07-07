@@ -10,7 +10,7 @@ updated: 2026-07-06
 # Tap & Find Game
 
 A forgiving "can you find the puppy?" word game. Up to four picture choices; the
-right tap cheers and moves on; wrong taps nudge and let her try again.
+right tap cheers and moves on; wrong taps nudge and invite another try.
 
 - Data: `_data/wordgames.yml` (themed sets of items: `art` + `label`).
 - Current sets: animal-friends, out-in-the-world, things-i-know, **who-says**,

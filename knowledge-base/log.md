@@ -324,3 +324,92 @@ Append-only. Newest at the bottom. Each entry: date · what happened.
   (three game types now; roadmap age-band note). Every existing experience
   byte-identical. Human-gated PR — owner to run the Review Council on the example
   before merge.
+- 2026-07-07 · BUILT THE VOICE PIPELINE (PRD 0003 milestone 1), Sarvam AI. Default
+  voice = anushka (owner pick). voice/render.py renders a bounded approved-phrase set
+  (17 deterministic art-naming sentences + peek-a-boo + count words + preview greeting)
+  per voice (anushka/vidya/manisha/arya) → assets/voice/<voice>/<slug>.mp3 (96 clips,
+  2MB) + manifest _data/voices.json. player.js: say() is clip-first with device-voice
+  fallback (partial coverage ok); sayArt() deterministic per word (one clip/picture).
+  child.html embeds window.VOICE (base/voices/manifest) + serializes per-content voice.
+  dyad.js: settings VOICE PICKER (Auto/Anushka/Vidya/Manisha/Arya + live preview,
+  stored in lo.voice). PER-CONTENT voices: peekaboo=vidya, splish-splash=arya,
+  who-says=manisha; precedence picked › content › anushka. Schema gained an optional
+  `voice` field (capability bound made me add it). SARVAM_API_KEY stored as repo
+  secret. Re-render workflow: gardener-voice.yml (dispatch → PR). Verified in-browser:
+  tap plays the right clip per default/per-story/override; picker sets pref + previews.
+- 2026-07-07 · VOICE VOICES SWAPPED to expressive Sarvam bulbul:v3 (owner: "more
+  enthusiastic, Mary Poppins vibe, sweet/playful"). render.py now uses model
+  bulbul:v3, pace 1.1, temperature 0.95. New voice set (v2 anushka/vidya/manisha/
+  arya removed — they're v2-only): ritu (DEFAULT), kavya, priya, pooja, shreya.
+  DEFAULT_VOICE in player.js is now data-driven (window.VOICE.voices[0]=ritu).
+  Per-content reassigned: peekaboo=kavya, splish-splash=priya, who-says=pooja.
+  Re-rendered 120 clips (24×5). Verified: default→ritu clip, per-content→priya,
+  picker shows Ritu/Kavya/Priya/Pooja/Shreya. Note: temperature caps at 1 (docs
+  said 2); anushka/vidya not valid in v3.
+- 2026-07-07 · Story navigation redesigned (owner: the bottom text-arrows were
+  hard for a child to read/find). Replaced the buried prev/next buttons with a
+  richer, more discoverable model — all three approaches the owner picked:
+  (1) SWIPE left/right on the picture to turn the page (real-book gesture,
+  reuses the existing page-flip; a swipe is distinguished from a tap so tapping
+  still says the word); (2) thumb-zone CHEVRONS at the card edges (‹ back, hidden
+  on page 1; › next, → ♥ on the last page) that gently PULSE after the child taps
+  the picture, tying the turn-cue into the reward loop; (3) a folded page-corner
+  CURL at the bottom-right (tap to turn, hidden on the last page). Plus a
+  "Read to me" mode: narrates each line in the warm voice and auto-advances,
+  stopping at the end. Rendered all story lines as clips (57 phrases × 5 voices)
+  so Read-to-me uses the Sarvam voice, not the device voice.
+- 2026-07-07 · End-of-book celebration added (owner request): finishing a book
+  now fires a longer, rolling confetti party (three waves, ~3.8s) + a warm spoken
+  congratulation ("You finished the whole book! Hooray, little one!") in the
+  story's own voice, then returns to the menu. New celebration clip rendered for
+  all 5 voices; confetti refactored to a per-burst canvas with a wall-clock
+  safety cleanup (bg-tab rAF throttling no longer leaks canvases). Verified
+  in-browser: swipe/chevron/curl/heart states, tap-says-word without turning,
+  read-mode narration, and the completion party + double-tap guard.
+- 2026-07-07 · Read-to-me fix (owner: only the first page was read, the rest
+  flipped through). Cause: auto-advance used a fixed ~2.2s length-estimate timer,
+  so on first read-through the next line-clip hadn't finished downloading before
+  the page flipped — pages 2+ appeared silent. Fix: say()/sayDevice() now take an
+  onDone callback that fires on the audio's real 'ended'/'error'/utterance-end;
+  narratePage advances only after the line is truly read (+ a 0.9s beat), with a
+  generous safety fallback and a per-page guard against stale callbacks after a
+  manual turn. Verified deterministically: with no completion signal the page
+  holds; each page's clip is requested and read before advancing (1→2→3…).
+- 2026-07-07 · Applause added alongside confetti (owner request): claps() spawns
+  staggered 👏 that pop with a clap-pulse and float up. Book completion = two
+  rounds (24 total) over the rolling confetti + voice; a game find = a small
+  round (6). Respects reduced-motion; wall-clock safety cleanup.
+- 2026-07-07 · Read-to-me hardening (owner: it read ~2 pages then stopped on the
+  3rd, and occasionally skipped a page). Root cause: the HTML5 audio 'ended' event
+  is unreliable on mobile — when it didn't fire, advance fell back to the long
+  safety timer (felt "stopped"), and if the clip hadn't actually started, that
+  page was silent (a "miss"). Verified all 32 lines across 6 stories DO have clips,
+  so it wasn't missing content. Fix: say() now schedules completion off the clip's
+  REAL duration (loadedmetadata → setTimeout(done, duration+0.3s)) in addition to
+  'ended' — a reliable timer that no longer depends on the flaky event; whichever
+  fires first wins (done is once()). The narratePage backstop was lengthened so a
+  slow-loading clip is never flipped past prematurely. Verified: the chain marches
+  1→2→3→4 driven purely by the duration path with 'ended' never firing.
+- 2026-07-07 · Read-to-me robustness, take 2 (owner: it still stopped after the
+  2nd page). Two real root causes, both now fixed: (1) MOBILE AUTOPLAY — the code
+  created a brand-new Audio() per page; mobile browsers only keep the element
+  unlocked during the tap gesture, so page 3's fresh element was blocked and the
+  chain stalled. Now read-to-me REUSES one <audio> element (created once, unlocked
+  on the first tap; only its .src changes per page). (2) EVENT RELIANCE — advance
+  no longer depends on any audio event ('ended'/'loadedmetadata'). It runs on a
+  plain timer that ALWAYS fires: the clip's real duration when metadata is known,
+  otherwise a generous estimate — so the reading can never stop. say() reverted to
+  simple fire-and-forget; clip resolution shared via clipFor(). Verified: with NO
+  audio events fired at all, the chain marches 1→2→3→4 using exactly ONE reused
+  audio element.
+- 2026-07-08 · Neutral-referent sweep (closing the Council's first confirmed
+  finding): ~115 gendered references reviewed across site + wiki; every
+  child-referring "her/she" replaced with "the little one" / they-them. arc.yml
+  fully rewritten (months retitled: "Let them explore", "Follow the lantern",
+  "Cause and effect, in little hands", "Do it where they can see", "Let them
+  solve it"); stories.yml 2 spoken lines + 16 cues; dyad/player UI strings;
+  wiki pages updated to match. Judgment documented: animal pronouns kept (the
+  rule protects the child; board-book convention). children.yml example note
+  no longer suggests adding a real name. 2 changed lines re-rendered (10 clips
+  in, 10 orphans pruned); schema + build green. Lesson for the future ledger:
+  a confirmed Council finding should not wait two days for a fix.

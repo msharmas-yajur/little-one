@@ -94,7 +94,7 @@
     if(p.lastShownAt && (Date.now()-p.lastShownAt) < SESSION_GAP) return false;  // ≤ 1 / session
     return true;
   }
-  function pickHypothesis(list){                          // "she keeps coming back to X"
+  function pickHypothesis(list){                          // "the little one keeps coming back to X"
     if(!profile || !Array.isArray(list)) return null;
     const answered=new Set(profile.prompts.answered||[]);
     let best=null, bestScore=0;
@@ -119,7 +119,7 @@
     else if(kind==='early') bumpSignal(id,'tooEarly');
     bumpAdult(kind==='skip' ? 'promptsSkipped' : 'promptsAnswered');
     if(!profile.prompts.answered) profile.prompts.answered=[];
-    if(kind!=='skip') profile.prompts.answered.push(id);  // don't re-ask once she has a verdict; a skip can resurface later
+    if(kind!=='skip') profile.prompts.answered.push(id);  // don't re-ask once the grown-up has answered; a skip can resurface later
     save();
   }
 
@@ -130,7 +130,7 @@
   const DOMAIN_LABEL={ focus:'gentle focus play', perspective:'feelings play',
     communicating:'naming & talking games', connections:'same-and-different play',
     'critical-thinking':'cause-and-effect play', challenges:'just-right challenges',
-    'self-directed':'let-her-lead play' };
+    'self-directed':'child-led play' };
   function autonomy(){ return profile ? (profile.autonomy||'auto') : 'auto'; }
   function setAutonomy(mode){ if(profile){ profile.autonomy=(mode==='ask-first'?'ask-first':'auto'); save(); } }
   function suggestDomain(){
@@ -242,9 +242,9 @@
     const wrap=document.createElement('div'); wrap.id='dyadModal'; wrap.className='dyad-modal';
     wrap.innerHTML=
       '<div class="dyad-card">'+
-      '<h2>Make it hers</h2>'+
-      '<p class="dyad-sub">A few gentle details so the stories and games grow with her. This stays on <b>your device</b> — never uploaded, and we never ask her name.</p>'+
-      '<label>When was she born?</label><input type="month" id="dyadBirth">'+
+      '<h2>Make it theirs</h2>'+
+      '<p class="dyad-sub">A few gentle details so the stories and games grow with your little one. This stays on <b>your device</b> — never uploaded, and we never ask for a name.</p>'+
+      '<label>When was the little one born?</label><input type="month" id="dyadBirth">'+
       '<label>Languages you speak at home <span class="opt">(tap all that apply)</span></label>'+
       '<div class="dyad-pills" id="dyadLangPills">'+
         LANG_OPTIONS.map(function(l){ return '<button type="button" class="dyad-pill" data-lang="'+l+'">'+l+'</button>'; }).join('')+
@@ -282,6 +282,11 @@
           '<button class="dyad-autobtn'+(autonomy()==='auto'?' on':'')+'" data-a="auto">Automatically</button>'+
           '<button class="dyad-autobtn'+(autonomy()==='ask-first'?' on':'')+'" data-a="ask-first">Ask me first</button>'+
           '</div>'):'')+
+      (window.VOICE && window.VOICE.voices ? ('<label>Storybook voice</label>'+
+        '<div class="dyad-pills" id="dyadVoicePills">'+
+          '<button type="button" class="dyad-pill" data-v="">Auto <span class="opt">(per story)</span></button>'+
+          window.VOICE.voices.map(function(v){ return '<button type="button" class="dyad-pill" data-v="'+v+'">'+v.charAt(0).toUpperCase()+v.slice(1)+'</button>'; }).join('')+
+        '</div>') : '')+
       '<p class="dyad-msg" id="dyadMsg" hidden></p>'+
       '<div class="dyad-actions" style="flex-wrap:wrap;">'+
         (p?'<button class="dyad-skip" id="dyadExport">Export</button>':'')+
@@ -292,6 +297,17 @@
         '<button class="dyad-save" id="dyadClose">Done</button>'+
       '</div></div>';
     document.body.appendChild(wrap);
+    (function(){
+      const pills=wrap.querySelectorAll('#dyadVoicePills .dyad-pill'); if(!pills.length) return;
+      let cur=''; try{ cur=localStorage.getItem('lo.voice')||''; }catch(e){}
+      pills.forEach(function(b){ if(b.getAttribute('data-v')===cur) b.classList.add('sel'); });
+      pills.forEach(function(b){ b.onclick=function(){
+        const v=b.getAttribute('data-v');
+        try{ if(v) localStorage.setItem('lo.voice', v); else localStorage.removeItem('lo.voice'); }catch(e){}
+        pills.forEach(function(x){ x.classList.toggle('sel', x===b); });
+        try{ new Audio((window.VOICE.base||'')+'/'+(v || (window.VOICE.voices&&window.VOICE.voices[0]) || 'ritu')+'/hello-little-one.mp3').play().catch(function(){}); }catch(e){}  // preview the voice
+      }; });
+    })();
     const close=()=>{ if(window.LO && window.LO.renderMenu) window.LO.renderMenu(); wrap.remove(); };
     const msg=(t)=>{ const m=document.getElementById('dyadMsg'); if(m){ m.textContent=t; m.hidden=false; } };
     document.getElementById('dyadClose').onclick=close;

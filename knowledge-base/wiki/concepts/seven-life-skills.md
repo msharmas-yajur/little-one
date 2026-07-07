@@ -16,13 +16,13 @@ grown-up*, not a checklist to drill.
 
 | # | Life skill | The grown-up's supporting move (~12mo) | Arc month it fits |
 |---|-----------|-----------------------------------------|-------------------|
-| 1 | **Focus & Self-Control** | Follow her gaze; let one page hold her attention. | M2 (follow her lantern) |
-| 2 | **Perspective Taking** | Name feelings out loud; mirror her expressions. | M7 (name the inside weather) |
+| 1 | **Focus & Self-Control** | Follow the little one's gaze; let one page hold their attention. | M2 (follow the lantern) |
+| 2 | **Perspective Taking** | Name feelings out loud; mirror the little one's expressions. | M7 (name the inside weather) |
 | 3 | **Communicating** | Serve-and-return: answer every babble/point as a turn. | M6 (the pause that makes room) |
 | 4 | **Making Connections** | Point out same/different; link book to world. | M10 (words for the world) |
-| 5 | **Critical Thinking** | Cause-and-effect play; pause, let her anticipate. | M3 (cause & effect in her hands) |
-| 6 | **Taking on Challenges** | A "just-right" challenge; let her try before helping. | M11 (let her solve it) |
-| 7 | **Self-Directed Learning** | Follow her lead — she chooses, turns pages, sets pace. | M9 (small choices, real agency) |
+| 5 | **Critical Thinking** | Cause-and-effect play; pause, let the little one anticipate. | M3 (cause & effect, in little hands) |
+| 6 | **Taking on Challenges** | A "just-right" challenge; let the little one try before helping. | M11 (let them solve it) |
+| 7 | **Self-Directed Learning** | Follow the little one's lead — they choose, turn pages, set the pace. | M9 (small choices, real agency) |
 
 ## Notes for planning
 - The mapping is a scaffold, not a rule — several skills touch several months.

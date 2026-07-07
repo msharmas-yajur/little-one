@@ -12,8 +12,8 @@
 #            (use "all" to include every shared story)
 #  games   — list of word-game ids from _data/wordgames.yml
 #            (use "all" to include every shared game)
-#  notes   — private notes to yourself: what she responds to,
-#            words she's trying, what to add next. Not shown on site.
+#  notes   — private notes to yourself: what the little one responds
+#            to, words in progress, what to add next. Not shown on site.
 # ══════════════════════════════════════════════════════════════
 
 - id: little-one
@@ -28,7 +28,7 @@
   notes: |
     First child on the site — the grand niece, around 1 year.
     Watching for: which pictures get the biggest reaction.
-    Next to try: adding her real name into a story line.
+    Next to try: a story about bath time. (Remember: no real names — this repo is public.)
 
 # ── Example of a second grandchild, ready when you need it. ──
 # Remove the "#" marks to switch it on and edit freely.

@@ -13,7 +13,7 @@ A year of monthly **practices for the grown-up**, starting from the little one
 at age 1. Not a curriculum for the child.
 
 Structure (lives in `_data/arc.yml`):
-- 12 months, each = one adult **stance** (e.g. Month 1 "Let her explore").
+- 12 months, each = one adult **stance** (e.g. Month 1 "Let them explore").
 - Each month carries: `stance`, `why` (plain-language science), `story`/`game`
   links, an `onsite` short prompt, and `invitations` (each a `do:` = what the
   grown-up sets up, and a `watch:` = what the child's learning looks like).

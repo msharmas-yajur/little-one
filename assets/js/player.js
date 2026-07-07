@@ -215,7 +215,42 @@
     ensureVoice();
     window.speechSynthesis.onvoiceschanged = ()=>{ preferredVoice = pickVoice(); };
   }
-  function say(text){
+  /* ---- warm voice: prefer a pre-rendered clip (Sarvam) for the ACTIVE voice,
+     else fall back to the device speech voice. Active voice = the family's
+     picked voice (settings) › the story/game's own `voice:` › the default.
+     Clips are static + offline; partial coverage is fine — anything unrendered
+     speaks via the device voice. window.VOICE is embedded by child.html. ---- */
+  const DEFAULT_VOICE = (window.VOICE && window.VOICE.voices && window.VOICE.voices[0]) || 'ritu';
+  function slugText(t){ return (t||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,''); }
+  function pickedVoice(){ try{ return localStorage.getItem('lo.voice') || ''; }catch(e){ return ''; } }
+  function activeVoice(){
+    return pickedVoice() || (curStory && curStory.voice) || (curGame && curGame.voice) || DEFAULT_VOICE;
+  }
+  /* clipFor(text) → the mp3 URL for the active voice (falling back to the default
+     voice), or null if no clip exists. Shared by say() and read-to-me. */
+  function clipFor(text){
+    const V = window.VOICE;
+    if(!(V && V.manifest)) return null;
+    const s = slugText(text), av = activeVoice();
+    const voice = (V.manifest[av] && V.manifest[av][s]) ? av
+                : (V.manifest[DEFAULT_VOICE] && V.manifest[DEFAULT_VOICE][s]) ? DEFAULT_VOICE : null;
+    return voice ? ((V.base||'') + '/' + voice + '/' + s + '.mp3') : null;
+  }
+  let clipAudio=null;
+  function say(text){   // fire-and-forget: a warm clip if one exists, else the device voice
+    try{
+      const url = clipFor(text);
+      if(url){
+        duckMusic();
+        try{ if(clipAudio) clipAudio.pause(); }catch(e){}
+        clipAudio = new Audio(url); clipAudio.volume = 0.95;
+        clipAudio.play().catch(()=>sayDevice(text));   // autoplay blocked → device voice
+        return;
+      }
+      sayDevice(text);
+    }catch(e){ sayDevice(text); }
+  }
+  function sayDevice(text){
     try{
       if(!('speechSynthesis' in window)) return;
       const u = new SpeechSynthesisUtterance(text);
@@ -229,17 +264,18 @@
 
   /* ---- confetti: original, dependency-free burst (respects reduced-motion) ---- */
   const CONFETTI = ['#F6C453','#F28C7A','#8FCFE0','#B79BD6','#8DC08A','#5BB0C7'];
-  function confetti(){
+  function confetti(opts){
+    opts = opts || {};
     if(reduceMotion) return;
-    let cvs = document.getElementById('confettiCanvas');
-    if(!cvs){
-      cvs = document.createElement('canvas'); cvs.id='confettiCanvas';
-      cvs.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:9999;';
-      document.body.appendChild(cvs);
-    }
+    const count = opts.count||100, life = opts.life||115, cap = opts.cap||135;
+    const cvs = document.createElement('canvas');   // own layer per burst → waves can overlap
+    cvs.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:9999;';
+    document.body.appendChild(cvs);
     const ctx = cvs.getContext('2d');
+    const remove = ()=>{ if(cvs.parentNode) cvs.parentNode.removeChild(cvs); };
+    const safety = setTimeout(remove, (cap/60)*1000 + 800);   // always clean up, even if a bg tab throttles rAF
     const W = cvs.width = window.innerWidth, H = cvs.height = window.innerHeight;
-    const parts = Array.from({length:100}, ()=>({
+    const parts = Array.from({length:count}, ()=>({
       x: W*0.5 + (Math.random()-0.5)*W*0.55, y: H*0.32 + (Math.random()-0.5)*40,
       vx: (Math.random()-0.5)*9, vy: -7 - Math.random()*7, g: 0.28 + Math.random()*0.14,
       size: 6 + Math.random()*8, rot: Math.random()*6.28, vr: (Math.random()-0.5)*0.3,
@@ -248,7 +284,7 @@
     let frames = 0;
     (function step(){
       frames++; ctx.clearRect(0,0,W,H);
-      let alive=false; const alpha=Math.max(0,1-frames/115);
+      let alive=false; const alpha=Math.max(0,1-frames/life);
       parts.forEach(p=>{
         p.vy+=p.g; p.vx*=0.99; p.x+=p.vx; p.y+=p.vy; p.rot+=p.vr;
         if(p.y < H+24) alive=true;
@@ -257,9 +293,37 @@
         else ctx.fillRect(-p.size/2,-p.size/2,p.size,p.size*0.6);
         ctx.restore();
       });
-      if(alive && frames<135) requestAnimationFrame(step);
-      else if(cvs&&cvs.parentNode) cvs.parentNode.removeChild(cvs);
+      if(alive && frames<cap) requestAnimationFrame(step);
+      else { clearTimeout(safety); remove(); }
     })();
+  }
+  /* a fuller, longer party — rolling waves — for finishing a whole book (~3.8s, matches the return) */
+  function bigConfetti(){
+    confetti({count:160, life:180, cap:200});
+    setTimeout(()=>confetti({count:130, life:170, cap:190}), 600);
+    setTimeout(()=>confetti({count:110, life:160, cap:180}), 1200);
+  }
+  /* ---- applause: clapping-hands emoji that pop in (staggered) and float up ---- */
+  function claps(n){
+    if(reduceMotion) return;
+    n = n || 8;
+    for(let i=0;i<n;i++){
+      const s = document.createElement('span');
+      s.textContent = '👏';
+      const size = 26 + Math.random()*28;
+      s.style.cssText = `position:fixed;left:${6+Math.random()*88}vw;bottom:-6vh;`
+        + `font-size:${size}px;z-index:9998;pointer-events:none;will-change:transform,opacity;`;
+      document.body.appendChild(s);
+      const dur = 1500 + Math.random()*900, rise = 42 + Math.random()*46, drift = (Math.random()-0.5)*90;
+      const remove = ()=>{ if(s.parentNode) s.parentNode.removeChild(s); };
+      s.animate([                                   // pop + a little "clap" pulse, then drift up and fade
+        {transform:'translate(0,0) rotate(0deg) scale(.5)', opacity:0},
+        {transform:`translate(${drift*0.3}px,-${rise*0.3}vh) rotate(-10deg) scale(1.2)`, opacity:1, offset:.18},
+        {transform:`translate(${drift*0.65}px,-${rise*0.65}vh) rotate(10deg) scale(.95)`, opacity:1, offset:.55},
+        {transform:`translate(${drift}px,-${rise}vh) rotate(-6deg) scale(.85)`, opacity:0}
+      ], {duration:dur, delay:i*85, easing:'ease-out'}).onfinish = remove;
+      setTimeout(remove, dur + i*85 + 400);         // safety cleanup if the tab throttles animations
+    }
   }
 
   /* ---- celebrate a correct find: chime + confetti + warm spoken cheer ---- */
@@ -267,6 +331,7 @@
   function celebrate(label){
     happy();
     confetti();
+    claps(6);
     say(sayLines[Math.random()*sayLines.length|0].replace('{L}', label));
   }
 
@@ -286,7 +351,8 @@
   const artSentences = ['Look, the {w}!', "It's the {w}!", "There's the {w}!", 'I see the {w}!', 'Can you say {w}?'];
   function sayArt(key){
     const w=(key||'').toLowerCase(); if(!w) return;
-    say(artSentences[Math.random()*artSentences.length|0].replace('{w}', w));
+    let h=0; for(let i=0;i<w.length;i++) h+=w.charCodeAt(i);   // deterministic per word (matches voice/render.py) → one clip per picture
+    say(artSentences[h % artSentences.length].replace('{w}', w));
   }
   const speakable = s => (s||'').replace(/[^\w\s,.!?'-]/g,'').replace(/\s+/g,' ').trim();
 
@@ -424,7 +490,7 @@
     const label = (D.suggestLabel && D.suggestLabel()) || 'a little more variety';
     const card=document.createElement('div'); card.id='askCard'; card.className='notice-card';
     card.innerHTML =
-      '<p class="notice-q">This week, shall I lean into <b>'+label+'</b> for her?</p>'+
+      '<p class="notice-q">This week, shall I lean into <b>'+label+'</b> for the little one?</p>'+
       '<div class="notice-actions">'+
         '<button data-a="yes">Yes please</button>'+
         '<button data-a="no">Not now</button>'+
@@ -441,6 +507,7 @@
   let curStory=null, pageIdx=0;
   function openStory(i){
     curStory = stories[i]; pageIdx = 0;
+    stopRead();                              // start fresh, never mid-read from a prior story
     telOpen(curStory);
     musicSetTheme(curStory.id, true);        // this story's own tune
     show('storyScreen'); renderPage();
@@ -468,12 +535,16 @@
     $('storyCue').textContent = p.cue ? '💡 ' + p.cue : '';
     $('storyTitle').textContent = curStory.title;
     $('storyProgress').textContent = `${pageIdx+1} / ${curStory.pages.length}`;
-    $('prevBtn').disabled = pageIdx===0;
-    $('nextBtn').innerHTML = pageIdx===curStory.pages.length-1 ? 'The end 💛' : 'Turn the page →';
+    const last = pageIdx===curStory.pages.length-1;
+    $('prevBtn').hidden = pageIdx===0;                      // no "back" on the very first page
+    const nb=$('nextBtn'); nb.innerHTML = last ? '♥' : '›'; nb.classList.toggle('end', last);
+    const pc=$('pageCurl'); if(pc) pc.hidden = last;        // last page: nothing behind it to peel
+    clearInvite();                                          // fresh page: stop any pulsing turn-cue
 
     const T = PAGE_TYPES[pageType(p)];
     const hint=$('tapHint'); if(hint) hint.textContent = T.hint;
     T.invite(p);                                            // invite a tap (plain) or a lift (flap/mirror)
+    if(readMode) narratePage();                             // "Read to me" is on → narrate + auto-turn
   }
   /* ---- board-book page-turn: soft two-phase flip on the scene ---- */
   let turning=false;
@@ -500,9 +571,73 @@
   function nextPage(){
     if(!curStory) return;
     if(pageIdx<curStory.pages.length-1) turnPage(1, ()=>{ pageIdx++; renderPage(); });
-    else { telEngage(curStory,'completes'); backToMenu(); }   // reached the end = completed
+    else finishStory();                                        // reached the end = completed
+  }
+  /* ---- finishing the whole book: a longer party + a warm spoken congratulation ---- */
+  const COMPLETE_LINE = 'You finished the whole book! Hooray, little one!';
+  let finishing=false;
+  function finishStory(){
+    if(finishing) return; finishing=true;                      // guard against double-taps on ♥
+    stopRead();
+    telEngage(curStory,'completes');
+    happy();                                                   // celebratory chime
+    bigConfetti();                                             // rolling confetti waves
+    claps(14); setTimeout(()=>claps(10), 1100);                // rounds of applause
+    say(COMPLETE_LINE);                                        // warm voice, in this story's speaker
+    setTimeout(()=>{ finishing=false; backToMenu(); }, 3800);  // let the party + voice finish first
   }
   function prevPage(){ if(pageIdx>0) turnPage(-1, ()=>{ pageIdx--; renderPage(); }); }
+
+  /* ---- turn-the-page affordance: pulse the chevron + corner-curl after a tap ---- */
+  function clearInvite(){ ['nextBtn','pageCurl'].forEach(id=>{ const e=$(id); if(e) e.classList.remove('invite'); }); }
+  function inviteNext(){
+    if(!curStory || pageIdx>=curStory.pages.length-1) return;   // nothing to turn to on the last page
+    ['nextBtn','pageCurl'].forEach(id=>{ const e=$(id); if(e) e.classList.add('invite'); });
+  }
+
+  /* ---- "Read to me": narrate the line in the warm voice, then turn the page ---- */
+  let readMode=false, readTimer=null;
+  function reflectReadBtn(){ const b=$('readBtn'); if(!b) return;
+    b.innerHTML = readMode ? '⏸&nbsp; Reading…' : '▶&nbsp; Read to me'; b.classList.toggle('on', readMode); }
+  function stopRead(){ readMode=false; clearTimeout(readTimer); try{ if(readAudio) readAudio.pause(); }catch(e){} reflectReadBtn(); }
+  function toggleRead(){ readMode=!readMode; reflectReadBtn(); readMode ? narratePage() : stopRead(); }
+  /* One reused <audio> element for read-to-me. Reusing (not re-creating) the
+     element is what keeps it "unlocked" on mobile after the first tap — new
+     Audio() objects created from a timer get blocked, which used to stall the
+     read after a page or two. Advancement runs on a plain timer that ALWAYS
+     fires (real clip duration when known, a generous estimate otherwise), so
+     the reading can never stop regardless of flaky audio events. */
+  let readAudio=null;
+  function narratePage(){
+    if(!readMode || !curStory) return;
+    const myPage = pageIdx;                                     // ignore stale callbacks after a manual turn
+    const line = curStory.pages[pageIdx].line || '';
+    clearTimeout(readTimer);
+    const goNext = ()=>{
+      if(!readMode || pageIdx!==myPage) return;                // toggled off, or the child already turned
+      if(pageIdx<curStory.pages.length-1) nextPage();          // → renderPage → narratePage (chains on)
+      else stopRead();                                          // reached the end, stop reading
+    };
+    let armed=false;                                            // schedule the turn exactly once
+    const arm = ms => { if(armed) return; armed=true; clearTimeout(readTimer);
+      readTimer = setTimeout(goNext, Math.max(1400, ms) + 800); };   // read time + a beat to look
+
+    const url = clipFor(line);
+    if(url){
+      duckMusic();
+      if(!readAudio) readAudio = new Audio();                   // create once; unlocked on the first tap
+      readAudio.onloadedmetadata = readAudio.ondurationchange = null;
+      readAudio.src = url; readAudio.volume = 0.95;
+      const useDur = ()=>{ if(isFinite(readAudio.duration) && readAudio.duration>0) arm(readAudio.duration*1000 + 150); };
+      readAudio.onloadedmetadata = useDur;                      // learn the real length → accurate turn
+      readAudio.ondurationchange = useDur;
+      try{ readAudio.play().catch(()=>{}); }catch(e){}          // best-effort; the timer below still advances
+    } else {
+      sayDevice(line);
+    }
+    // guaranteed fallback: advances even if no audio event ever fires (arm() wins if metadata arrives first)
+    readTimer = setTimeout(()=>{ if(!armed){ armed=true; goNext(); } }, Math.max(2800, line.length*105 + 1700) + 800);
+  }
 
   /* ---- GAME ---- */
   let curGame=null, score=0;
@@ -612,7 +747,7 @@
       const el=$(s); if(el) el.classList.toggle('active', s===id);
     });
   }
-  function backToMenu(){ show('menuScreen'); musicSetTheme('menu', true); maybeNotice(); }
+  function backToMenu(){ stopRead(); show('menuScreen'); musicSetTheme('menu', true); maybeNotice(); }
 
   /* ---- noticing prompt: a gentle one-tap card at the session-end pause.
      Never blocks (the menu is fully usable underneath); shows at most rarely,
@@ -631,7 +766,7 @@
     D.recordPromptShown();
     const card=document.createElement('div'); card.id='noticeCard'; card.className='notice-card';
     card.innerHTML =
-      '<p class="notice-q">She keeps coming back to <b>'+item.title+'</b> — is she loving it?</p>'+
+      '<p class="notice-q">The little one keeps coming back to <b>'+item.title+'</b> — loving it?</p>'+
       '<div class="notice-actions">'+
         '<button data-k="heart">❤️ Loving it</button>'+
         '<button data-k="early">🌱 Too early</button>'+
@@ -649,12 +784,25 @@
      Listener lives on the persistent .scene div (reliable on mobile; the whole
      picture becomes one big tap target for little fingers). */
   const sceneEl = $('scene');
-  if(sceneEl) sceneEl.addEventListener('click', ()=>{
-    if(!curStory) return;
-    const p = curStory.pages[pageIdx];
-    telEngage(curStory,'taps');
-    PAGE_TYPES[pageType(p)].tap(p);                        // plain → say the word; flap/mirror → lift
-  });
+  if(sceneEl){
+    let sx=0, sy=0, st=0, swiped=false;
+    sceneEl.addEventListener('pointerdown', e=>{ sx=e.clientX; sy=e.clientY; st=Date.now(); swiped=false; });
+    sceneEl.addEventListener('pointerup', e=>{
+      const dx=e.clientX-sx, dy=e.clientY-sy;               // a horizontal drag = turn the page, like a real book
+      if(Math.abs(dx)>45 && Math.abs(dx)>Math.abs(dy)*1.4 && Date.now()-st<700){
+        swiped=true;
+        if(dx<0) nextPage(); else prevPage();
+      }
+    });
+    sceneEl.addEventListener('click', ()=>{
+      if(swiped){ swiped=false; return; }                   // the swipe already turned the page
+      if(!curStory) return;
+      const p = curStory.pages[pageIdx];
+      telEngage(curStory,'taps');
+      PAGE_TYPES[pageType(p)].tap(p);                        // plain → say the word; flap/mirror → lift
+      inviteNext();                                          // then gently pulse the turn-the-page cue
+    });
+  }
 
   /* Adult-engagement signal: grown-up expands the monthly guidance card. */
   const gcard = document.querySelector('.grownup-card');
@@ -683,6 +831,6 @@
     goFullscreenMaybe();
   }, {once:true, passive:true});
 
-  window.LO = { openStory, openGame, nextPage, prevPage, backToMenu, toggleMusic, renderMenu };
+  window.LO = { openStory, openGame, nextPage, prevPage, backToMenu, toggleMusic, renderMenu, toggleRead };
   renderMenu(); show('menuScreen'); reflectMusicBtn();
 })();

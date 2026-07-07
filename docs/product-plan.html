@@ -3,24 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Little One — Product Plan (PRDs)</title>
+<title>Little One — Product Plan &amp; Architecture</title>
 <link rel="icon" href="../assets/icons/icon-192.png">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=Baloo+2:wght@600;700&display=swap');
   :root{--cream:#FBF6EE;--sky:#5BB0C7;--sun:#F6C453;--coral:#F28C7A;--leaf:#8DC08A;--grape:#B79BD6;--ink:#4A4038;--soft:#7A6E63;--line:#EADFCE;}
   *{box-sizing:border-box;margin:0;padding:0;}
   body{font-family:'Fredoka',sans-serif;background:var(--cream);color:var(--ink);line-height:1.6;}
-  .wrap{max-width:880px;margin:0 auto;padding:40px 22px 80px;}
+  .wrap{max-width:900px;margin:0 auto;padding:40px 22px 80px;}
   h1,h2,h3{font-family:'Baloo 2',cursive;line-height:1.2;}
   h1{font-size:clamp(1.9rem,5vw,2.6rem);color:var(--sky);}
   h1 span{color:var(--coral);}
-  .sub{color:var(--soft);margin:6px 0 8px;max-width:60ch;}
+  .sub{color:var(--soft);margin:6px 0 8px;max-width:64ch;}
   .meta{font-size:.8rem;color:var(--soft);}
   h2{font-size:1.5rem;margin:0 0 4px;}
   h3{font-size:1.05rem;margin:18px 0 6px;color:var(--sky);}
   .card{background:#fff;border-radius:22px;padding:26px 28px;margin-top:26px;box-shadow:0 6px 0 rgba(74,64,56,.10);}
   .pill{display:inline-block;font-size:.72rem;font-weight:600;letter-spacing:.4px;padding:4px 12px;border-radius:100px;color:#fff;vertical-align:middle;margin-left:8px;}
   .pill.live{background:var(--leaf);} .pill.plan{background:var(--sun);color:var(--ink);}
+  .pill.build{background:var(--grape);} .pill.soon{background:#EADFCE;color:var(--soft);}
   ul{padding-left:20px;margin:6px 0;}
   li{margin:4px 0;}
   .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:10px;}
@@ -30,6 +31,7 @@
   .step{background:var(--cream);border-left:5px solid var(--sky);border-radius:12px;padding:10px 14px;font-size:.95rem;}
   .step b{color:var(--sky);}
   .step.gate{border-left-color:var(--coral);} .step.gate b{color:var(--coral);}
+  .step.done{border-left-color:var(--leaf);} .step.done b{color:var(--leaf);}
   .check li{list-style:none;position:relative;padding-left:26px;}
   .check li::before{content:"✓";position:absolute;left:0;color:var(--leaf);font-weight:700;}
   .rules li{list-style:none;position:relative;padding-left:26px;}
@@ -38,183 +40,230 @@
   table{border-collapse:collapse;width:100%;font-size:.9rem;min-width:520px;}
   th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line);vertical-align:top;}
   th{font-family:'Baloo 2',cursive;color:var(--soft);font-weight:600;}
+  .st{font-size:.72rem;font-weight:600;padding:2px 9px;border-radius:100px;white-space:nowrap;}
+  .st.live{background:var(--leaf);color:#fff;} .st.build{background:var(--grape);color:#fff;}
+  .st.soon{background:#EADFCE;color:var(--soft);} .st.plan{background:var(--sun);color:var(--ink);}
   .note{background:#FDF3E3;border-radius:14px;padding:12px 16px;font-size:.9rem;margin-top:14px;}
+  .callout{background:var(--cream);border-left:5px solid var(--grape);border-radius:12px;padding:12px 16px;font-size:.92rem;margin-top:14px;}
+  .callout b{color:var(--grape);}
+  code{background:var(--cream);border:1px solid var(--line);border-radius:6px;padding:1px 5px;font-size:.85em;}
   footer{margin-top:44px;font-size:.82rem;color:var(--soft);text-align:center;}
   a{color:var(--sky);}
+  .toc{font-size:.9rem;columns:2;column-gap:24px;}
+  .toc a{display:block;margin:3px 0;}
   @media (prefers-color-scheme: dark){ /* deliberate single look: the plan matches the app's cream identity */ }
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <h1>Little <span>One</span> — Product Plan</h1>
+  <h1>Little <span>One</span> — Product Plan &amp; Architecture</h1>
   <p class="sub">A gentle, growing storybook for children from about six months to five years —
-  used as a <b>shared lap activity</b>: a grown-up reads aloud, the little one taps along.
-  This page presents the two product requirement documents (PRDs) that define where the
-  application is going, for anyone reviewing the plan.</p>
-  <p class="meta">Prepared 5&nbsp;July&nbsp;2026 · Updated 6&nbsp;July&nbsp;2026 (PRD&nbsp;0002 live; PRD&nbsp;0003 added) ·
-  Source of truth: the project knowledge base
-  (<code>knowledge-base/</code> in the repository) · No child data appears anywhere in this plan.</p>
+  a <b>shared lap activity</b> (a grown-up reads aloud, the little one taps along) that
+  <b>designs and improves itself</b> under human review. This document is the orientation for
+  anyone building on the project: the vision, the architecture, and — the point of this update —
+  <b>what is actually delivered</b>.</p>
+  <p class="meta">Prepared 5&nbsp;July&nbsp;2026 · Substantially updated 7&nbsp;July&nbsp;2026 (three PRDs; the Generative Arc largely built — voice now live) ·
+  Source of truth: the project knowledge base (<code>knowledge-base/</code>) · No child data appears anywhere in this document.</p>
 
   <div class="card">
-    <h2>The promises the whole plan is built on</h2>
-    <ul class="rules">
-      <li><b>Privacy by construction.</b> A child's profile and interactions live only on the family's device — never uploaded, never in the repository. No names are ever collected.</li>
-      <li><b>The grown-up stays in the loop.</b> This is a lap activity; the app supports the adult, it never replaces them. All guidance is a practice for the adult, not a curriculum for the child.</li>
-      <li><b>Forgiving by design.</b> No scores to lose, no fail states, no scolding — wrong taps get a gentle nudge.</li>
-      <li><b>Evidence-based.</b> Content and pacing trace to developmental science (Gopnik, Galinsky, Kuhl, Byers-Heinlein) recorded as sourced notes in the knowledge base.</li>
-      <li><b>Everything reviewable.</b> The engine is simple and fixed; behavior changes are <i>data</i> changes — versioned, diffable, reversible.</li>
+    <h2>Read this in five lines</h2>
+    <ul>
+      <li>The app is a <b>fixed engine + reviewed data</b>. Behaviour changes are data changes — versioned, diffable, reversible. There is <b>no LLM on the child's device</b>.</li>
+      <li>It <b>improves itself at the development level</b>: an automated Claude session proposes one improvement at a time as a pull request; a human gate decides; the next run learns from that decision.</li>
+      <li>It now <b>generates its own experiences</b> — content, and the <i>interactions</i> built on them — as reviewable, capability-bounded data + code, judged by an automated <b>panel of six expert "seats"</b> and gated by a human.</li>
+      <li><b>Privacy is structural:</b> generation is global (from the public knowledge base); personalisation is local (on-device, no LLM); only <b>anonymised, aggregate</b> signals ever leave.</li>
+      <li>It is a deliberate <b>rehearsal of guidance-driven workflow change</b> (e.g. clinical protocols): guidance update → reviewed diff → conformance checks → audit trail → rollback.</li>
     </ul>
+    <div class="toc" style="margin-top:14px;">
+      <a href="#status">① Status at a glance</a>
+      <a href="#promises">② The promises</a>
+      <a href="#arch">③ The architecture</a>
+      <a href="#gate">④ The gate stack (safe generation)</a>
+      <a href="#prd1">⑤ PRD 0001 — Adaptive Arc</a>
+      <a href="#prd2">⑥ PRD 0002 — Gardener Loop</a>
+      <a href="#prd3">⑦ PRD 0003 — Generative Arc</a>
+      <a href="#why">⑧ Why it matters beyond a storybook</a>
+      <a href="#after">⑨ What comes after</a>
+    </div>
+  </div>
+
+  <!-- ══════════════ STATUS DASHBOARD ══════════════ -->
+  <div class="card" id="status">
+    <h2>① Status at a glance</h2>
+    <p class="sub">Everything below is committed to the repository and (where marked live) deployed.</p>
+    <div class="tablewrap"><table>
+      <tr><th>Capability</th><th>What it is</th><th style="text-align:right;">Status</th></tr>
+      <tr><td><b>Adaptive Arc v1</b></td><td>On-device personalisation: dyad profile, passive signals, discovery→partnership, adaptive menu, "Next for…" guide</td><td style="text-align:right;"><span class="st live">LIVE</span></td></tr>
+      <tr><td><b>Gardener (content loop)</b></td><td>Automated session proposes one content/KB improvement per run as a human-gated PR; learns from merge/close</td><td style="text-align:right;"><span class="st live">LIVE · 2 merged</span></td></tr>
+      <tr><td><b>Experience schema</b></td><td>Capability-bounded declarative contract for every experience; generated UI sandboxed by grammar</td><td style="text-align:right;"><span class="st live">LIVE</span></td></tr>
+      <tr><td><b>Schema-driven engine</b></td><td>The player is now a pure renderer — a type registry; a new experience type is data + one entry</td><td style="text-align:right;"><span class="st live">LIVE</span></td></tr>
+      <tr><td><b>Review Council</b></td><td>Six rubric-anchored LLM-judge "seats" + a Chairman; every verdict cites a knowledge-base principle</td><td style="text-align:right;"><span class="st build">BUILT</span></td></tr>
+      <tr><td><b>Mechanic loop (Gardener graduation)</b></td><td>The Gardener proposes a <i>new interaction mechanic</i> (schema + engine code) as a human-gated PR</td><td style="text-align:right;"><span class="st build">BUILT · proven</span></td></tr>
+      <tr><td><b>Warm voice (Sarvam)</b></td><td>Build-time neural narration → static clips; a settings picker (5 playful bulbul:v3 voices) + different voices per story/game; Indian-language-first</td><td style="text-align:right;"><span class="st live">LIVE</span></td></tr>
+      <tr><td><b>Variant pools + aggregate telemetry</b></td><td>Generate reviewed pools; on-device composition; anonymised cohort signals feed the next generation</td><td style="text-align:right;"><span class="st plan">PLANNED</span></td></tr>
+      <tr><td><b>Bring-your-own-key (per-family)</b></td><td>A family's own instance learns per-child on the family's own key and data</td><td style="text-align:right;"><span class="st plan">FUTURE</span></td></tr>
+    </table></div>
+    <p class="note">📚 Content library today: <b>6 stories</b> · <b>6 tap-along games</b> live (a 7th, a counting game, is in an open Mechanic pull request awaiting review). Three story mechanics (plain / lift-the-flap / camera-mirror) and three game mechanics (find / odd-one-out / count).</p>
+  </div>
+
+  <!-- ══════════════ PROMISES ══════════════ -->
+  <div class="card" id="promises">
+    <h2>② The promises the whole plan is built on</h2>
+    <ul class="rules">
+      <li><b>Privacy by construction.</b> A child's profile and interactions live only on the family's device — never uploaded, never in the repository. No names are ever collected. Only anonymised, aggregate signals may ever leave.</li>
+      <li><b>The grown-up stays in the loop.</b> This is a lap activity; the app supports the adult, it never replaces them. All guidance is a practice for the adult, not a curriculum for the child.</li>
+      <li><b>Forgiving by design.</b> No scores to lose, no fail states, no scolding — a wrong tap gets a gentle nudge.</li>
+      <li><b>Evidence-based.</b> Content and pacing trace to developmental science (Gopnik, Galinsky, Kuhl, Byers-Heinlein, Faber &amp; King) recorded as sourced notes in the knowledge base.</li>
+      <li><b>Everything reviewable.</b> The engine is fixed; behaviour changes are <i>data</i> — versioned, diffable, reversible. Nothing generated reaches a child unreviewed.</li>
+    </ul>
+  </div>
+
+  <!-- ══════════════ ARCHITECTURE ══════════════ -->
+  <div class="card" id="arch">
+    <h2>③ The architecture — one mental model</h2>
+    <p class="sub">The whole system is three layers and one loop. Hold these and everything else follows.</p>
+    <div class="cols">
+      <div class="tile"><b>1 · A fixed engine</b>A small static site (no backend) that <i>renders</i> declarative data. It never changes to add an experience — it reads a bounded schema and draws what the data says.</div>
+      <div class="tile"><b>2 · Reviewed data</b>Stories, games, interaction mechanics, the developmental knowledge base, and every policy live as versioned files. This is where the app's "behaviour" and its "learning" actually live.</div>
+      <div class="tile"><b>3 · On-device personalisation</b>A local, interpretable model of the parent-and-child pair <i>selects and paces</i> from the data. No machine learning on child signals, no network, no LLM on the device.</div>
+    </div>
+    <div class="callout"><b>The loop.</b> At the <i>development</i> level, an automated Claude session reads the knowledge base and proposes an improvement — new content, or a new interaction mechanic — as a pull request. Automated checks and a panel of judges vet it; a human merges or closes; the next run reads that decision. <b>The engine's weights never change; the reviewed data it reads changes.</b> (This is the CLHF / in-context-learning pattern, adopted from CopilotKit's self-improving-agents idea — the pattern, not the runtime library.)</div>
+    <div class="note"><b>Generation is global; personalisation is local; the feedback that connects them is anonymised and aggregate.</b> Generation happens at the development level from the <i>public</i> knowledge base, so it touches no child data by construction. The on-device profile only chooses from the shelf — it never phones the publisher. The only data that ever leaves a device is opt-in, anonymised, threshold-gated <i>cohort</i> signals (never a raw per-child trace); true per-child learning is reserved for a family's own bring-your-own-key instance.</div>
+  </div>
+
+  <!-- ══════════════ GATE STACK ══════════════ -->
+  <div class="card" id="gate">
+    <h2>④ The gate stack — how autonomous generation stays safe</h2>
+    <p class="sub">The reason an LLM can be allowed to propose content <i>and interaction code</i> is that nothing it produces reaches a child unless it survives every layer below. Each layer is independent; the deterministic ones cannot be overridden by the judgemental ones.</p>
+    <div class="flow">
+      <div class="step gate"><b>Grammar bound (content).</b> The experience schema is <code>additionalProperties:false</code> over a closed vocabulary — generated content <i>cannot express</i> a network call, storage, or script, because no such field exists.</div>
+      <div class="step gate"><b>Capability denylist (code).</b> For a new <i>mechanic</i> that adds engine code, a linter scans the added JavaScript for forbidden capabilities (<code>fetch</code>, sockets, storage, <code>eval</code>, external URLs, <code>&lt;script&gt;</code>) and enforces additive-and-small. The code equivalent of the grammar bound.</div>
+      <div class="step gate"><b>Deterministic checks.</b> No names/PII, valid tags and pictures, no banned framing, schema-conformant, valid JavaScript, the site still builds. Any red check blocks the proposal.</div>
+      <div class="step gate"><b>Scope allowlist.</b> A content proposal may touch only content + the knowledge base. A mechanic proposal may touch the schema, the engine renderer, the layout, content, and docs — <b>never its own validators or charters</b>; it cannot weaken its own gate.</div>
+      <div class="step gate"><b>The Review Council.</b> Six independent expert seats judge the artifact against sourced rubrics; a Chairman synthesises. Unanimous to publish; any rejection or the Guardian's hold escalates to a human.</div>
+      <div class="step gate"><b>The human gate.</b> A person merges (it ships) or closes (a recorded "no"). The next run reads that decision. Classes (new kinds of experience) are <i>always</i> human-approved.</div>
+    </div>
+    <div class="callout"><b>Charter-as-data.</b> Every autonomous actor's own instructions — the Gardener, the Mechanic, the Council — are versioned files (<code>GARDENER.md</code>, <code>MECHANIC.md</code>, <code>COUNCIL.md</code>), changed only through the same reviewed process they govern. Changing the process uses the process.</div>
   </div>
 
   <!-- ══════════════ PRD 1 ══════════════ -->
-  <div class="card">
+  <div class="card" id="prd1">
     <h2>PRD 0001 — The Adaptive Arc <span class="pill live">v1 LIVE</span></h2>
-    <p class="sub">Make the experience adapt to <i>this</i> child and <i>this</i> family — privately, gently, and explainably.</p>
-
-    <h3>The problem</h3>
-    <p>Every child learns differently at every age; families differ in language, culture and rhythm.
-    A single fixed menu serves the average child — which is no child.</p>
-
+    <p class="sub">Make the experience adapt to <i>this</i> child and <i>this</i> family — privately, gently, explainably.</p>
     <h3>The four pillars (all decided, all built)</h3>
     <div class="cols">
-      <div class="tile"><b>🕊 Passive-first signals</b>Quiet observation (opens, repeats, completions). The app asks the grown-up a one-tap “noticing question” only when it has a real hypothesis — at most one per session, two per week.</div>
-      <div class="tile"><b>🌱 Autonomy is a lifecycle</b>Weeks 1–2 <i>Discovery</i>: the app explores variety across skills. Then <i>Calibration</i>: gentle questions begin. Then <i>Partnership</i>: the adult chooses “adapt automatically” or “ask me first”.</div>
-      <div class="tile"><b>👨‍👧 The dyad, not just the child</b>The unit of personalisation is the parent-and-child pair, with up to two language/culture tracks for mixed-tradition homes. The app never tries to be the language teacher — the grown-up’s voice is the mechanism (Kuhl’s “social gating”).</div>
-      <div class="tile"><b>🧭 Skills as vocabulary, never a report card</b>Content is tagged with Galinsky’s seven life skills and age bands; selection reasons in those terms. No meters, no grades — “moments noticed”, not scores.</div>
+      <div class="tile"><b>🕊 Passive-first signals</b>Quiet observation (opens, repeats, completions). A one-tap "noticing question" only when there's a real hypothesis — at most one per session, two per week.</div>
+      <div class="tile"><b>🌱 Autonomy is a lifecycle</b><i>Discovery</i> (explore variety) → <i>Calibration</i> (gentle questions begin) → <i>Partnership</i> ("adapt automatically" or "ask me first").</div>
+      <div class="tile"><b>👨‍👧 The dyad, not just the child</b>The unit is the parent-and-child pair, with up to two language/culture tracks. The app is never the language teacher — the grown-up's voice is the mechanism (Kuhl's social gating).</div>
+      <div class="tile"><b>🧭 Skills as vocabulary, never a report card</b>Content is tagged with Galinsky's seven life skills and age bands; selection reasons in those terms. Moments noticed, not scores.</div>
     </div>
-
-    <h3>What it looks like in the app today</h3>
+    <h3>In the app today</h3>
     <ul class="check">
-      <li>A “Make it hers” setup asks only birth month and home languages — never a name.</li>
-      <li>The child page leads with a big <b>“Next for …”</b> card: the app guides to the next unfinished story instead of relying on menu choice.</li>
-      <li>The menu reorders per child (favourites rise, “too early” content rests, under-explored skills surface) — <b>nothing is ever hidden</b>.</li>
-      <li>Session-end noticing questions: “She keeps coming back to <i>Animal Friends</i> — loving it? ❤️ / 🌱 too early”. Every answer changes what is served.</li>
-      <li>Profile export/import for moving devices; airplane-mode works; zero network requests carry child data.</li>
+      <li>A "Make it theirs" setup asks only birth month and home languages (chosen from a pill list) — never a name.</li>
+      <li>The child page leads with a big <b>"Next for…"</b> card and a per-child menu ordering — <b>nothing is ever hidden</b>.</li>
+      <li>Session-end noticing questions change what is served next; profile export/import; airplane-mode works; zero network requests carry child data.</li>
+      <li>Mobile full-screen (installable), no-scroll question pages, playful per-story music, a warm reinforcing voice, lift-the-flap and camera-mirror peek-a-boo.</li>
     </ul>
-
-    <h3>Deliberately out of v1</h3>
-    <p class="sub">Weekly arc-review card · dual-language serving · any machine learning on child signals (interpretable rules only) · any backend.</p>
   </div>
 
   <!-- ══════════════ PRD 2 ══════════════ -->
-  <div class="card">
-    <h2>PRD 0002 — The Gardener Loop <span class="pill live">LIVE · first proposals merged</span></h2>
-    <p class="sub">A self-improving application whose <i>learning lives in its knowledge base</i>:
-    an automated Claude session that proposes one reviewed improvement at a time — and learns from
-    which proposals the owner accepts or rejects.
-    <b>Now proven in production:</b> its first two proposals — a story for the one skill that had
-    no content, and a story for the youngest age band — were reviewed, merged, and are live in the app.</p>
-
-    <h3>One pass of the Gardener</h3>
+  <div class="card" id="prd2">
+    <h2>PRD 0002 — The Gardener Loop <span class="pill live">LIVE · proven</span></h2>
+    <p class="sub">A self-improving application whose <i>learning lives in its knowledge base</i>: an automated session proposes one reviewed improvement at a time, and learns from which proposals the owner accepts.</p>
+    <h3>One pass</h3>
     <div class="flow">
-      <div class="step"><b>1 · Trigger.</b> The owner presses “Run Gardener” (manual only in v1 — nothing runs on its own; $0 until pressed). Never triggered by outside input.</div>
-      <div class="step"><b>2 · Gather.</b> It reads only owner-committed files: the knowledge base, the content library and its tags, a computed coverage map (age band × seven skills), and the fate of its own past proposals.</div>
-      <div class="step"><b>3 · Reason.</b> It picks the single most valuable action: ingest a new research/idea note into the wiki, <i>or</i> write one new story/game for the biggest content gap, <i>or</i> a small consistency fix. Doing <i>nothing</i> is a valid outcome.</div>
-      <div class="step"><b>4 · Propose.</b> One pull request: the change, the rationale with cited sources, and a provenance trail of what led to it.</div>
-      <div class="step gate"><b>5 · Automated checks.</b> Machine-enforced rules: no names/PII, valid tags and art, no banned framing, the site still builds. A failing check blocks the proposal.</div>
-      <div class="step gate"><b>6 · Human gate.</b> The owner merges (it ships) or closes (recorded rejection). <b>The next run reads those decisions</b> — that is the learning.</div>
+      <div class="step"><b>Trigger.</b> A person presses "Run Gardener" (manual; $0 until pressed). Never triggered by outside input — untrusted text must not steer an automated change.</div>
+      <div class="step"><b>Gather.</b> It reads only owner-committed files: the knowledge base, the content library and its tags, a computed coverage map (age band × seven skills), and the fate of its own past proposals.</div>
+      <div class="step"><b>Reason.</b> The single highest-value action: ingest a research note, <i>or</i> fill the biggest content gap with one new story/game, <i>or</i> a small consistency fix. Doing nothing is valid.</div>
+      <div class="step gate"><b>Gate.</b> Deterministic checks + scope allowlist (content &amp; knowledge-base only). A failing check opens no PR.</div>
+      <div class="step gate"><b>Human gate.</b> Merge (ship) or close (recorded "no"). The next run reads that fate — <b>that is the learning</b>.</div>
     </div>
-
-    <h3>Hard rules</h3>
-    <ul class="rules">
-      <li>No telemetry input, ever — child data never leaves the device.</li>
-      <li>Content and knowledge-base changes only — never the engine, never the monthly arc (staged change-control).</li>
-      <li>No triggers or inputs from public issues/comments — untrusted text must not steer an automated change.</li>
-      <li>The Gardener’s own instructions (its charter) are a versioned file, changed only through the same reviewed process.</li>
-    </ul>
-
-    <h3>Why this matters beyond a storybook</h3>
-    <p>The loop is a deliberate rehearsal of a real problem: workflows that must change when
-    official guidance changes (for example, clinical protocols).</p>
-    <div class="tablewrap"><table>
-      <tr><th>In the Gardener</th><th>In a guidance-driven workflow</th></tr>
-      <tr><td>Research note ingested → proposal as a reviewable diff</td><td>Protocol update → exact pathway change, visible before it applies</td></tr>
-      <tr><td>Automated lint on every proposal</td><td>Conformance / terminology checks</td></tr>
-      <tr><td>One change per proposal; “no change” is valid</td><td>Change-control discipline</td></tr>
-      <tr><td>Accept/reject decisions feed the next run</td><td>Governance feedback becomes institutional memory</td></tr>
-      <tr><td>Git history · revert</td><td>Audit trail · rollback</td></tr>
-    </table></div>
-
-    <h3>What “done” looks like</h3>
-    <ul class="check">
-      <li>A “Run Gardener” button in the repository; pressing it yields one readable pull request (or a log explaining why none).</li>
-      <li>A proposal containing a name, an unknown picture, or an off-vocabulary tag <b>cannot</b> be merged.</li>
-      <li>Nothing on the live site changes until a human merges.</li>
-      <li>A closed proposal is demonstrably not re-proposed.</li>
-    </ul>
+    <div class="callout"><b>Proven in production.</b> Its first two autonomous proposals — a story for the one life-skill with <i>no</i> content, and a story for the youngest age band — were reviewed, merged, and are live. It read its own merged history on the next run.</div>
+    <p class="sub" style="margin-top:12px;">The Gardener has since <b>graduated</b> to also propose new <i>interaction mechanics</i> — see PRD 0003 → The Mechanic loop.</p>
   </div>
 
   <!-- ══════════════ PRD 3 ══════════════ -->
-  <div class="card">
-    <h2>PRD 0003 — The Generative Arc <span class="pill plan">SPECCED</span></h2>
-    <p class="sub">From static pre-generated pages to <b>generated experiences</b> — stories,
-    the interactions built on them, a warm voice, and eventually music — each one
-    <i>reviewed on the go</i> by an automated panel of judges, with the human moving from
-    gatekeeper-of-everything to approver of <i>kinds</i> of experience and auditor of samples.</p>
+  <div class="card" id="prd3">
+    <h2>PRD 0003 — The Generative Arc <span class="pill build">BUILDING · most delivered</span></h2>
+    <p class="sub">From static pre-generated pages to <b>generated experiences</b> — stories, the interactions built on them, a warm voice, and later music — each one reviewed on the go by the panel, with the human moving from gatekeeper-of-everything to approver of <i>kinds</i> of experience and auditor of samples.</p>
 
     <h3>The principle that unlocks it</h3>
-    <p>The app is a <b>digital replica of a physical book</b>. A book never knows the child —
-    the <i>lap</i> does. So:</p>
-    <div class="note"><b>Generation is global; personalization is local.</b>
-    Everything is generated from the <i>published</i> knowledge base (already public), so the
-    generative pipeline touches no child data by construction. The one hard line kept: the
-    child’s on-device profile <b>never</b> becomes an input to generation — it only chooses and
-    paces from what was generated, like a favourite book being read more often at home.</div>
+    <div class="note"><b>The app is a digital replica of a physical book.</b> A book never knows the child — the <i>lap</i> does. So the generative pipeline runs on the <i>public</i> knowledge base and touches no child data by construction; the on-device profile only composes and paces from what was generated.</div>
 
-    <h3>Three planes of generation</h3>
+    <h3>The three planes of generation</h3>
     <div class="cols">
-      <div class="tile"><b>📖 Stories</b> Already live — the Gardener writes them (PRD 0002). This PRD scales them from one-at-a-time to reviewed <i>pools</i> of variants.</div>
-      <div class="tile"><b>🧩 Interactions (generative UI)</b> The engine becomes a fixed <i>renderer</i>; each kind of experience (flap pages, find-games, new game forms) is described as <b>data in a bounded schema</b> that simply cannot express anything unsafe — new interactions arrive as reviewable data, not code.</div>
-      <div class="tile"><b>🎙 Voice</b> Every already-approved line is rendered once with a single warm voice (kept for the whole 5-year journey) into small audio files shipped with the site — no robotic device voice, works offline. Music follows the same pipeline later.</div>
+      <div class="tile"><b>📖 Stories &amp; games <span class="pill live" style="margin:0;">LIVE</span></b>The Gardener writes them; this PRD scales them from one-at-a-time toward reviewed <i>pools</i>.</div>
+      <div class="tile"><b>🧩 Interactions — generative UI <span class="pill live" style="margin:0;">LIVE</span></b>The engine is a fixed renderer; every interaction is data in a bounded schema. A new interaction arrives as reviewable data + a small renderer, not scattered code.</div>
+      <div class="tile"><b>🎙 Voice <span class="pill live" style="margin:0;">LIVE</span></b>Approved phrases rendered once into small static clips (Sarvam) — no robotic device voice, works offline; a settings picker and per-story voices. Music followed the same idea (generative synth).</div>
     </div>
 
-    <h3>The Review Council — the automated panel</h3>
-    <p>Each generated piece is judged by <b>six independent “seats,”</b> each bound to a
-    specific rubric already compiled (with sources) in the knowledge base — every verdict must
-    cite the principle it passes or fails. A fixed Chairman weighs the six verdicts into one
-    decision.</p>
+    <h3>Delivered: the experience schema &amp; the schema-driven engine <span class="pill live">LIVE</span></h3>
+    <p>Today's mechanics are extracted into a <b>capability-bounded declarative schema</b>. The safety is grammatical: because every object is a closed field set, generated UI <i>cannot say</i> anything unsafe. The engine became a <b>pure renderer</b> — a type registry where <b>adding a new interaction is one schema branch + one registry entry + example content</b>, with no bespoke engine surgery and every existing experience byte-identical.</p>
+
+    <h3>Delivered: the Review Council <span class="pill build">BUILT</span></h3>
+    <p>Six independent seats review each artifact <i>in parallel</i>, each bound to specific knowledge-base pages (its "constitution") and required to <b>cite the principle</b> that passes or fails; a fixed Chairman synthesises; the publish/revise/escalate decision is computed mechanically from the verdicts (the model never overrides the gate).</p>
     <div class="cols">
-      <div class="tile"><b>🔭 Explorer’s Seat</b> <i>(after Gopnik)</i> — invites open-ended exploration, or drills?</div>
+      <div class="tile"><b>🔭 Explorer's Seat</b> <i>(after Gopnik)</i> — open-ended exploration, or drilling?</div>
       <div class="tile"><b>🧭 Skills Seat</b> <i>(after Galinsky)</i> — does it truly exercise the life-skill it claims?</div>
-      <div class="tile"><b>💬 Voice Seat</b> <i>(after Kuhl; Byers-Heinlein)</i> — is the grown-up still the language teacher? serve-and-return present?</div>
+      <div class="tile"><b>💬 Voice Seat</b> <i>(after Kuhl; Byers-Heinlein)</i> — grown-up still the language teacher? serve-and-return?</div>
       <div class="tile"><b>🕊 Tone Seat</b> <i>(after Faber &amp; King)</i> — descriptive, feelings first, never scolds or tests.</div>
-      <div class="tile"><b>🛡 Guardian Seat</b> — privacy, no fail states, schema bounds; the strictest seat, backed by machine checks that no approval can override.</div>
-      <div class="tile"><b>🤱 Lap Seat</b> — the family’s advocate: readable aloud at 9pm by a tired grown-up with a squirming one-year-old?</div>
+      <div class="tile"><b>🛡 Guardian Seat</b> — privacy, no fail states, schema bounds; the strictest seat, backed by machine checks no approval can override.</div>
+      <div class="tile"><b>🤱 Lap Seat</b> — the family's advocate: readable aloud at 9pm by a tired grown-up with a squirming one-year-old?</div>
     </div>
+    <div class="callout"><b>It already caught a real defect.</b> On its first live review the Guardian Seat flagged that a story referred to the child as "her/she", violating the project's own neutral-referent rule — a bug two earlier passes had missed. The Skills Seat separately found a skill tag that wasn't truly exercised, and the Explorer and Tone seats <i>disagreed</i> on one line, which the Chairman surfaced for the human. Panel disagreement is signal, not noise.</div>
+    <p class="sub" style="margin-top:10px;">Grounded in the LLM-as-a-Judge literature and Karpathy's llm-council: rubric-anchored verdicts (not "which reads nicer"), adversarial charters, the immovable deterministic floor, and a calibration loop where a human's overturn becomes a teaching example in the offending seat's charter.</p>
 
-    <h3>How the gate works</h3>
+    <h3>Delivered: the Mechanic loop — the Gardener graduates <span class="pill build">BUILT · proven</span></h3>
+    <p>The Gardener now also proposes a <b>new interaction mechanic</b> (a class): a schema branch + an additive engine renderer + serialisation + one example, as <b>one always-human-gated pull request</b>. This is the one place an LLM edits engine code, so it carries an extra bound — the <b>capability denylist</b> above — plus a scope allowlist that forbids it from editing its own validators or charters.</p>
+    <div class="callout"><b>Proof, unattended.</b> Its first run autonomously designed a <b>counting game</b> — "How many? Tap each one" — writing the schema branch, the renderer (using only existing engine primitives — no network, no storage, no eval), the serialisation, and a first-of-its-kind <i>3-4 year</i> example. It passed every gate, and opened a human-gated pull request for review. Independently re-verified: capability-clean, valid, schema-conformant. A machine proposing a new <i>kind</i> of interaction as reviewable, bounded code — and a human still decides.</div>
+
+    <h3>How the gate graduates (classes vs instances)</h3>
     <div class="flow">
-      <div class="step"><b>Kinds are approved by a human, once.</b> A new interaction form, a new voice, a new story template — the owner approves the <i>class</i> before any instance exists.</div>
-      <div class="step"><b>Instances are approved by the Council.</b> Variants within an approved kind pass machine checks, then the six seats (unanimous to publish; any rejection or Guardian hold goes to the owner; one revision cycle allowed).</div>
-      <div class="step gate"><b>Humans audit samples.</b> Every flagged item, every first-of-its-kind, and a random sample — and <b>every overturn teaches the offending seat</b>: it becomes a calibration example in that seat’s charter, and the seat’s agreement rate with the owner is what earns it more trust.</div>
+      <div class="step done"><b>Classes are approved by a human, once.</b> A new interaction mechanic, a new voice, a new template — approved before any instance exists.</div>
+      <div class="step"><b>Instances are approved by the Council.</b> Variants within an approved kind pass machine checks, then the six seats (unanimous to publish; any rejection or Guardian hold → human; one revision cycle).</div>
+      <div class="step gate"><b>Humans audit samples.</b> Every flagged item, every first-of-its-kind, and a random sample — and every overturn teaches the offending seat. Its agreement rate with the owner earns it more trust over time.</div>
     </div>
 
-    <h3>Build order</h3>
-    <p class="sub">1 · Voice pipeline (the cleanest proof: rendering text a human already approved) →
-    2 · the Council → 3 · the experience schema (today’s mechanics, re-expressed as data) →
-    4 · the Gardener graduates to proposing new interactions → 5 · variant pools composed
-    locally per child. Real-time generation stays out until the Council has earned it — and
-    never with child signals as input.</p>
+    <h3>Delivered: the warm voice <span class="pill live">LIVE</span></h3>
+    <p><b>Provider: Sarvam AI</b> — chosen over the obvious Western option because it is <b>Indian-language-first</b> (warm Indian-accent English plus Hindi, Bengali, Tamil, Telugu and more), matching the app's home-language list and <b>opening the door to bilingual voice</b> (the same line in English <i>and</i> the home language). At build time, each approved phrase is rendered once into a small static clip; the player plays the clip when one exists for the active voice and falls back to the device voice otherwise, so coverage grows safely over time.</p>
+    <div class="callout"><b>Two things you asked for, both shipped.</b> A <b>voice picker in settings</b> — Auto (per story) · Ritu (default) · Kavya · Priya · Pooja · Shreya — expressive, playful voices (Sarvam bulbul:v3), each with a live preview. And <b>different voices for different stories and games</b> — a story or game can carry its own voice (e.g. Peek-a-boo in one voice, Splish&nbsp;Splash in another). Precedence: the family's picked voice › the content's own voice › the default. Re-rendering runs in CI from a stored key and opens a pull request; the key never leaves CI.</div>
+
+    <h3>Build order — status</h3>
+    <p class="sub">✅ experience schema · ✅ engine renderer · ✅ Review Council · ✅ Mechanic loop (Gardener graduation) · ✅ <b>voice pipeline + picker + per-content voices</b> · ⏭ bilingual voice · ⏭ variant pools + on-device composition + aggregate telemetry · ⏭ Council selection-mode &amp; calibration. Real-time generation stays out until the Council has earned it — and never with child signals as input.</p>
   </div>
 
-  <div class="card">
-    <h2>What comes after</h2>
+  <!-- ══════════════ WHY ══════════════ -->
+  <div class="card" id="why">
+    <h2>⑧ Why this matters beyond a storybook</h2>
+    <p>The self-improving loop is a deliberate rehearsal of a hard, general problem: <b>workflows that must change when official guidance changes</b> — most sharply, clinical protocols. The mapping is exact, and it is the most transferable part of this work for teams building other solutions.</p>
+    <div class="tablewrap"><table>
+      <tr><th>In Little One</th><th>In a guidance-driven workflow</th></tr>
+      <tr><td>Research note ingested → proposal as a reviewable diff, with provenance</td><td>Protocol update → exact pathway change, visible before it applies</td></tr>
+      <tr><td>Schema grammar + capability denylist bound what can be generated</td><td>Conformance / terminology / formulary rules bound what can be ordered</td></tr>
+      <tr><td>Panel of judges + a human gate; classes always human-approved</td><td>Committee review (P&amp;T / IRB); standing orders vs case-by-case</td></tr>
+      <tr><td>Anonymised cohort signals improve the next generation</td><td>De-identified outcomes registry improves the next protocol</td></tr>
+      <tr><td>Merge/close decisions feed the next run (institutional memory)</td><td>Governance feedback becomes durable policy</td></tr>
+      <tr><td>Git history · one-click revert</td><td>Audit trail · rollback</td></tr>
+    </table></div>
+    <p class="sub" style="margin-top:10px;">The lesson teams can lift directly: <b>put the changing knowledge in a reviewed data layer, bound generation by grammar and capability (not trust), separate classes from instances, and make the human's decision a first-class training signal.</b></p>
+  </div>
+
+  <!-- ══════════════ AFTER ══════════════ -->
+  <div class="card" id="after">
+    <h2>⑨ What comes after</h2>
     <ul>
-      <li><b>Bilingual first words</b> — naming in English + the home language on the same page, per the bilingualism evidence.</li>
-      <li><b>Gardener on a schedule</b> — after 3–4 trusted manual runs.</li>
-      <li><b>Ages 2–5 content arcs</b> — the tagging, coverage map, and a recorded games roadmap (colours, odd-one-out, feelings) already anticipate the older bands.</li>
-      <li><b>Council upgrades</b> — seats on different AI models for the highest-stakes reviews; head-to-head selection among variants.</li>
-      <li><b>Family-account sync</b> — the child’s local profile carried through the family’s own iCloud/Google account; never an identity service of ours.</li>
+      <li><b>Bilingual voice</b> — the warm voice is live; next, narrate the same line in English <i>and</i> the home language on one page (Sarvam covers ten Indic languages), and widen clip coverage beyond the current phrase set.</li>
+      <li><b>Variant pools + aggregate telemetry</b> — the Gardener generates reviewed <i>pools</i>; the device composes per child locally; anonymised cohort signals steer the next generation.</li>
+      <li><b>Council upgrades</b> — best-of-N selection among variants; the calibration loop (owner overturns → seat teaching examples); seats on different AI models for the highest-stakes reviews.</li>
+      <li><b>Ages 2–5 arcs</b> — the tagging, coverage map, and older-band mechanics (odd-one-out, counting) already open the door; more colours / opposites / feelings mechanics follow.</li>
+      <li><b>Bring-your-own-key</b> — a family's own instance that learns per child on their own key and data; and profile portability through the family's own cloud account. We never operate an identity service.</li>
+      <li><b>Gardener on a schedule</b> — after enough trusted manual runs.</li>
     </ul>
-    <p class="note">📚 Full detail, sources, and decision history live in the repository’s
-    <code>knowledge-base/</code> — the PRDs themselves are
-    <code>raw/prds/0001-adaptive-arc-v1.md</code>, <code>raw/prds/0002-gardener-loop.md</code>
-    and <code>raw/prds/0003-generative-arc.md</code>; the Council’s charter is
-    <code>knowledge-base/COUNCIL.md</code>.</p>
+    <p class="note">📚 Full detail, sources, and decision history live in <code>knowledge-base/</code>. Key files: the PRDs (<code>raw/prds/0001…0003</code>); the charters (<code>GARDENER.md</code>, <code>MECHANIC.md</code>, <code>COUNCIL.md</code>); the contract and its checkers (<code>schema/experience.schema.json</code>, <code>schema/validate.py</code>, <code>schema/mechanic_lint.py</code>); the fixed engine (<code>assets/js/player.js</code>); and the append-only <code>log.md</code> timeline.</p>
   </div>
 
-  <footer>Little One · product plan for review · generated from the project knowledge base, updated 2026-07-06</footer>
+  <footer>Little One · product plan &amp; architecture · generated from the project knowledge base · updated 7&nbsp;July&nbsp;2026</footer>
 </div>
 </body>
 </html>

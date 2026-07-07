@@ -22,7 +22,7 @@ extend to the tap-and-find game (announce the target in both).
 
 **Why.** Fits the site's core (naming, repetition, warm shared reading) and the
 Gopnik-based "rich language input" theme (arc Month 10). It also makes the site
-more specifically *hers* — a quiet way to honour a home language.
+more specifically *theirs* — a quiet way to honour a home language.
 
 **Design fit / constraints.**
 - Stays a lap activity; grown-up says the words. No audio pronunciation needed

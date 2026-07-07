@@ -68,14 +68,18 @@ layout: default
     <span class="progress" id="storyProgress"></span>
   </div>
   <div class="stage">
-    <div class="scene" id="scene"></div>
+    <div class="scene-wrap">
+      <button class="pageturn prev" id="prevBtn" onclick="LO.prevPage()" aria-label="Page before">‹</button>
+      <div class="scene" id="scene"></div>
+      <button class="pagecurl" id="pageCurl" onclick="LO.nextPage()" aria-label="Turn the page"></button>
+      <button class="pageturn next" id="nextBtn" onclick="LO.nextPage()" aria-label="Next page">›</button>
+    </div>
     <div class="tap-hint" id="tapHint">👆 Tap the picture!</div>
     <div class="line" id="storyLine"></div>
     <div class="cue" id="storyCue"></div>
   </div>
-  <div class="nav">
-    <button class="navbtn prev" id="prevBtn" onclick="LO.prevPage()">←</button>
-    <button class="navbtn next" id="nextBtn" onclick="LO.nextPage()">Turn the page →</button>
+  <div class="readrow">
+    <button class="readbtn" id="readBtn" onclick="LO.toggleRead()">▶&nbsp; Read to me</button>
   </div>
 </section>
 
@@ -103,7 +107,7 @@ window.CHILD = {
       {%- if childRec.stories == 'all' -%}{%- assign inc = true -%}
       {%- else -%}{%- for sid in childRec.stories -%}{%- if sid == s.id -%}{%- assign inc = true -%}{%- endif -%}{%- endfor -%}{%- endif -%}
       {%- if inc -%}
-      { id: {{ s.id | jsonify }}, title: {{ s.title | jsonify }}, age: {{ s.age | jsonify }}, age_band: {{ s.age_band | jsonify }}, skills: {{ s.skills | jsonify }}, lang: {{ s.lang | jsonify }}, culture: {{ s.culture | jsonify }}, pages: [
+      { id: {{ s.id | jsonify }}, title: {{ s.title | jsonify }}, age: {{ s.age | jsonify }}, voice: {{ s.voice | jsonify }}, age_band: {{ s.age_band | jsonify }}, skills: {{ s.skills | jsonify }}, lang: {{ s.lang | jsonify }}, culture: {{ s.culture | jsonify }}, pages: [
         {%- for p in s.pages -%}
         { sky: {{ p.sky | jsonify }}, line: {{ p.line | jsonify }}, art: {{ p.art | jsonify }}, cue: {{ p.cue | jsonify }}, flap: {{ p.flap | jsonify }}, mirror: {{ p.mirror | jsonify }}, reveal: {{ p.reveal | jsonify }} },
         {%- endfor -%}
@@ -117,7 +121,7 @@ window.CHILD = {
       {%- if childRec.games == 'all' -%}{%- assign inc = true -%}
       {%- else -%}{%- for gid in childRec.games -%}{%- if gid == g.id -%}{%- assign inc = true -%}{%- endif -%}{%- endfor -%}{%- endif -%}
       {%- if inc -%}
-      { id: {{ g.id | jsonify }}, title: {{ g.title | jsonify }}, age: {{ g.age | jsonify }}, ask: {{ g.ask | jsonify }}, mode: {{ g.mode | jsonify }}, prompt: {{ g.prompt | jsonify }}, groups: {{ g.groups | jsonify }}, rounds: {{ g.rounds | jsonify }}, age_band: {{ g.age_band | jsonify }}, skills: {{ g.skills | jsonify }}, lang: {{ g.lang | jsonify }}, culture: {{ g.culture | jsonify }}, items: [
+      { id: {{ g.id | jsonify }}, title: {{ g.title | jsonify }}, age: {{ g.age | jsonify }}, voice: {{ g.voice | jsonify }}, ask: {{ g.ask | jsonify }}, mode: {{ g.mode | jsonify }}, prompt: {{ g.prompt | jsonify }}, groups: {{ g.groups | jsonify }}, rounds: {{ g.rounds | jsonify }}, age_band: {{ g.age_band | jsonify }}, skills: {{ g.skills | jsonify }}, lang: {{ g.lang | jsonify }}, culture: {{ g.culture | jsonify }}, items: [
         {%- for it in g.items -%}
         { art: {{ it.art | jsonify }}, label: {{ it.label | jsonify }} },
         {%- endfor -%}
@@ -126,6 +130,10 @@ window.CHILD = {
     {%- endfor -%}
   ]
 };
+{%- if site.data.voices -%}
+/* Pre-rendered warm-voice clips (Sarvam), embedded so the player needs no fetch */
+window.VOICE = { base: {{ '/assets/voice' | relative_url | jsonify }}, voices: {{ site.data.voices.voices | jsonify }}, manifest: {{ site.data.voices.manifest | jsonify }} };
+{%- endif -%}
 </script>
 <script src="{{ '/assets/js/art.js' | relative_url }}"></script>
 <script src="{{ '/assets/js/dyad.js' | relative_url }}"></script>

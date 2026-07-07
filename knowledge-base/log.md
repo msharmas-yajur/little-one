@@ -340,3 +340,16 @@ Append-only. Newest at the bottom. Each entry: date · what happened.
   safety cleanup (bg-tab rAF throttling no longer leaks canvases). Verified
   in-browser: swipe/chevron/curl/heart states, tap-says-word without turning,
   read-mode narration, and the completion party + double-tap guard.
+- 2026-07-07 · Read-to-me fix (owner: only the first page was read, the rest
+  flipped through). Cause: auto-advance used a fixed ~2.2s length-estimate timer,
+  so on first read-through the next line-clip hadn't finished downloading before
+  the page flipped — pages 2+ appeared silent. Fix: say()/sayDevice() now take an
+  onDone callback that fires on the audio's real 'ended'/'error'/utterance-end;
+  narratePage advances only after the line is truly read (+ a 0.9s beat), with a
+  generous safety fallback and a per-page guard against stale callbacks after a
+  manual turn. Verified deterministically: with no completion signal the page
+  holds; each page's clip is requested and read before advancing (1→2→3…).
+- 2026-07-07 · Applause added alongside confetti (owner request): claps() spawns
+  staggered 👏 that pop with a clap-pulse and float up. Book completion = two
+  rounds (24 total) over the rolling confetti + voice; a game find = a small
+  round (6). Respects reduced-motion; wall-clock safety cleanup.

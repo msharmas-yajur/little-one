@@ -227,7 +227,10 @@
     return pickedVoice() || (curStory && curStory.voice) || (curGame && curGame.voice) || DEFAULT_VOICE;
   }
   let clipAudio=null;
-  function say(text){
+  /* say(text, onDone?) — onDone fires once when the utterance actually finishes
+     (or fails). Read-to-me uses it to advance only after a page is truly read. */
+  function say(text, onDone){
+    const done = once(onDone);
     try{
       const V = window.VOICE;
       if(V && V.manifest){
@@ -236,27 +239,32 @@
                 : (V.manifest[DEFAULT_VOICE] && V.manifest[DEFAULT_VOICE][s]) ? DEFAULT_VOICE : null;
         if(use){
           duckMusic();
-          try{ if(clipAudio) clipAudio.pause(); }catch(e){}
+          try{ if(clipAudio){ clipAudio.onended=clipAudio.onerror=null; clipAudio.pause(); } }catch(e){}
           clipAudio = new Audio((V.base||'') + '/' + use + '/' + s + '.mp3');
           clipAudio.volume = 0.95;
-          clipAudio.play().catch(()=>sayDevice(text));   // autoplay blocked → device voice
+          clipAudio.onended = done;
+          clipAudio.onerror = ()=>sayDevice(text, done);       // clip missing/failed → device voice
+          clipAudio.play().catch(()=>sayDevice(text, done));   // autoplay blocked → device voice
           return;
         }
       }
-      sayDevice(text);
-    }catch(e){ sayDevice(text); }
+      sayDevice(text, done);
+    }catch(e){ sayDevice(text, done); }
   }
-  function sayDevice(text){
+  function sayDevice(text, onDone){
+    const done = once(onDone);
     try{
-      if(!('speechSynthesis' in window)) return;
+      if(!('speechSynthesis' in window)){ done(); return; }
       const u = new SpeechSynthesisUtterance(text);
       const v = ensureVoice(); if(v){ u.voice = v; u.lang = v.lang; }
       u.rate = 0.9; u.pitch = 1.15; u.volume = 0.9;   // soft, warm, soothing
+      u.onend = done; u.onerror = done;
       duckMusic();
       window.speechSynthesis.cancel();
       window.speechSynthesis.speak(u);
-    }catch(e){}
+    }catch(e){ done(); }
   }
+  function once(fn){ let ran=false; return ()=>{ if(ran||!fn) return; ran=true; try{ fn(); }catch(e){} }; }
 
   /* ---- confetti: original, dependency-free burst (respects reduced-motion) ---- */
   const CONFETTI = ['#F6C453','#F28C7A','#8FCFE0','#B79BD6','#8DC08A','#5BB0C7'];
@@ -299,12 +307,35 @@
     setTimeout(()=>confetti({count:130, life:170, cap:190}), 600);
     setTimeout(()=>confetti({count:110, life:160, cap:180}), 1200);
   }
+  /* ---- applause: clapping-hands emoji that pop in (staggered) and float up ---- */
+  function claps(n){
+    if(reduceMotion) return;
+    n = n || 8;
+    for(let i=0;i<n;i++){
+      const s = document.createElement('span');
+      s.textContent = '👏';
+      const size = 26 + Math.random()*28;
+      s.style.cssText = `position:fixed;left:${6+Math.random()*88}vw;bottom:-6vh;`
+        + `font-size:${size}px;z-index:9998;pointer-events:none;will-change:transform,opacity;`;
+      document.body.appendChild(s);
+      const dur = 1500 + Math.random()*900, rise = 42 + Math.random()*46, drift = (Math.random()-0.5)*90;
+      const remove = ()=>{ if(s.parentNode) s.parentNode.removeChild(s); };
+      s.animate([                                   // pop + a little "clap" pulse, then drift up and fade
+        {transform:'translate(0,0) rotate(0deg) scale(.5)', opacity:0},
+        {transform:`translate(${drift*0.3}px,-${rise*0.3}vh) rotate(-10deg) scale(1.2)`, opacity:1, offset:.18},
+        {transform:`translate(${drift*0.65}px,-${rise*0.65}vh) rotate(10deg) scale(.95)`, opacity:1, offset:.55},
+        {transform:`translate(${drift}px,-${rise}vh) rotate(-6deg) scale(.85)`, opacity:0}
+      ], {duration:dur, delay:i*85, easing:'ease-out'}).onfinish = remove;
+      setTimeout(remove, dur + i*85 + 400);         // safety cleanup if the tab throttles animations
+    }
+  }
 
   /* ---- celebrate a correct find: chime + confetti + warm spoken cheer ---- */
   const sayLines = ['Yay! You found {L}!','Well done! That\'s {L}!','Hooray! You found {L}!','Good job! {L}!'];
   function celebrate(label){
     happy();
     confetti();
+    claps(6);
     say(sayLines[Math.random()*sayLines.length|0].replace('{L}', label));
   }
 
@@ -555,6 +586,7 @@
     telEngage(curStory,'completes');
     happy();                                                   // celebratory chime
     bigConfetti();                                             // rolling confetti waves
+    claps(14); setTimeout(()=>claps(10), 1100);                // rounds of applause
     say(COMPLETE_LINE);                                        // warm voice, in this story's speaker
     setTimeout(()=>{ finishing=false; backToMenu(); }, 3800);  // let the party + voice finish first
   }
@@ -575,15 +607,21 @@
   function toggleRead(){ readMode=!readMode; reflectReadBtn(); readMode ? narratePage() : clearTimeout(readTimer); }
   function narratePage(){
     if(!readMode || !curStory) return;
+    const myPage = pageIdx;                                     // ignore stale callbacks after a manual turn
     const line = curStory.pages[pageIdx].line || '';
-    say(line);                                                 // warm clip if rendered, else device voice
     clearTimeout(readTimer);
-    const ms = Math.max(2200, line.length*95 + 1700);          // rough read time + a beat to look
-    readTimer = setTimeout(()=>{
-      if(!readMode) return;
-      if(pageIdx<curStory.pages.length-1) nextPage();          // → renderPage → narratePage (chains on)
-      else stopRead();                                          // reached the end, stop reading
-    }, ms);
+    const advance = ()=>{
+      if(!readMode || pageIdx!==myPage) return;                // toggled off, or the child already turned
+      clearTimeout(readTimer);
+      readTimer = setTimeout(()=>{                              // a gentle beat to look at the page
+        if(!readMode || pageIdx!==myPage) return;
+        if(pageIdx<curStory.pages.length-1) nextPage();         // → renderPage → narratePage (chains on)
+        else stopRead();                                        // reached the end, stop reading
+      }, 900);
+    };
+    say(line, advance);                                         // advance only after the line is truly read
+    // safety net: if the audio never signals completion (blocked/stuck), don't stall forever
+    readTimer = setTimeout(advance, Math.max(4000, line.length*130 + 3000));
   }
 
   /* ---- GAME ---- */

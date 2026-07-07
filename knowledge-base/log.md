@@ -459,3 +459,13 @@ Append-only. Newest at the bottom. Each entry: date · what happened.
   calibration exemplars from the PR #3 ruling (owner-directed charter edit:
   forward age-bands are a note not a hold; YAML-vs-runtime scope humility).
   (6) Product plan: featured transcript band, PRD 0004 section, status rows.
+- 2026-07-08 · Librarian shakedown (three live runs, each teaching something):
+  run 1 — the gate CAUGHT ITS OWN AUTHOR: the distillation quoted pre-sweep
+  ledger text and the referent lint blocked it before any PR (fix: charter +
+  prompt now require paraphrase-never-quote). Run 2 — a valid 55-line
+  distillation passed the full gate but was discarded because the session
+  ended without .librarian-out.json (fix: gate-passed tracked changes now
+  always open a PR; out.json only supplies title/body; max-turns 30→45).
+  Runs 3-4 — instant API error (is_error, 1 turn, $0): the credit-exhaustion
+  signature from 07-05. BLOCKED on account credits; everything else is built
+  and pushed. First real lessons PR fires as soon as credits are added.

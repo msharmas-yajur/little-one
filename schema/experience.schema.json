@@ -150,7 +150,8 @@
             "properties": {
               "art": { "$ref": "#/$defs/artKey" },
               "label": { "type": "string", "description": "the plural thing being counted, e.g. 'ducks'" },
-              "count": { "type": "integer", "minimum": 2, "maximum": 4, "description": "how many to show; capped at 4 to keep the proven 2x2 no-scroll footprint" }
+              "count": { "type": "integer", "minimum": 2, "maximum": 4, "description": "how many to show; capped at 4 to keep the proven 2x2 no-scroll footprint" },
+              "cue": { "type": "string", "description": "grown-up cue (Council: Voice Seat) — models serve-and-return: the grown-up voices the counting and waits for the little one's turn" }
             }
           }
         }

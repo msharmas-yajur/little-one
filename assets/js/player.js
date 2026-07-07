@@ -660,6 +660,7 @@
      identity, so a game may repeat labels/pictures across rounds safely. */
   function renderChoices(options, correct, promptHTML, sayLabel){
     $('cheer').textContent='';
+    { const gc=$('gameCue'); if(gc) gc.textContent=''; }   // no stale count-cue on find/odd-one-out
     $('ask').innerHTML = promptHTML;
     const grid=$('grid'); grid.innerHTML=''; grid.style.gridTemplateColumns='1fr 1fr';
     options.forEach(o=>{
@@ -712,7 +713,8 @@
         const n = Math.min(Math.max(r.count|0, 2), 4);   // 2–4 keeps the proven 2x2 no-scroll footprint
         const words = ['one','two','three','four'];
         $('cheer').textContent='';
-        $('ask').innerHTML = (curGame.prompt || 'How many <b>{label}</b>? Tap each one!').replace('{label}', r.label);
+        $('ask').innerHTML = (curGame.prompt || 'Let\'s count the <b>{label}</b> — together!').replace('{label}', r.label);
+        const gc=$('gameCue'); if(gc) gc.textContent = r.cue ? '💡 ' + r.cue : '';   // grown-up cue: serve-and-return (Council: Voice Seat)
         const grid=$('grid'); grid.innerHTML='';
         grid.style.gridTemplateColumns = n<=2 ? `repeat(${n},1fr)` : '1fr 1fr';
         let counted=0;

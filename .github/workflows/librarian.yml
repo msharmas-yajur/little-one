@@ -70,7 +70,7 @@ jobs:
           branch_prefix: "librarian/"
           claude_args: |
             --model claude-opus-4-8
-            --max-turns 30
+            --max-turns 45
             --permission-mode acceptEdits
             --allowedTools "Read,Grep,Glob,Write,Edit"
           prompt: |
@@ -114,7 +114,9 @@ jobs:
             Doing NOTHING is valid if no new events exist since the lessons
             were last updated.
 
-            FINALLY — always — use the Write tool to create ".librarian-out.json"
+            IMPORTANT: write ".librarian-out.json" BEFORE you consider the task
+            done — it is part of the task, not an afterthought; budget turns
+            for it. Use the Write tool to create ".librarian-out.json"
             in the repo root: a single JSON object (no prose, no fences) with
             exactly these keys:
               {
@@ -182,12 +184,11 @@ jobs:
           RUN_NUM: ${{ github.run_number }}
         run: |
           set -euo pipefail
-          acted="false"
-          if [ -f .librarian-out.json ] && jq -e . .librarian-out.json >/dev/null 2>&1; then
-            acted=$(jq -r '.acted // false' .librarian-out.json)
-          fi
+          # Tracked changes are the ground truth of whether the Librarian acted
+          # (scratch files are git-excluded, and the gate already approved these
+          # changes) — a missing out.json must not discard gate-passed work.
           changes=$(git status --porcelain)
-          if [ "$acted" != "true" ] || [ -z "$changes" ]; then
+          if [ -z "$changes" ]; then
             summary=""
             [ -f .librarian-out.json ] && summary=$(jq -r '.summary // ""' .librarian-out.json 2>/dev/null || echo "")
             { echo "### 📚 Librarian: shelves in order"
@@ -195,8 +196,15 @@ jobs:
             exit 0
           fi
 
-          title=$(jq -r '.pr_title // "Librarian distillation"' .librarian-out.json)
-          jq -r '.pr_body // ""' .librarian-out.json > /tmp/pr_body.md
+          if [ -f .librarian-out.json ] && jq -e . .librarian-out.json >/dev/null 2>&1; then
+            title=$(jq -r '.pr_title // "Librarian distillation"' .librarian-out.json)
+            jq -r '.pr_body // ""' .librarian-out.json > /tmp/pr_body.md
+          else
+            title="Librarian distillation (run ${RUN_NUM})"
+            { echo "## What was distilled"
+              echo "The session ended without its out-file, but its changes passed the full gate (allowlist + cap + referent + provenance). Diff is the source of truth — review it directly."
+            } > /tmp/pr_body.md
+          fi
           { echo ""
             echo "---"
             echo "_Distilled by the Librarian (run ${RUN_ID}). Lessons steer all future generation — strictest gate: review carefully; optionally convene the Council on the page (review.py --file). Merge to teach; close to decline._"

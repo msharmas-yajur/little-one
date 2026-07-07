@@ -37,6 +37,7 @@ The catalog of every page. One line each. Keep current on every ingest.
 - `review-council.md` — six-seat rubric-anchored judge panel + chairman; gates generated instances. Status: review-mode built.
 - `experience-schema.md` — the capability-bounded declarative UI contract the engine renders; generated UI sandboxed by grammar. Status: built (engine is a pure schema renderer).
 - `mechanic-loop.md` — the Gardener graduated: propose a new experience mechanic (schema branch + renderer) as a human-gated PR, JS-capability-bounded. Status: built.
+- `learning-ledger.md` — the Learning Ledger & the Librarian: three feedback currencies, an append-only ledger, a third loop that distills lessons into every generation prompt. Status: drafted.
 
 ## Raw sources (`raw/`)
 - `raw/ideas/`
@@ -47,6 +48,7 @@ The catalog of every page. One line each. Keep current on every ingest.
   - `0001-adaptive-arc-v1.md` — Adaptive Arc v1: tagging, dyad profile, telemetry, discovery, noticing prompts. BUILT.
   - `0002-gardener-loop.md` — the Gardener: manual-dispatch CLHF loop, one PR per run. BUILT & LIVE.
   - `0003-generative-arc.md` — the Generative Arc: generated experiences (UI/voice/music) gated by the Review Council; generation-global/personalization-local. SPECCED.
+  - `0004-learning-ledger.md` — the Learning Ledger & the Librarian: close the CLHF loop (ledger → lessons → generation prompts), human-gated at every step. DRAFTED.
 - `raw/research/`
   - `gopnik-notes.md` — notes on Gopnik's work underpinning the arc.
   - `age-1-baseline.md` — what a 1-year-old is doing developmentally (the starting point).

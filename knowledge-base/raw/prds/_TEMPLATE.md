@@ -6,7 +6,7 @@
 
 ## Problem / intent
 What problem does this solve — for the little one, or for the grown-up using the
-site with her?
+site with the little one?
 
 ## What it does
 Plain-language description. What the grown-up sees; what the child experiences.

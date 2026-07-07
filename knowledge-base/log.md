@@ -387,3 +387,15 @@ Append-only. Newest at the bottom. Each entry: date · what happened.
   no longer suggests adding a real name. 2 changed lines re-rendered (10 clips
   in, 10 orphans pruned); schema + build green. Lesson for the future ledger:
   a confirmed Council finding should not wait two days for a fix.
+- 2026-07-08 · PRD 0004 drafted — the Learning Ledger & the Librarian (owner
+  direction after a Fable review session: "every organ, no circulation").
+  Three feedback currencies (sovereign PR verdicts / Council verdicts /
+  aggregate behavioral); an append-only ledger (knowledge-base/ledger/) as the
+  repo's preference dataset; a third loop (the Librarian) that distills the
+  ledger into a capped wiki/lessons/ included in every generation prompt —
+  human-gated at every step, judges calibrated against owner decisions.
+  Deferred until the ledger has entries: variant pools, telemetry transport
+  (separate approval), BYO-key Tier C. Compiled wiki/features/learning-ledger.md;
+  index updated. Also fixed the PRD template's gendered scaffold line
+  (raw/prds/_TEMPLATE.md — infrastructure, not an owner source; noted here for
+  transparency since raw/ is normally immutable).

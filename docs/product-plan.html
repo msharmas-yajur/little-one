@@ -63,7 +63,7 @@
   <b>designs and improves itself</b> under human review. This document is the orientation for
   anyone building on the project: the vision, the architecture, and — the point of this update —
   <b>what is actually delivered</b>.</p>
-  <p class="meta">Prepared 5&nbsp;July&nbsp;2026 · Substantially updated 6&nbsp;July&nbsp;2026 (three PRDs; the Generative Arc largely built) ·
+  <p class="meta">Prepared 5&nbsp;July&nbsp;2026 · Substantially updated 7&nbsp;July&nbsp;2026 (three PRDs; the Generative Arc largely built — voice now live) ·
   Source of truth: the project knowledge base (<code>knowledge-base/</code>) · No child data appears anywhere in this document.</p>
 
   <div class="card">
@@ -100,7 +100,7 @@
       <tr><td><b>Schema-driven engine</b></td><td>The player is now a pure renderer — a type registry; a new experience type is data + one entry</td><td style="text-align:right;"><span class="st live">LIVE</span></td></tr>
       <tr><td><b>Review Council</b></td><td>Six rubric-anchored LLM-judge "seats" + a Chairman; every verdict cites a knowledge-base principle</td><td style="text-align:right;"><span class="st build">BUILT</span></td></tr>
       <tr><td><b>Mechanic loop (Gardener graduation)</b></td><td>The Gardener proposes a <i>new interaction mechanic</i> (schema + engine code) as a human-gated PR</td><td style="text-align:right;"><span class="st build">BUILT · proven</span></td></tr>
-      <tr><td><b>Warm voice (Sarvam)</b></td><td>Build-time neural narration → static clips; Indian-language-first (unlocks bilingual voice)</td><td style="text-align:right;"><span class="st soon">DESIGNED · needs key</span></td></tr>
+      <tr><td><b>Warm voice (Sarvam)</b></td><td>Build-time neural narration → static clips; a settings voice picker + different voices per story/game; Indian-language-first</td><td style="text-align:right;"><span class="st live">LIVE</span></td></tr>
       <tr><td><b>Variant pools + aggregate telemetry</b></td><td>Generate reviewed pools; on-device composition; anonymised cohort signals feed the next generation</td><td style="text-align:right;"><span class="st plan">PLANNED</span></td></tr>
       <tr><td><b>Bring-your-own-key (per-family)</b></td><td>A family's own instance learns per-child on the family's own key and data</td><td style="text-align:right;"><span class="st plan">FUTURE</span></td></tr>
     </table></div>
@@ -195,7 +195,7 @@
     <div class="cols">
       <div class="tile"><b>📖 Stories &amp; games <span class="pill live" style="margin:0;">LIVE</span></b>The Gardener writes them; this PRD scales them from one-at-a-time toward reviewed <i>pools</i>.</div>
       <div class="tile"><b>🧩 Interactions — generative UI <span class="pill live" style="margin:0;">LIVE</span></b>The engine is a fixed renderer; every interaction is data in a bounded schema. A new interaction arrives as reviewable data + a small renderer, not scattered code.</div>
-      <div class="tile"><b>🎙 Voice <span class="pill soon" style="margin:0;">NEXT</span></b>Every already-approved line rendered once with a single warm voice into small static clips — no robotic device voice, works offline. Music follows the same pipeline.</div>
+      <div class="tile"><b>🎙 Voice <span class="pill live" style="margin:0;">LIVE</span></b>Approved phrases rendered once into small static clips (Sarvam) — no robotic device voice, works offline; a settings picker and per-story voices. Music followed the same idea (generative synth).</div>
     </div>
 
     <h3>Delivered: the experience schema &amp; the schema-driven engine <span class="pill live">LIVE</span></h3>
@@ -225,11 +225,12 @@
       <div class="step gate"><b>Humans audit samples.</b> Every flagged item, every first-of-its-kind, and a random sample — and every overturn teaches the offending seat. Its agreement rate with the owner earns it more trust over time.</div>
     </div>
 
-    <h3>Voice — decided, awaiting one key</h3>
-    <p><b>Provider chosen: Sarvam AI.</b> Chosen over the obvious Western option because it is <b>Indian-language-first</b> — warm Indian-accent English plus Hindi, Bengali, Tamil, Telugu and more — matching the app's home-language list and, crucially, <b>unlocking bilingual voice</b> (the same line in English <i>and</i> the home language). Build-time render → small static clips shipped with the site → device-voice fallback → the Voice Seat QAs each render. Needs an API key and one chosen voice from the owner to build.</p>
+    <h3>Delivered: the warm voice <span class="pill live">LIVE</span></h3>
+    <p><b>Provider: Sarvam AI</b> — chosen over the obvious Western option because it is <b>Indian-language-first</b> (warm Indian-accent English plus Hindi, Bengali, Tamil, Telugu and more), matching the app's home-language list and <b>opening the door to bilingual voice</b> (the same line in English <i>and</i> the home language). At build time, each approved phrase is rendered once into a small static clip; the player plays the clip when one exists for the active voice and falls back to the device voice otherwise, so coverage grows safely over time.</p>
+    <div class="callout"><b>Two things you asked for, both shipped.</b> A <b>voice picker in settings</b> — Auto (per story) · Anushka (default) · Vidya · Manisha · Arya, each with a live preview. And <b>different voices for different stories and games</b> — a story or game can carry its own voice (e.g. Peek-a-boo in one voice, Splish&nbsp;Splash in another). Precedence: the family's picked voice › the content's own voice › the default. Re-rendering runs in CI from a stored key and opens a pull request; the key never leaves CI.</div>
 
     <h3>Build order — status</h3>
-    <p class="sub">✅ experience schema · ✅ engine renderer · ✅ Review Council · ✅ Mechanic loop (Gardener graduation) · ⏭ voice pipeline (needs key) · ⏭ variant pools + on-device composition · ⏭ Council selection-mode &amp; calibration. Real-time generation stays out until the Council has earned it — and never with child signals as input.</p>
+    <p class="sub">✅ experience schema · ✅ engine renderer · ✅ Review Council · ✅ Mechanic loop (Gardener graduation) · ✅ <b>voice pipeline + picker + per-content voices</b> · ⏭ bilingual voice · ⏭ variant pools + on-device composition + aggregate telemetry · ⏭ Council selection-mode &amp; calibration. Real-time generation stays out until the Council has earned it — and never with child signals as input.</p>
   </div>
 
   <!-- ══════════════ WHY ══════════════ -->
@@ -252,7 +253,7 @@
   <div class="card" id="after">
     <h2>⑨ What comes after</h2>
     <ul>
-      <li><b>Warm voice (Sarvam)</b> — render the approved line library once; ship static clips; bilingual narration on the same page.</li>
+      <li><b>Bilingual voice</b> — the warm voice is live; next, narrate the same line in English <i>and</i> the home language on one page (Sarvam covers ten Indic languages), and widen clip coverage beyond the current phrase set.</li>
       <li><b>Variant pools + aggregate telemetry</b> — the Gardener generates reviewed <i>pools</i>; the device composes per child locally; anonymised cohort signals steer the next generation.</li>
       <li><b>Council upgrades</b> — best-of-N selection among variants; the calibration loop (owner overturns → seat teaching examples); seats on different AI models for the highest-stakes reviews.</li>
       <li><b>Ages 2–5 arcs</b> — the tagging, coverage map, and older-band mechanics (odd-one-out, counting) already open the door; more colours / opposites / feelings mechanics follow.</li>
@@ -262,7 +263,7 @@
     <p class="note">📚 Full detail, sources, and decision history live in <code>knowledge-base/</code>. Key files: the PRDs (<code>raw/prds/0001…0003</code>); the charters (<code>GARDENER.md</code>, <code>MECHANIC.md</code>, <code>COUNCIL.md</code>); the contract and its checkers (<code>schema/experience.schema.json</code>, <code>schema/validate.py</code>, <code>schema/mechanic_lint.py</code>); the fixed engine (<code>assets/js/player.js</code>); and the append-only <code>log.md</code> timeline.</p>
   </div>
 
-  <footer>Little One · product plan &amp; architecture · generated from the project knowledge base · updated 6&nbsp;July&nbsp;2026</footer>
+  <footer>Little One · product plan &amp; architecture · generated from the project knowledge base · updated 7&nbsp;July&nbsp;2026</footer>
 </div>
 </body>
 </html>

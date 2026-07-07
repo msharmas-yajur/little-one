@@ -94,7 +94,7 @@
     if(p.lastShownAt && (Date.now()-p.lastShownAt) < SESSION_GAP) return false;  // ≤ 1 / session
     return true;
   }
-  function pickHypothesis(list){                          // "she keeps coming back to X"
+  function pickHypothesis(list){                          // "the little one keeps coming back to X"
     if(!profile || !Array.isArray(list)) return null;
     const answered=new Set(profile.prompts.answered||[]);
     let best=null, bestScore=0;
@@ -119,7 +119,7 @@
     else if(kind==='early') bumpSignal(id,'tooEarly');
     bumpAdult(kind==='skip' ? 'promptsSkipped' : 'promptsAnswered');
     if(!profile.prompts.answered) profile.prompts.answered=[];
-    if(kind!=='skip') profile.prompts.answered.push(id);  // don't re-ask once she has a verdict; a skip can resurface later
+    if(kind!=='skip') profile.prompts.answered.push(id);  // don't re-ask once the grown-up has answered; a skip can resurface later
     save();
   }
 
@@ -130,7 +130,7 @@
   const DOMAIN_LABEL={ focus:'gentle focus play', perspective:'feelings play',
     communicating:'naming & talking games', connections:'same-and-different play',
     'critical-thinking':'cause-and-effect play', challenges:'just-right challenges',
-    'self-directed':'let-her-lead play' };
+    'self-directed':'child-led play' };
   function autonomy(){ return profile ? (profile.autonomy||'auto') : 'auto'; }
   function setAutonomy(mode){ if(profile){ profile.autonomy=(mode==='ask-first'?'ask-first':'auto'); save(); } }
   function suggestDomain(){
@@ -242,9 +242,9 @@
     const wrap=document.createElement('div'); wrap.id='dyadModal'; wrap.className='dyad-modal';
     wrap.innerHTML=
       '<div class="dyad-card">'+
-      '<h2>Make it hers</h2>'+
-      '<p class="dyad-sub">A few gentle details so the stories and games grow with her. This stays on <b>your device</b> — never uploaded, and we never ask her name.</p>'+
-      '<label>When was she born?</label><input type="month" id="dyadBirth">'+
+      '<h2>Make it theirs</h2>'+
+      '<p class="dyad-sub">A few gentle details so the stories and games grow with your little one. This stays on <b>your device</b> — never uploaded, and we never ask for a name.</p>'+
+      '<label>When was the little one born?</label><input type="month" id="dyadBirth">'+
       '<label>Languages you speak at home <span class="opt">(tap all that apply)</span></label>'+
       '<div class="dyad-pills" id="dyadLangPills">'+
         LANG_OPTIONS.map(function(l){ return '<button type="button" class="dyad-pill" data-lang="'+l+'">'+l+'</button>'; }).join('')+

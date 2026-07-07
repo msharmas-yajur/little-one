@@ -490,7 +490,7 @@
     const label = (D.suggestLabel && D.suggestLabel()) || 'a little more variety';
     const card=document.createElement('div'); card.id='askCard'; card.className='notice-card';
     card.innerHTML =
-      '<p class="notice-q">This week, shall I lean into <b>'+label+'</b> for her?</p>'+
+      '<p class="notice-q">This week, shall I lean into <b>'+label+'</b> for the little one?</p>'+
       '<div class="notice-actions">'+
         '<button data-a="yes">Yes please</button>'+
         '<button data-a="no">Not now</button>'+
@@ -728,7 +728,7 @@
     D.recordPromptShown();
     const card=document.createElement('div'); card.id='noticeCard'; card.className='notice-card';
     card.innerHTML =
-      '<p class="notice-q">She keeps coming back to <b>'+item.title+'</b> — is she loving it?</p>'+
+      '<p class="notice-q">The little one keeps coming back to <b>'+item.title+'</b> — loving it?</p>'+
       '<div class="notice-actions">'+
         '<button data-k="heart">❤️ Loving it</button>'+
         '<button data-k="early">🌱 Too early</button>'+

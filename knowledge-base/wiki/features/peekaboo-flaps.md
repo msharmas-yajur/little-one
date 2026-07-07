@@ -29,7 +29,7 @@ in-browser (flap open/close, reveal, mirror + fallback). Implemented in
 
 **Why.** Object permanence (gone → back), anticipation, repetition, naming, and the
 joy of causing the reveal. Peek-a-boo → memory & trust (Molly Wright TED); fits arc
-Month 2 (follow her focus) and the hide-and-find idea in `famous-books.md`.
+Month 2 (follow the lantern) and the hide-and-find idea in `famous-books.md`.
 
 ## Proposed content model (backward-compatible)
 - Add an optional `flap: <artKey>` (the hidden picture) and optional `flapAsk`

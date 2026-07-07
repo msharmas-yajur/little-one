@@ -23,24 +23,24 @@ the **child's experience first** and the grown-up's practice in support of it.
 
 ## The child comes first
 Each book, read for this project, points the same way: **follow the little one.**
-The grown-up's job is warm attention and rich talk *around* what she is already
-doing — not a lesson she must pass. The arc encodes this by making every month a
+The grown-up's job is warm attention and rich talk *around* what the little one
+is already doing — not a lesson to pass. The arc encodes this by making every month a
 grown-up **stance**, never a target for the child.
 
 ## Where they agree (the load-bearing ideas)
 - **Learning lives in relationship.** Face-to-face, responsive back-and-forth
   ("serve and return") is the mechanism — the shared lap, not the device.
   (*Scientist in the Crib*, *Mind in the Making*.)
-- **Play and exploration beat instruction.** Let her lead, repeat, and re-discover;
+- **Play and exploration beat instruction.** Let the little one lead, repeat, and re-discover;
   resist correcting the "right" use. (*Gardener and the Carpenter*.)
 - **Name generously and warmly.** Rich talk, feelings included; describe rather
   than judge. (*Mind in the Making*, *How to Talk*.)
-- **Security is the launchpad.** A predictable, loving ritual is what frees her to
+- **Security is the launchpad.** A predictable, loving ritual is what frees the little one to
   venture. (*Gardener and the Carpenter*.)
 
 ## How to use this for arc planning
 When drafting or revising a month:
-1. Start from the **child's experience** — what is she doing/enjoying at this stage?
+1. Start from the **child's experience** — what is the little one doing/enjoying at this stage?
 2. Pick the **one** book idea that fits, and write the grown-up stance to *support*
    that, not steer it.
 3. Keep the language a learning experience: explore, discover, notice, play, name.

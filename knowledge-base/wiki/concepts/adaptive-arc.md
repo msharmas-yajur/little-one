@@ -22,7 +22,7 @@ Adaptation is three separate loops that must never be blended into one blob:
 |---|---|---|---|
 | **Evidence** | What research/scholars say is best practice | months–years | Clinical guideline updates |
 | **Cohort** | Content for an age band, language, culture, geography | weeks–months | Regionally localized care pathways |
-| **Child (dyad)** | What *this* child responds to; her pace and interests | days–weeks | The individual care plan |
+| **Child (dyad)** | What *this* child responds to; their pace and interests | days–weeks | The individual care plan |
 
 ## Layered architecture
 
@@ -35,7 +35,7 @@ CONTENT LIBRARY (tagged)    — stories/games tagged: age band, skill domain,
    ↓ selected by               language, culture, evidence refs
 DYAD MODEL (local-first)    — this parent+child pair, on their device only
    ↓
-DELIVERY (the player)       — what she sees today
+DELIVERY (the player)       — what the little one sees today
 ```
 
 Any layer can change without rewriting the others. The KB already *is* the
@@ -84,7 +84,7 @@ All content is tagged with primary skill domain(s); telemetry and hearts accrue
 per domain; Discovery samples across all seven; recommendations reason in
 domain terms. But **no per-skill progress meters scoring the child** — sparse
 noisy signals + a graded baby = the carpenter's dashboard. Adult-facing surface
-shows **"moments noticed"** ("she anticipated the peek-a-boo reveal — that's
+shows **"moments noticed"** ("the little one anticipated the peek-a-boo reveal — that's
 memory and trust building"), never scores.
 
 ## Self-learning: heuristics, not ML — in three tiers
@@ -95,7 +95,7 @@ knowledge/context layer, not in model weights.
 
 1. **On-device, real-time (automated):** interpretable counters/rules adjust
    the served arc locally. Explainable by design ("more naming games because
-   she repeated Animal Friends 6× this week").
+   Animal Friends was repeated 6× this week").
 2. **Build-time, human-gated (the slow loop):** owner observations + opt-in
    exported feedback + content gaps → Claude distills into KB/policy/content
    updates delivered as **pull requests**; PR review is the safety gate. Can be

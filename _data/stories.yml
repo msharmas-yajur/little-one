@@ -27,15 +27,15 @@
     - sky: morning
       line: "Good morning, sun! You're up so high."
       art: sun
-      cue: "Point up. Say “sun!” and let her tap it."
+      cue: "Point up. Say “sun!” and let the little one tap it."
     - sky: morning
       line: "A little bird says hop, hop, hop."
       art: bird
-      cue: "Hop your fingers along her arm as you read."
+      cue: "Hop your fingers along the little one's arm as you read."
     - sky: garden
       line: "The puppy wags and wants to play."
       art: dog
-      cue: "Try a soft “woof” — she may try to copy you."
+      cue: "Try a soft “woof” — the little one may try to copy you."
     - sky: garden
       line: "A flower grows to say hello."
       art: flower
@@ -47,7 +47,7 @@
     - sky: night
       line: "Now stars come out, one, two, three."
       art: star
-      cue: "Count on her fingers: one, two, three."
+      cue: "Count on little fingers: one, two, three."
     - sky: night
       line: "Goodnight, moon. Goodnight from me."
       art: moon
@@ -63,7 +63,7 @@
     - sky: rain
       line: "Pitter-patter, down comes the rain."
       art: rain
-      cue: "Tap fingertips on the back of her hand — soft rain."
+      cue: "Tap fingertips on the back of the little one's hand — soft rain."
     - sky: rain
       line: "A little duck goes quack, quack, quack."
       art: duck
@@ -89,9 +89,9 @@
       art: ball
       cue: "Hold something up together, then let it go."
     - sky: day
-      line: "She opens her hand… down it goes!"
+      line: "The little hand opens… down it goes!"
       art: ball
-      cue: "Say “down!” as it drops. She's learning how things fall."
+      cue: "Say “down!” as it drops. That's learning how things fall."
     - sky: garden
       line: "An apple falls, thud, from the tree."
       art: apple
@@ -107,7 +107,7 @@
     - sky: garden
       line: "Do it again! What will fall now?"
       art: ball
-      cue: "Repeating IS the learning. Let her lead the next drop."
+      cue: "Repeating IS the learning. Let the little one lead the next drop."
 
 - id: try-try-again
   title: "Try, Try Again"
@@ -119,15 +119,15 @@
     - sky: day
       line: "The ball rolls off — away, away it goes!"
       art: ball
-      cue: "Pause. Let her set off after it — the trying is hers."
+      cue: "Pause. Let the little one set off after it — the trying is theirs."
     - sky: garden
       line: "Little One crawls. So close now… almost THERE!"
       art: ball
       cue: "Cheer the effort first: “You're trying so hard!” Wait before you help."
     - sky: garden
-      line: "An apple hangs high. Can she stretch, stretch, and reach?"
+      line: "An apple hangs high. Can Little One stretch, stretch, and reach?"
       art: apple
-      cue: "Let her strain a little before you lift her — the reach is the win."
+      cue: "Let the little one strain a little before you lift — the reach is the win."
     - sky: day
       line: "A little bird tries, and tries — then up she flies!"
       art: bird
@@ -154,13 +154,13 @@
       art: duck
       line: "Where's the duck?"
       reveal: "There she is! Quack, quack! 🦆"
-      cue: "Let her tap the flap — then say “peek-a-boo!” together."
+      cue: "Let the little one tap the flap — then say “peek-a-boo!” together."
     - sky: day
       flap: true
       art: cat
       line: "Where's the kitty?"
       reveal: "Peek-a-boo! There's the kitty! 🐱"
-      cue: "Wait for the reveal, then her giggle. Do it again if she loves it."
+      cue: "Wait for the reveal, then the giggle. Do it again if the little one loves it."
     - sky: morning
       flap: true
       art: dog
@@ -192,20 +192,20 @@
     - sky: morning
       line: "The puppy says woof. Now… what will YOU say?"
       art: dog
-      cue: "Make the “woof,” then pause. Whatever sound comes back is her turn — say it right back to her."
+      cue: "Make the “woof,” then pause. Whatever sound comes back is the little one's turn — say it right back."
     - sky: garden
       line: "The kitty says mew — then waits for you."
       art: cat
-      cue: "Mew, then wait, just like the line does. Copy the babble she offers — that's a real little conversation."
+      cue: "Mew, then wait, just like the line does. Copy the babble the little one offers — that's a real little conversation."
     - sky: rain
       line: "The duck says quack-quack, and splashes away!"
       art: duck
-      cue: "Quack, then leave a gap. Her babble is a word finding its way out — greet it warmly."
+      cue: "Quack, then leave a gap. That babble is a word finding its way out — greet it warmly."
     - sky: day
       line: "A little bird tweets from a branch up high."
       art: bird
-      cue: "Point up and tweet. Serve a sound, then give her a beat to send one back to you."
+      cue: "Point up and tweet. Serve a sound, then give the little one a beat to send one back to you."
     - sky: night
       line: "You chattered all day. Goodnight, sleepy sky."
       art: moon
-      cue: "Whisper goodnight — then wait, and let her have the very last word."
+      cue: "Whisper goodnight — then wait, and let the little one have the very last word."

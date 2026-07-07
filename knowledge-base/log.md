@@ -425,3 +425,13 @@ Append-only. Newest at the bottom. Each entry: date · what happened.
   index updated. Also fixed the PRD template's gendered scaffold line
   (raw/prds/_TEMPLATE.md — infrastructure, not an owner source; noted here for
   transparency since raw/ is normally immutable).
+- 2026-07-08 · PR #3 decided — THE LEDGER'S FIRST FULL CYCLE. Owner chose
+  Council-first review; the Council ESCALATED (Guardian+Explorer reject, four
+  seats revise; 5/6 converged on "quiz with a right answer"). Owner ruling:
+  revise-then-merge. Revisions: prompt reframed to an invitation ("Let's count
+  the {label} — together!"), per-round grown-up `cue` added (schema + renderer
+  + five serve-and-return cues), skills retagged critical-thinking→connections.
+  Owner class rulings: forward age-bands in scope; `count` mechanic approved.
+  Both the Council report and the sovereign decision (with adopted AND
+  rejected findings — calibration data) are recorded in knowledge-base/ledger/
+  — arcs 1+2 of PRD 0004, seeded with a real event on day one.

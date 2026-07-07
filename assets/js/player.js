@@ -507,37 +507,33 @@
   /* ---- GAME ---- */
   let curGame=null, score=0;
   const cheers=['Yay! 🎉','You found it! 💛','Hooray!','Well done! ⭐','Good job! 🌸'];
+  function gameMode(g){ return g && g.mode==='odd-one-out' ? 'odd-one-out' : 'find'; }
   function openGame(i){
     curGame = games[i]; score=0;
     telOpen(curGame);
     musicSetTheme('menu', true);             // games use the gentle default theme
     $('gameScore').textContent='⭐ 0';
     $('gameTitle').textContent = curGame.title;
-    show('gameScreen'); newRound();
+    show('gameScreen'); GAME_TYPES[gameMode(curGame)].newRound();
   }
-  function newRound(){
+  /* Shared round renderer: draw the choices, correct → cheer + celebrate + next
+     round; wrong → gentle nudge (never a fail). Correctness is by object
+     identity, so a game may repeat labels/pictures across rounds safely. */
+  function renderChoices(options, correct, promptHTML, sayLabel){
     $('cheer').textContent='';
-    const pool = shuffle(curGame.items);
-    const n = Math.min(4, pool.length);
-    const options = shuffle(pool.slice(0,n));
-    const target = options[Math.random()*options.length|0];
-    // A game may pose its own question via an optional `ask:` template with a
-    // {label} slot (e.g. "Who says {label}?"); default is the classic find prompt.
-    const askTpl = curGame.ask || 'Can you find {label}?';
-    $('ask').innerHTML = askTpl.replace('{label}', `<b>${target.label}</b>`);
-    const grid=$('grid'); grid.innerHTML='';
-    grid.style.gridTemplateColumns = n<=2 ? '1fr 1fr' : '1fr 1fr';
+    $('ask').innerHTML = promptHTML;
+    const grid=$('grid'); grid.innerHTML=''; grid.style.gridTemplateColumns='1fr 1fr';
     options.forEach(o=>{
       const b=document.createElement('button');
       b.className='choice'; b.innerHTML=svgWrap(ART[o.art]||'');
       b.onclick=()=>{
-        if(o.label===target.label){
+        if(o===correct){
           b.classList.add('right'); score++;
           $('gameScore').textContent=`⭐ ${score}`;
           $('cheer').textContent=cheers[Math.random()*cheers.length|0];
-          celebrate(target.label);
+          celebrate(sayLabel);
           telEngage(curGame,'taps');
-          setTimeout(newRound,1700);
+          setTimeout(()=>GAME_TYPES[gameMode(curGame)].newRound(), 1700);
         } else {
           soft(); b.classList.remove('nudge'); void b.offsetWidth; b.classList.add('nudge');
         }
@@ -545,6 +541,31 @@
       grid.appendChild(b);
     });
   }
+  /* ---- game TYPES (schema/experience.schema.json) ----
+     Like PAGE_TYPES: each entry is a round builder. A new game mechanic is one
+     registry entry + its schema branch, not engine surgery. */
+  const GAME_TYPES = {
+    find: {                                   // "Can you find X?" — name → picture (naming)
+      newRound(){
+        const pool = shuffle(curGame.items);
+        const options = shuffle(pool.slice(0, Math.min(4, pool.length)));
+        const target = options[Math.random()*options.length|0];
+        const prompt = (curGame.ask || 'Can you find {label}?').replace('{label}', `<b>${target.label}</b>`);
+        renderChoices(options, target, prompt, target.label);
+      }
+    },
+    'odd-one-out': {                          // "Which one is different?" — critical thinking
+      newRound(){
+        const groups = (curGame.groups||[]).map(g=>g.slice()).filter(g=>g.length);
+        const majorIdx = groups.map((g,i)=>[g.length,i]).sort((a,b)=>b[0]-a[0])[0][1];
+        const major = shuffle(groups[majorIdx]).slice(0, Math.min(3, groups[majorIdx].length));
+        const odd = shuffle(groups.filter((g,i)=>i!==majorIdx).flat())[0];
+        const options = shuffle(major.concat([odd])).map(art=>({art}));
+        const correct = options.find(o=>o.art===odd);
+        renderChoices(options, correct, curGame.prompt || 'Which one is <b>different</b>?', 'the different one');
+      }
+    }
+  };
 
   /* ---- screen switching ---- */
   function show(id){

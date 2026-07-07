@@ -87,7 +87,7 @@
     },
 
     "game": {
-      "description": "A forgiving Tap & Find game: 'can you find X?' among picture choices; the right tap cheers, a wrong tap nudges. No fail state.",
+      "description": "TYPE 'find' — a forgiving Tap & Find game: 'can you find X?' among picture choices; the right tap cheers, a wrong tap nudges. No fail state.",
       "type": "object",
       "additionalProperties": false,
       "required": ["id", "title", "items"],
@@ -97,9 +97,36 @@
         "age": { "type": "string" },
         "age_band": { "type": "array", "items": { "$ref": "#/$defs/ageBand" }, "minItems": 1 },
         "skills": { "type": "array", "items": { "$ref": "#/$defs/skill" } },
+        "mode": { "const": "find", "description": "optional; 'find' is the default game type" },
         "ask": { "type": "string", "description": "optional prompt template with a {label} slot, e.g. 'Who says {label}?'" },
         "items": { "type": "array", "minItems": 2, "items": { "$ref": "#/$defs/gameItem" } }
       }
+    },
+
+    "oddOneOutGame": {
+      "description": "TYPE 'odd-one-out' — 'which one is different?': the engine shows a majority group + one outlier; tapping the odd one cheers, a wrong tap nudges. Critical thinking; no fail state.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "mode", "groups"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "title": { "type": "string" },
+        "age": { "type": "string" },
+        "age_band": { "type": "array", "items": { "$ref": "#/$defs/ageBand" }, "minItems": 1 },
+        "skills": { "type": "array", "items": { "$ref": "#/$defs/skill" } },
+        "mode": { "const": "odd-one-out" },
+        "prompt": { "type": "string", "description": "optional; default 'Which one is different?'" },
+        "groups": {
+          "type": "array", "minItems": 2,
+          "description": "categories the round is built from — a majority group + one outlier",
+          "items": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/artKey" } }
+        }
+      }
+    },
+
+    "anyGame": {
+      "description": "A word-game is exactly one game TYPE. Adding a new type here is a class change (human-gated).",
+      "oneOf": [ { "$ref": "#/$defs/game" }, { "$ref": "#/$defs/oddOneOutGame" } ]
     }
   }
 }

@@ -60,6 +60,7 @@ end
 def content_strings(item)
   out = []
   out << item["title"] if item["title"]
+  out << item["prompt"] if item["prompt"]
   Array(item["pages"]).each do |p|
     next unless p.is_a?(Hash)
     out << p["line"] if p["line"]
@@ -107,6 +108,12 @@ end
       next unless node.is_a?(Hash) && node["art"]
       unless ART.include?(node["art"])
         errors << "#{where}: art key '#{node['art']}' does not exist in assets/js/art.js"
+      end
+    end
+    # art keys — groups (odd-one-out games)
+    Array(item["groups"]).each do |grp|
+      Array(grp).each do |a|
+        errors << "#{where}: art key '#{a}' does not exist in assets/js/art.js" unless ART.include?(a)
       end
     end
 

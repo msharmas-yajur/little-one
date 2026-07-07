@@ -97,3 +97,20 @@
       label: "the star"
     - art: moon
       label: "the moon"
+
+# ── A NEW MECHANIC (mode: odd-one-out) ── the first critical-thinking game and
+#  the first 2-3y content. The engine shows a majority group + one outlier and
+#  asks "which one is different?"; tap the odd one. Built the schema-driven way:
+#  a new game TYPE = one schema branch + one GAME_TYPES registry entry + this data.
+- id: which-is-different
+  title: "Which is different?"
+  age: "2+"
+  age_band: [2-3y]
+  skills: [critical-thinking]
+  mode: odd-one-out
+  prompt: "Which one is <b>different</b>?"
+  groups:
+    - [dog, cat, duck, bird, fish]     # animals
+    - [car, boat]                       # things that go
+    - [sun, moon, star, cloud]          # up in the sky
+    - [apple, ball]                     # little round things

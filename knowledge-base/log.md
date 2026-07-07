@@ -272,3 +272,15 @@ Append-only. Newest at the bottom. Each entry: date · what happened.
   tap, onOpen?, onClose?}; a new page type is one registry entry + its schema
   branch. Behaviour byte-identical — verified in-browser (DOM assertions across
   plain/flap/mirror/game + a visual screenshot). Pure refactor, no new capability.
+- 2026-07-06 · NEW MECHANIC via the schema-driven engine — `odd-one-out` game type.
+  Added `which-is-different` (2-3y, critical-thinking — the first critical-thinking
+  game AND first 2-3y content) as the schema-driven pattern intends: ONE schema
+  branch (oddOneOutGame + anyGame oneOf in experience.schema.json) + ONE GAME_TYPES
+  registry entry in player.js (mirrors PAGE_TYPES; find mode preserved byte-identical
+  via a shared renderChoices helper) + content (mode: odd-one-out, groups: of art
+  keys) + serialization (child.html mode/prompt/groups) + gate updates (lint.rb
+  checks groups' art keys + prompt; validate.py validates games against anyGame).
+  Verified in-browser: find game unchanged (score→1); odd-one-out renders 4 choices
+  (3 majority + 1 outlier), "Which one is different?", odd tap scores. This is the
+  concrete proof of milestone 3b and the reference for milestone 4 (Gardener
+  proposing mechanics). No new art needed (reused existing 17 keys as groups).

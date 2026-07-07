@@ -37,7 +37,7 @@ def main() -> int:
 
     collections = [
         ("_data/stories.yml", "story", "story"),
-        ("_data/wordgames.yml", "game", "word-game"),
+        ("_data/wordgames.yml", "anyGame", "word-game"),
     ]
 
     errors: list[str] = []

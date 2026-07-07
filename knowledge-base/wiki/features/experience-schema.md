@@ -47,6 +47,8 @@ in-browser across all four types (plain tap → say word; flap → lift/reveal +
 confetti; mirror → camera + `flap-mirror`; game → `ask` prompt + choices) via
 DOM assertions + a visual check.
 
+**First new mechanic added the schema-driven way (2026-07-06):** the `odd-one-out` game type (`which-is-different` — 'which one is different?', 2-3y, critical-thinking) was added as **one schema branch + one `GAME_TYPES` registry entry + content** — no bespoke engine surgery. Games now have a `GAME_TYPES` registry mirroring `PAGE_TYPES`. This is the concrete proof of the milestone-3b payoff and the reference a graduated Gardener (milestone 4) will emulate.
+
 This is the engine-half of the generative-UI substrate: the Gardener (once
 graduated, milestone 4) proposes a new mechanic as a **schema branch + registry
 entry** in one reviewed PR; the capability bound (`additionalProperties:false`)

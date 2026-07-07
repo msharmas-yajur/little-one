@@ -117,7 +117,7 @@ window.CHILD = {
       {%- if childRec.games == 'all' -%}{%- assign inc = true -%}
       {%- else -%}{%- for gid in childRec.games -%}{%- if gid == g.id -%}{%- assign inc = true -%}{%- endif -%}{%- endfor -%}{%- endif -%}
       {%- if inc -%}
-      { id: {{ g.id | jsonify }}, title: {{ g.title | jsonify }}, age: {{ g.age | jsonify }}, ask: {{ g.ask | jsonify }}, age_band: {{ g.age_band | jsonify }}, skills: {{ g.skills | jsonify }}, lang: {{ g.lang | jsonify }}, culture: {{ g.culture | jsonify }}, items: [
+      { id: {{ g.id | jsonify }}, title: {{ g.title | jsonify }}, age: {{ g.age | jsonify }}, ask: {{ g.ask | jsonify }}, mode: {{ g.mode | jsonify }}, prompt: {{ g.prompt | jsonify }}, groups: {{ g.groups | jsonify }}, age_band: {{ g.age_band | jsonify }}, skills: {{ g.skills | jsonify }}, lang: {{ g.lang | jsonify }}, culture: {{ g.culture | jsonify }}, items: [
         {%- for it in g.items -%}
         { art: {{ it.art | jsonify }}, label: {{ it.label | jsonify }} },
         {%- endfor -%}

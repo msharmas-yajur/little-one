@@ -14,7 +14,12 @@ right tap cheers and moves on; wrong taps nudge and let her try again.
 
 - Data: `_data/wordgames.yml` (themed sets of items: `art` + `label`).
 - Current sets: animal-friends, out-in-the-world, things-i-know, **who-says**,
-  **weather-and-sky**.
+  **weather-and-sky**, **which-is-different**.
+- **Two game TYPES now** (schema-driven, 2026-07-06): `find` (default —
+  name → picture) and **`odd-one-out`** (`mode: odd-one-out`, `groups:` of art
+  keys → "which one is different?"). The engine dispatches via a `GAME_TYPES`
+  registry (mirrors `PAGE_TYPES`); a new game mechanic is one schema branch +
+  one registry entry, per `schema/experience.schema.json`.
 - **No fail state** (see design-principles): never scold, never end, no timer.
 - **Optional `ask:` template** (added 2026-07-06): a set may pose its own
   question with a `{label}` slot, e.g. `ask: "Who says {label}?"`. Default is
@@ -43,7 +48,7 @@ decision, not a quick data add:
 | Idea | Age | Skill it adds | Needs |
 |---|---|---|---|
 | **Colours** ("find the *red* one") | 2-3y | focus, communicating | new art: the same object in several colours (or coloured swatches) |
-| **Which is different?** (odd-one-out) | 2-3y+ | critical-thinking | new mechanic: a "one of these is not like the others" round type |
+| ~~**Which is different?** (odd-one-out)~~ **BUILT 2026-07-06** — `which-is-different` (2-3y, critical-thinking): the first critical-thinking game and first 2-3y content, added the schema-driven way (`mode: odd-one-out` + `GAME_TYPES` registry entry). | 2-3y+ | critical-thinking | ✅ done |
 | **Big & small / opposites** | 2-3y+ | critical-thinking, perspective | art at two sizes, or opposite-pairs art (up/down, day/night) |
 | **First sounds / letters** ("what starts with *b*?") | 3-4y+ | communicating | letter art + a phonics prompt template |
 | **Sorting** ("put the animals together") | 3-4y+ | critical-thinking, self-directed | new drag/group mechanic (bigger engine change) |

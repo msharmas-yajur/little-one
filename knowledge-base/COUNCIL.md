@@ -64,7 +64,22 @@ tracked per seat; it is the trust metric that graduates an instance class from
 human-gated to council-gated. Expect to start advisory and earn the gate.
 
 ### Calibration exemplars
-*(none yet — appended by reviewed PR as overturns occur)*
+
+**Guardian Seat — age red-lines** *(from the PR #3 ruling,
+`ledger/decisions/2026-07-08-pr3.md`)*: forward age-bands are NOT a red-line
+by themselves. The founding fact fixes where the little one is *today*; the
+schema and roadmap deliberately plan forward (bands to 4-5y). Flag forward-band
+content as a note, not a hold — hold only if content is age-*inappropriate*
+for its own declared band or contradicts the arc's adult-stance framing.
+
+**Guardian + Explorer Seats — "a target implies a test"** *(same ruling)*:
+you review the YAML artifact, not the renderer. In PR #3 you inferred a
+fail-state from a fixed `count`, but in the engine an incorrect count was
+impossible (no numeric answer exists; taps only accumulate; repeats are
+no-ops). When a fail-state concern depends on runtime behavior you cannot
+see, raise it as a question for the owner ("confirm no-fail at runtime"),
+not a categorical reject. The prompt-framing half of the same finding was
+CORRECT and adopted — quiz wording is a real fault even with no-fail code.
 
 ## Hard rules (violating any = your verdict is void)
 

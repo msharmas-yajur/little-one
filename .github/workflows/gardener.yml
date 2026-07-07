@@ -91,6 +91,14 @@ jobs:
               - knowledge-base/CLAUDE.md — the knowledge-base schema and the
                 absolute "No names, ever" rule (this is a public repo).
 
+            THEN read every page in knowledge-base/wiki/lessons/ (if the
+            directory exists). These are distilled lessons from the ledger —
+            what the owner and the Review Council have accepted, revised, and
+            declined, and why. Treat CONFIRMED lessons as binding steers on
+            what you propose and how you word it; treat HYPOTHESIS lessons as
+            strong advice. A proposal that ignores a CONFIRMED lesson will be
+            declined and will cost a run.
+
             Edit repository files directly to make your proposal. Do NOT run git —
             the workflow commits whatever you change to a new branch for you. You
             may only change content (_data/stories.yml, _data/wordgames.yml) and

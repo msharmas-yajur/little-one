@@ -63,8 +63,14 @@
   <b>designs and improves itself</b> under human review. This document is the orientation for
   anyone building on the project: the vision, the architecture, and — the point of this update —
   <b>what is actually delivered</b>.</p>
-  <p class="meta">Prepared 5&nbsp;July&nbsp;2026 · Substantially updated 7&nbsp;July&nbsp;2026 (three PRDs; the Generative Arc largely built — voice now live) ·
+  <p class="meta">Prepared 5&nbsp;July&nbsp;2026 · Substantially updated 8&nbsp;July&nbsp;2026 (four PRDs; the Generative Arc largely built — voice live; the learning loop closing) ·
   Source of truth: the project knowledge base (<code>knowledge-base/</code>) · No child data appears anywhere in this document.</p>
+
+  <div class="card" style="border-left:8px solid var(--grape);background:linear-gradient(135deg,#fff 60%,#F4EEFB);">
+    <h2>📜 Featured: the Council in Session — a complete transcript</h2>
+    <p>The single best read for understanding how this system actually governs itself. Six independently-constituted LLM judges reviewed the Mechanic's first proposal; <b>five converged on the same one-line fault</b>, the Guardian exercised its non-overridable hold, the decision <b>escalated to the human</b>, and the owner ruled — adopting three findings, overruling two, everything recorded in the append-only ledger.</p>
+    <p style="margin-top:10px;"><a href="council-review-count-with-me.html"><b>Read the full conversation: every seat's verdict, the Chairman's synthesis, and the owner's ruling →</b></a></p>
+  </div>
 
   <div class="card">
     <h2>Read this in five lines</h2>
@@ -83,8 +89,9 @@
       <a href="#prd1">⑤ PRD 0001 — Adaptive Arc</a>
       <a href="#prd2">⑥ PRD 0002 — Gardener Loop</a>
       <a href="#prd3">⑦ PRD 0003 — Generative Arc</a>
-      <a href="#why">⑧ Why it matters beyond a storybook</a>
-      <a href="#after">⑨ What comes after</a>
+      <a href="#prd4">⑧ PRD 0004 — Learning Ledger &amp; Librarian</a>
+      <a href="#why">⑨ Why it matters beyond a storybook</a>
+      <a href="#after">⑩ What comes after</a>
     </div>
   </div>
 
@@ -99,12 +106,14 @@
       <tr><td><b>Experience schema</b></td><td>Capability-bounded declarative contract for every experience; generated UI sandboxed by grammar</td><td style="text-align:right;"><span class="st live">LIVE</span></td></tr>
       <tr><td><b>Schema-driven engine</b></td><td>The player is now a pure renderer — a type registry; a new experience type is data + one entry</td><td style="text-align:right;"><span class="st live">LIVE</span></td></tr>
       <tr><td><b>Review Council</b></td><td>Six rubric-anchored LLM-judge "seats" + a Chairman; every verdict cites a knowledge-base principle</td><td style="text-align:right;"><span class="st build">BUILT</span></td></tr>
-      <tr><td><b>Mechanic loop (Gardener graduation)</b></td><td>The Gardener proposes a <i>new interaction mechanic</i> (schema + engine code) as a human-gated PR</td><td style="text-align:right;"><span class="st build">BUILT · proven</span></td></tr>
+      <tr><td><b>Mechanic loop (Gardener graduation)</b></td><td>The Gardener proposes a <i>new interaction mechanic</i> (schema + engine code) as a human-gated PR</td><td style="text-align:right;"><span class="st live">LIVE · 1 merged</span></td></tr>
+      <tr><td><b>Learning Ledger</b></td><td>Every Council verdict and every PR decision auto-recorded as append-only events — the repo's preference dataset</td><td style="text-align:right;"><span class="st build">BUILT</span></td></tr>
+      <tr><td><b>Librarian loop</b></td><td>A third loop distills the ledger into a capped <code>wiki/lessons/</code> that every Gardener/Mechanic run reads before proposing</td><td style="text-align:right;"><span class="st build">BUILT</span></td></tr>
       <tr><td><b>Warm voice (Sarvam)</b></td><td>Build-time neural narration → static clips; a settings picker (5 playful bulbul:v3 voices) + different voices per story/game; Indian-language-first</td><td style="text-align:right;"><span class="st live">LIVE</span></td></tr>
       <tr><td><b>Variant pools + aggregate telemetry</b></td><td>Generate reviewed pools; on-device composition; anonymised cohort signals feed the next generation</td><td style="text-align:right;"><span class="st plan">PLANNED</span></td></tr>
       <tr><td><b>Bring-your-own-key (per-family)</b></td><td>A family's own instance learns per-child on the family's own key and data</td><td style="text-align:right;"><span class="st plan">FUTURE</span></td></tr>
     </table></div>
-    <p class="note">📚 Content library today: <b>6 stories</b> · <b>6 tap-along games</b> live (a 7th, a counting game, is in an open Mechanic pull request awaiting review). Three story mechanics (plain / lift-the-flap / camera-mirror) and three game mechanics (find / odd-one-out / count).</p>
+    <p class="note">📚 Content library today: <b>6 stories</b> · <b>7 tap-along games</b> live — including the counting game, Council-reviewed and revised before merge (<a href="council-review-count-with-me.html">the transcript</a>). Three story mechanics (plain / lift-the-flap / camera-mirror) and three game mechanics (find / odd-one-out / count).</p>
   </div>
 
   <!-- ══════════════ PROMISES ══════════════ -->
@@ -234,9 +243,23 @@
     <p class="sub">✅ experience schema · ✅ engine renderer · ✅ Review Council · ✅ Mechanic loop (Gardener graduation) · ✅ <b>voice pipeline + picker + per-content voices</b> · ⏭ bilingual voice · ⏭ variant pools + on-device composition + aggregate telemetry · ⏭ Council selection-mode &amp; calibration. Real-time generation stays out until the Council has earned it — and never with child signals as input.</p>
   </div>
 
+  <!-- ══════════════ PRD 0004 ══════════════ -->
+  <div class="card" id="prd4">
+    <h2>PRD 0004 — The Learning Ledger &amp; the Librarian <span class="pill build">BUILDING</span></h2>
+    <p class="sub">The diagnosis that started it: the system had <b>every organ of a learning system and none of its circulation</b>. Council verdicts died in CI temp files; the owner's merge/reject decisions — the highest-value human signal — went unrecorded; on-device engagement never reached authorship. PRD 0004 closes the loop, with a human decision gating every step.</p>
+    <h3>Three feedback currencies, one ledger, one Librarian</h3>
+    <ul>
+      <li><b>Sovereign verdicts</b> (strongest): every PR merge/reject/edit is recorded to <code>knowledge-base/ledger/decisions/</code> the moment it happens — including the owner's one-line <i>why</i>, and which Council findings were adopted vs overruled.</li>
+      <li><b>Judged verdicts</b>: every Council report is committed to <code>ledger/council/</code> with parseable front-matter — no verdict is ever lost again.</li>
+      <li><b>Behavioral aggregate</b> (deferred): cohort counts only, opt-in, transport design separately approved — per the three-line privacy rule.</li>
+    </ul>
+    <p style="margin-top:8px;"><b>The Librarian</b> — a third loop, deliberately separate from the generators (a generator grading its own homework is reward hacking in miniature) — reads the ledger and distills it into a <b>capped</b> <code>wiki/lessons/</code> set (≤5 pages, ≤250 lines, every lesson citing its ledger events, CONFIRMED vs HYPOTHESIS). <b>Every Gardener and Mechanic run now reads the lessons before proposing.</b> That single arc — human feedback → ledger → lessons → next generation — is the whole point: in-context learning where every "weight update" is a human-approved git commit.</p>
+    <div class="callout"><b>Already running on real data.</b> The ledger's first entries are the count-with-me escalation (<a href="council-review-count-with-me.html">read the full transcript</a>) and the owner's revise-then-merge ruling. The Council's charter gained its first two <i>calibration exemplars</i> from the same cycle — the judges getting judged, on evidence.</div>
+  </div>
+
   <!-- ══════════════ WHY ══════════════ -->
   <div class="card" id="why">
-    <h2>⑧ Why this matters beyond a storybook</h2>
+    <h2>⑨ Why this matters beyond a storybook</h2>
     <p>The self-improving loop is a deliberate rehearsal of a hard, general problem: <b>workflows that must change when official guidance changes</b> — most sharply, clinical protocols. The mapping is exact, and it is the most transferable part of this work for teams building other solutions.</p>
     <div class="tablewrap"><table>
       <tr><th>In Little One</th><th>In a guidance-driven workflow</th></tr>
@@ -252,7 +275,7 @@
 
   <!-- ══════════════ AFTER ══════════════ -->
   <div class="card" id="after">
-    <h2>⑨ What comes after</h2>
+    <h2>⑩ What comes after</h2>
     <ul>
       <li><b>Bilingual voice</b> — the warm voice is live; next, narrate the same line in English <i>and</i> the home language on one page (Sarvam covers ten Indic languages), and widen clip coverage beyond the current phrase set.</li>
       <li><b>Variant pools + aggregate telemetry</b> — the Gardener generates reviewed <i>pools</i>; the device composes per child locally; anonymised cohort signals steer the next generation.</li>

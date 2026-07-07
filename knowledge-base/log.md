@@ -443,3 +443,19 @@ Append-only. Newest at the bottom. Each entry: date · what happened.
   Review Council section. Verbatim from run 28868285280 with a transcript note
   (the run predates the referent sweep, so quoted principle lines keep the old
   phrasing).
+- 2026-07-08 · PRD 0004 build (Fable session, owner-directed): the Librarian
+  loop + ledger automation. (1) council.yml now commits every verdict to
+  knowledge-base/ledger/council/ with parseable front-matter (review.py
+  --ledger-out) — direct to main, justified as an append-only RECORD of an
+  event, not a proposal. (2) New ledger-decision.yml records every closed PR
+  as a sovereign-decision event (proposer by branch prefix, merged/closed,
+  decider, files, and the owner's one-line why from a "Why:" PR comment).
+  (3) LIBRARIAN.md charter (third loop: ledger → capped wiki/lessons/, ≤5
+  pages/250 lines, provenance required, CONFIRMED vs HYPOTHESIS, calibration
+  duty, never edits ledger/charters, PR-only) + librarian.yml (mirrors the
+  Gardener pattern: in-workflow gate = allowlist + cap + referent/provenance
+  lint). (4) Loop closed: gardener.yml and gardener-mechanic.yml prompts now
+  read wiki/lessons/ as binding steers. (5) COUNCIL.md gained its first two
+  calibration exemplars from the PR #3 ruling (owner-directed charter edit:
+  forward age-bands are a note not a hold; YAML-vs-runtime scope humility).
+  (6) Product plan: featured transcript band, PRD 0004 section, status rows.

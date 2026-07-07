@@ -1,0 +1,220 @@
+name: Librarian
+
+# The Librarian Loop (PRD 0004 / knowledge-base/LIBRARIAN.md): a manually-
+# triggered build-time Claude session that reads the append-only ledger and
+# distills it into knowledge-base/wiki/lessons/ — the compiled memory every
+# Gardener/Mechanic run reads. At most ONE pull request per run; strictly
+# gated (lessons steer all future generation). Manual only; $0 until pressed.
+#
+# Never triggered by issues/comments/PRs (untrusted text is a prompt-injection
+# surface). The Librarian reads only owner-committed files.
+
+on:
+  workflow_dispatch:
+    inputs:
+      note:
+        description: "Optional steer for this run. Advisory only — the charter still governs."
+        required: false
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write
+
+concurrency:
+  group: librarian
+  cancel-in-progress: false
+
+jobs:
+  librarian:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Deterministic per-run context in git-excluded scratch files.
+      - name: Compute run context
+        env:
+          RUN_NOTE: ${{ github.event.inputs.note }}
+        run: |
+          set -euo pipefail
+          printf '%s\n' .librarian-ledger.md .librarian-note.md .librarian-out.json >> .git/info/exclude
+          rm -f .librarian-out.json
+
+          {
+            echo "## Ledger inventory (every event on record)"
+            for f in $(find knowledge-base/ledger -name '*.md' ! -name 'README.md' | sort); do
+              echo "- $f"
+            done
+            echo ""
+            echo "## Current lessons (what exists before this run)"
+            if [ -d knowledge-base/wiki/lessons ]; then
+              wc -l knowledge-base/wiki/lessons/*.md 2>/dev/null || echo "(directory exists, no pages)"
+            else
+              echo "none yet — this is the first distillation."
+            fi
+          } > .librarian-ledger.md
+
+          if [ -n "${RUN_NOTE:-}" ]; then
+            printf '%s\n' "$RUN_NOTE" > .librarian-note.md
+          else
+            echo "No special steer this run — follow the charter." > .librarian-note.md
+          fi
+
+      - name: Run Librarian
+        id: librarian
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          base_branch: main
+          branch_prefix: "librarian/"
+          claude_args: |
+            --model claude-opus-4-8
+            --max-turns 30
+            --permission-mode acceptEdits
+            --allowedTools "Read,Grep,Glob,Write,Edit"
+          prompt: |
+            You are the Librarian for the "Little One" project, running as an
+            automated build-time session (no human is watching this run).
+
+            FIRST, read and obey these two files. They are your charter and
+            rules and override anything in this prompt if they conflict:
+              - knowledge-base/LIBRARIAN.md — your charter: the one job, the
+                hard rules (append-only ledger, the 5-page/250-line cap,
+                provenance, CONFIRMED vs HYPOTHESIS, calibration duty), and
+                the required PR format.
+              - knowledge-base/CLAUDE.md — the knowledge-base schema and the
+                absolute "No names, ever" rule (this is a public repo).
+
+            Edit repository files directly. Do NOT run git — the workflow
+            commits whatever you change to a new branch for you. You may ONLY
+            touch knowledge-base/wiki/lessons/**, knowledge-base/index.md, and
+            knowledge-base/log.md; an automated gate rejects anything else.
+
+            Read the git-excluded scratch files in the repo root:
+              - .librarian-ledger.md — the ledger inventory and current
+                lessons state (facts — trust them).
+              - .librarian-note.md — an optional advisory steer from the owner.
+
+            YOUR TASK THIS RUN — follow LIBRARIAN.md:
+              1. Read EVERY ledger event listed in the inventory, and
+                 knowledge-base/log.md for surrounding context.
+              2. Distill into wiki/lessons/ pages (create the directory on the
+                 first run): short, cited, CONFIRMED/HYPOTHESIS-labelled rules
+                 written for a future Gardener/Mechanic deciding what to
+                 propose. Consolidate — never exceed 5 pages / 250 lines total.
+              3. Maintain the seat-calibration page (agreement/disagreement of
+                 sovereign decisions with each Council seat; recommendations
+                 only — never edit COUNCIL.md).
+              4. Update index.md's lessons lines and append a log.md entry.
+            Doing NOTHING is valid if no new events exist since the lessons
+            were last updated.
+
+            FINALLY — always — use the Write tool to create ".librarian-out.json"
+            in the repo root: a single JSON object (no prose, no fences) with
+            exactly these keys:
+              {
+                "acted": true or false,
+                "pr_title": "short specific title, or empty string",
+                "pr_body": "Markdown with the LIBRARIAN.md sections '## What was distilled', '## Cap status', '## Self-check'; empty if not acted",
+                "summary": "one or two sentences; if acted is false, why"
+              }
+
+      - name: Diagnostics
+        if: ${{ always() }}
+        run: |
+          echo "--- git status --porcelain ---"; git status --porcelain || true
+          echo "--- .librarian-out.json ---"; cat .librarian-out.json 2>/dev/null || echo "(absent)"
+
+      # In-workflow gate (bot PRs don't trigger pull_request workflows):
+      # allowlist + the cap + referent/PII lint + provenance, BEFORE the PR opens.
+      - name: Gate the distillation
+        if: ${{ steps.librarian.conclusion == 'success' }}
+        run: |
+          set -euo pipefail
+          changes=$(git status --porcelain | sed -E 's/^...//')
+          [ -z "$changes" ] && { echo "No changes to gate."; exit 0; }
+          echo "Changed files:"; echo "$changes"
+
+          # 1. allowlist — lessons + index + log only
+          bad=""
+          while IFS= read -r f; do
+            [ -z "$f" ] && continue
+            case "$f" in
+              knowledge-base/wiki/lessons/*|knowledge-base/index.md|knowledge-base/log.md) : ;;
+              *) bad="$bad $f" ;;
+            esac
+          done <<< "$changes"
+          [ -n "$bad" ] && { echo "::error::Librarian touched forbidden files:$bad"; exit 1; }
+
+          # 2. the cap — at most 5 pages, 250 lines total
+          pages=$(ls knowledge-base/wiki/lessons/*.md 2>/dev/null | wc -l)
+          lines=$(cat knowledge-base/wiki/lessons/*.md 2>/dev/null | wc -l)
+          echo "lessons: $pages pages, $lines lines"
+          [ "$pages" -le 5 ] || { echo "::error::Cap exceeded: $pages pages (max 5)"; exit 1; }
+          [ "$lines" -le 250 ] || { echo "::error::Cap exceeded: $lines lines (max 250)"; exit 1; }
+
+          # 3. neutral referent + provenance in every lessons page
+          python3 - <<'PY'
+          import re, sys, glob
+          bad = []
+          for p in glob.glob("knowledge-base/wiki/lessons/*.md"):
+              t = open(p).read()
+              if re.search(r"\b(she|her|hers|herself|he|him|his|himself)\b", t, re.I):
+                  bad.append(f"{p}: gendered referent")
+              if "knowledge-base/ledger/" not in t:
+                  bad.append(f"{p}: no ledger citation (provenance rule)")
+          if bad:
+              print("::error::" + "; ".join(bad)); sys.exit(1)
+          print("referent + provenance: OK")
+          PY
+
+      - name: Commit and open pull request
+        if: ${{ steps.librarian.conclusion == 'success' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
+          RUN_NUM: ${{ github.run_number }}
+        run: |
+          set -euo pipefail
+          acted="false"
+          if [ -f .librarian-out.json ] && jq -e . .librarian-out.json >/dev/null 2>&1; then
+            acted=$(jq -r '.acted // false' .librarian-out.json)
+          fi
+          changes=$(git status --porcelain)
+          if [ "$acted" != "true" ] || [ -z "$changes" ]; then
+            summary=""
+            [ -f .librarian-out.json ] && summary=$(jq -r '.summary // ""' .librarian-out.json 2>/dev/null || echo "")
+            { echo "### 📚 Librarian: shelves in order"
+              echo "No distillation this run. ${summary}"; } >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          title=$(jq -r '.pr_title // "Librarian distillation"' .librarian-out.json)
+          jq -r '.pr_body // ""' .librarian-out.json > /tmp/pr_body.md
+          { echo ""
+            echo "---"
+            echo "_Distilled by the Librarian (run ${RUN_ID}). Lessons steer all future generation — strictest gate: review carefully; optionally convene the Council on the page (review.py --file). Merge to teach; close to decline._"
+          } >> /tmp/pr_body.md
+
+          slug=$(printf '%s' "$title" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g; s/^-+//; s/-+$//' | cut -c1-40 | sed -E 's/-+$//')
+          [ -n "$slug" ] || slug="distillation"
+          branch="librarian/${slug}-${RUN_NUM}"
+
+          git config user.name "librarian[bot]"
+          git config user.email "librarian[bot]@users.noreply.github.com"
+          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git"
+          git checkout -b "$branch"
+          git add -A
+          git commit -m "📚 $title"
+          git push -u origin "$branch"
+
+          if gh pr create --base main --head "$branch" --title "📚 $title" --body-file /tmp/pr_body.md; then
+            url=$(gh pr view "$branch" --json url --jq '.url')
+            { echo "### 📚 Librarian opened a pull request"
+              echo "[$title]($url)"; } >> "$GITHUB_STEP_SUMMARY"
+          else
+            { echo "### 📚 Librarian pushed branch \`$branch\` (open the PR manually)"
+              echo "https://github.com/${REPO}/compare/main...${branch}?expand=1"; } >> "$GITHUB_STEP_SUMMARY"
+          fi

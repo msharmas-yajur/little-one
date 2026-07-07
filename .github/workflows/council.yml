@@ -20,7 +20,7 @@ on:
         type: string
 
 permissions:
-  contents: read
+  contents: write   # record the verdict as a ledger event on main (PRD 0004 arc 1)
 
 concurrency:
   group: council
@@ -54,8 +54,13 @@ jobs:
             echo "::error::Provide a story_id or a game_id to review."; exit 1
           fi
 
+          target="${STORY_ID:-$GAME_ID}"
+          ledger="knowledge-base/ledger/council/$(date -u +%F)-${target}.md"
+          echo "LEDGER_FILE=$ledger" >> "$GITHUB_ENV"
+
           set +e
-          python council/review.py $args --out /tmp/council-report.md
+          python council/review.py $args --out /tmp/council-report.md \
+            --ledger-out "/tmp/ledger-event.md" --run-id "${{ github.run_id }}"
           code=$?
           set -e
 
@@ -73,6 +78,32 @@ jobs:
             cat /tmp/council-report.md
           } >> "$GITHUB_STEP_SUMMARY"
           echo "Council decision: $decision"
+
+      # PRD 0004 arc 1: every verdict becomes a permanent ledger event on main —
+      # an append-only RECORD of something that already happened (like a CI log),
+      # which is why it commits directly rather than opening a gated PR. The
+      # Librarian reads these; no verdict is ever lost to /tmp again.
+      - name: Record verdict to the ledger
+        if: ${{ always() }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          [ -f /tmp/ledger-event.md ] || { echo "No ledger event produced (early failure) — nothing to record."; exit 0; }
+          git config user.name "council[bot]"
+          git config user.email "council[bot]@users.noreply.github.com"
+          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git"
+          # The ledger lives on main even when the Council reviewed another ref
+          git fetch origin main
+          git checkout -B ledger-record origin/main
+          mkdir -p "$(dirname "$LEDGER_FILE")"
+          cp /tmp/ledger-event.md "$LEDGER_FILE"
+          git add "$LEDGER_FILE"
+          git commit -m "🏛️ Ledger: council verdict — $(basename "$LEDGER_FILE" .md)"
+          # push with one rebase retry in case main moved during the run
+          git push origin ledger-record:main || { git fetch origin main && git rebase origin/main && git push origin ledger-record:main; }
+          echo "Recorded: $LEDGER_FILE" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload report
         if: ${{ always() }}

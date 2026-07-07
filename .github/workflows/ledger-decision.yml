@@ -1,0 +1,98 @@
+name: Ledger — record PR decision
+
+# PRD 0004 arc 2: every closed pull request is a SOVEREIGN VERDICT — the
+# highest-value human signal in the system (merge = yes, close = no, edits
+# before merge = "yes, but"). This workflow records each one as an append-only
+# ledger event the moment the decision happens, because the "why" evaporates
+# within days.
+#
+# The one-line why: leave a PR comment starting with "Why:" before (or after)
+# deciding — the recorder picks up the latest one. Without it the event is
+# still recorded, marked (unrecorded).
+#
+# Records only; never judges. Commits directly to main because a decision
+# record is a log entry, not a proposal — the human decision it records IS the
+# gate that already happened.
+
+on:
+  pull_request:
+    types: [closed]
+
+permissions:
+  contents: write
+  pull-requests: read
+
+concurrency:
+  group: ledger-decisions
+  cancel-in-progress: false
+
+jobs:
+  record:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Write the decision event
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+          TITLE: ${{ github.event.pull_request.title }}
+          BRANCH: ${{ github.event.pull_request.head.ref }}
+          MERGED: ${{ github.event.pull_request.merged }}
+          ACTOR: ${{ github.event.sender.login }}
+        run: |
+          set -euo pipefail
+
+          # which loop proposed it? (by branch convention; humans = "owner")
+          case "$BRANCH" in
+            gardener/*)  proposer="gardener" ;;
+            mechanic/*)  proposer="mechanic" ;;
+            librarian/*) proposer="librarian" ;;
+            *)           proposer="owner" ;;
+          esac
+          decision=$([ "$MERGED" = "true" ] && echo "merged" || echo "closed-unmerged")
+
+          # the one-line why: the latest PR comment starting "Why:" (case-insensitive)
+          why=$(gh pr view "$PR" --repo "$REPO" --json comments \
+                --jq '[.comments[] | select(.body | test("^[Ww]hy:")) | .body] | last // ""' \
+                | head -c 500 | sed -E 's/^[Ww]hy:[[:space:]]*//')
+          [ -n "$why" ] || why="(unrecorded — add a PR comment starting \"Why:\" and it will be picked up on the next decision)"
+
+          files=$(gh pr view "$PR" --repo "$REPO" --json files --jq '[.files[].path] | join(", ")' | head -c 600)
+
+          d=$(date -u +%F)
+          out="knowledge-base/ledger/decisions/${d}-pr${PR}.md"
+          mkdir -p knowledge-base/ledger/decisions
+          if [ -f "$out" ]; then out="knowledge-base/ledger/decisions/${d}-pr${PR}-$(date -u +%H%M%S).md"; fi
+
+          {
+            echo "---"
+            echo "event: sovereign-decision"
+            echo "date: ${d}"
+            echo "pr: ${PR}"
+            echo "proposed_by: ${proposer}"
+            echo "decision: ${decision}"
+            echo "decided_by: ${ACTOR}"
+            echo "---"
+            echo ""
+            echo "# PR #${PR} — ${TITLE}"
+            echo ""
+            echo "**Decision.** ${decision} by ${ACTOR}."
+            echo ""
+            echo "**Proposed by.** ${proposer} (branch \`${BRANCH}\`)."
+            echo ""
+            echo "**Files touched.** ${files}"
+            echo ""
+            echo "**Why (owner's line).** ${why}"
+          } > "$out"
+
+          git config user.name "ledger[bot]"
+          git config user.email "ledger[bot]@users.noreply.github.com"
+          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git"
+          git add "$out"
+          git commit -m "📒 Ledger: PR #${PR} ${decision} ($proposer proposal)"
+          git push origin HEAD:main || { git pull --rebase origin main && git push origin HEAD:main; }
+          echo "Recorded: $out" >> "$GITHUB_STEP_SUMMARY"

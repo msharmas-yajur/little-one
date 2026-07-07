@@ -254,6 +254,18 @@ async def amain(args):
     print(report)
     if args.out:
         Path(args.out).write_text(report, encoding="utf-8")
+    if args.ledger_out:
+        # The ledger copy (PRD 0004 arc 1): the same report with a parseable
+        # front-matter header, committed by the workflow into
+        # knowledge-base/ledger/council/ so no verdict is ever lost to /tmp.
+        from datetime import datetime, timezone
+        votes = ", ".join(f"{s['key']}: {verdicts[s['key']].get('verdict','error')}" for s in SEATS)
+        fm = (f"---\nevent: council-review\ndate: {datetime.now(timezone.utc).date().isoformat()}\n"
+              f"artifact: {kind}/{target}\ndecision: {decision}\n"
+              f"seats: {{ {votes} }}\nrun: {args.run_id or 'local'}\n---\n\n")
+        p = Path(args.ledger_out)
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(fm + report, encoding="utf-8")
     # exit code encodes the gate for CI: 0 publish, 20 revise, 30 escalate
     return {"publish": 0, "revise": 20, "escalate": 30}[decision]
 
@@ -267,6 +279,8 @@ def main():
     g.add_argument("--text", help="review inline text")
     ap.add_argument("--kind", help="label for --file/--text (e.g. 'wiki page')")
     ap.add_argument("--out", help="also write the report to this path")
+    ap.add_argument("--ledger-out", help="also write a ledger event file (front-matter + report) to this path")
+    ap.add_argument("--run-id", help="CI run id recorded in the ledger front-matter")
     ap.add_argument("--dry-run", action="store_true", help="assemble prompts, make no API calls")
     args = ap.parse_args()
     sys.exit(asyncio.run(amain(args)))

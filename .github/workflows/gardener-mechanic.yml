@@ -79,6 +79,14 @@ jobs:
                 mechanic; and the HARD capability rules for any code you write.
               - knowledge-base/CLAUDE.md — the "No names, ever" rule (public repo).
 
+            THEN read every page in knowledge-base/wiki/lessons/ (if the
+            directory exists) — distilled lessons from the ledger: what the
+            owner and the Review Council accepted, revised, and declined in
+            past proposals, and why. CONFIRMED lessons are binding (e.g. how
+            prompts must be framed, which cues a mechanic must carry);
+            HYPOTHESIS lessons are strong advice. Your first proposal was
+            escalated for faults the lessons now record — do not repeat them.
+
             STUDY THE WORKED REFERENCE before you design anything — the
             `odd-one-out` mechanic, and mirror its shape and quality:
               - schema/experience.schema.json  (`oddOneOutGame` + `anyGame`)

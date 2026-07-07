@@ -642,7 +642,11 @@
   /* ---- GAME ---- */
   let curGame=null, score=0;
   const cheers=['Yay! 🎉','You found it! 💛','Hooray!','Well done! ⭐','Good job! 🌸'];
-  function gameMode(g){ return g && g.mode==='odd-one-out' ? 'odd-one-out' : 'find'; }
+  function gameMode(g){
+    if(g && g.mode==='odd-one-out') return 'odd-one-out';
+    if(g && g.mode==='count') return 'count';
+    return 'find';
+  }
   function openGame(i){
     curGame = games[i]; score=0;
     telOpen(curGame);
@@ -656,6 +660,7 @@
      identity, so a game may repeat labels/pictures across rounds safely. */
   function renderChoices(options, correct, promptHTML, sayLabel){
     $('cheer').textContent='';
+    { const gc=$('gameCue'); if(gc) gc.textContent=''; }   // no stale count-cue on find/odd-one-out
     $('ask').innerHTML = promptHTML;
     const grid=$('grid'); grid.innerHTML=''; grid.style.gridTemplateColumns='1fr 1fr';
     options.forEach(o=>{
@@ -698,6 +703,41 @@
         const options = shuffle(major.concat([odd])).map(art=>({art}));
         const correct = options.find(o=>o.art===odd);
         renderChoices(options, correct, curGame.prompt || 'Which one is <b>different</b>?', 'the different one');
+      }
+    },
+    count: {                                  // "How many?" — tap EACH one to count it (early numeracy)
+      newRound(){
+        const rounds = (curGame.rounds||[]).filter(r=>r && r.count>=1);
+        if(!rounds.length) return;
+        const r = shuffle(rounds)[0];
+        const n = Math.min(Math.max(r.count|0, 2), 4);   // 2–4 keeps the proven 2x2 no-scroll footprint
+        const words = ['one','two','three','four'];
+        $('cheer').textContent='';
+        $('ask').innerHTML = (curGame.prompt || 'Let\'s count the <b>{label}</b> — together!').replace('{label}', r.label);
+        const gc=$('gameCue'); if(gc) gc.textContent = r.cue ? '💡 ' + r.cue : '';   // grown-up cue: serve-and-return (Council: Voice Seat)
+        const grid=$('grid'); grid.innerHTML='';
+        grid.style.gridTemplateColumns = n<=2 ? `repeat(${n},1fr)` : '1fr 1fr';
+        let counted=0;
+        for(let i=0;i<n;i++){
+          const b=document.createElement('button');
+          b.className='choice'; b.innerHTML=svgWrap(ART[r.art]||'');
+          b.onclick=()=>{
+            if(b.classList.contains('counted')){ soft(); return; }   // already counted — gentle no-op, never a penalty
+            b.classList.add('counted','right'); wobble(b);
+            counted++;
+            say(words[counted-1] || String(counted));                // count it aloud together
+            telEngage(curGame,'taps');
+            if(counted===n){                                         // all counted → celebrate the total
+              score++; $('gameScore').textContent=`⭐ ${score}`;
+              $('cheer').textContent=cheers[Math.random()*cheers.length|0];
+              happy(); confetti();
+              const total = words[n-1] || String(n);
+              setTimeout(()=>say(`${total} ${r.label}! We counted ${total}!`), 300);
+              setTimeout(()=>GAME_TYPES[gameMode(curGame)].newRound(), 2400);
+            }
+          };
+          grid.appendChild(b);
+        }
       }
     }
   };

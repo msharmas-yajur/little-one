@@ -115,3 +115,39 @@
     - [car, boat]                       # things that go
     - [sun, moon, star, cloud]          # up in the sky
     - [apple, ball]                     # little round things
+
+# ── A NEW MECHANIC (mode: count) ── the first counting game, and the first-ever
+#  3-4y content. The engine shows a small set (2–4) of ONE picture and asks
+#  "how many?"; tapping EACH one counts it aloud together (one, two, three…) and
+#  cheers the total. Early numeracy as a shared lap activity — every tap is a
+#  count, there is no wrong tap (a repeat tap is a gentle no-op). Built the
+#  schema-driven way: one schema branch (countGame + anyGame oneOf) + one
+#  GAME_TYPES registry entry + serialization (rounds) + this data. No new art.
+- id: count-with-me
+  title: "Count with me!"
+  age: "2+"
+  age_band: [2-3y, 3-4y]
+  skills: [connections, focus]
+  mode: count
+  prompt: "Let's count the <b>{label}</b> — together!"
+  rounds:
+    - art: duck
+      label: "ducks"
+      count: 2
+      cue: "Point at each duck together — “one… two…” — then pause and let the little one tap."
+    - art: star
+      label: "stars"
+      count: 3
+      cue: "You count aloud, the little one taps. Pause after each number — the pause is the turn."
+    - art: apple
+      label: "apples"
+      count: 3
+      cue: "Count on fingers as you go. Any tap is a good tap — describe it: “you tapped an apple!”"
+    - art: flower
+      label: "flowers"
+      count: 4
+      cue: "Four is a lot! Go slow, wait between numbers, and let the little one set the pace."
+    - art: ball
+      label: "balls"
+      count: 2
+      cue: "After counting, ask “more?” and wait — whatever answer comes back is the right one."

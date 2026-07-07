@@ -298,3 +298,16 @@ Append-only. Newest at the bottom. Each entry: date · what happened.
   Safety: always human-gated (only opens PR); bounded allowlist FORBIDS editing
   the validators/charters/raw (can't weaken its own gate); Council pre-read on the
   example. Next: first live mechanic run.
+- 2026-07-07 · BUILT THE VOICE PIPELINE (PRD 0003 milestone 1), Sarvam AI. Default
+  voice = anushka (owner pick). voice/render.py renders a bounded approved-phrase set
+  (17 deterministic art-naming sentences + peek-a-boo + count words + preview greeting)
+  per voice (anushka/vidya/manisha/arya) → assets/voice/<voice>/<slug>.mp3 (96 clips,
+  2MB) + manifest _data/voices.json. player.js: say() is clip-first with device-voice
+  fallback (partial coverage ok); sayArt() deterministic per word (one clip/picture).
+  child.html embeds window.VOICE (base/voices/manifest) + serializes per-content voice.
+  dyad.js: settings VOICE PICKER (Auto/Anushka/Vidya/Manisha/Arya + live preview,
+  stored in lo.voice). PER-CONTENT voices: peekaboo=vidya, splish-splash=arya,
+  who-says=manisha; precedence picked › content › anushka. Schema gained an optional
+  `voice` field (capability bound made me add it). SARVAM_API_KEY stored as repo
+  secret. Re-render workflow: gardener-voice.yml (dispatch → PR). Verified in-browser:
+  tap plays the right clip per default/per-story/override; picker sets pref + previews.

@@ -215,7 +215,38 @@
     ensureVoice();
     window.speechSynthesis.onvoiceschanged = ()=>{ preferredVoice = pickVoice(); };
   }
+  /* ---- warm voice: prefer a pre-rendered clip (Sarvam) for the ACTIVE voice,
+     else fall back to the device speech voice. Active voice = the family's
+     picked voice (settings) › the story/game's own `voice:` › the default.
+     Clips are static + offline; partial coverage is fine — anything unrendered
+     speaks via the device voice. window.VOICE is embedded by child.html. ---- */
+  const DEFAULT_VOICE = 'anushka';
+  function slugText(t){ return (t||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,''); }
+  function pickedVoice(){ try{ return localStorage.getItem('lo.voice') || ''; }catch(e){ return ''; } }
+  function activeVoice(){
+    return pickedVoice() || (curStory && curStory.voice) || (curGame && curGame.voice) || DEFAULT_VOICE;
+  }
+  let clipAudio=null;
   function say(text){
+    try{
+      const V = window.VOICE;
+      if(V && V.manifest){
+        const s = slugText(text), voice = activeVoice();
+        let use = (V.manifest[voice] && V.manifest[voice][s]) ? voice
+                : (V.manifest[DEFAULT_VOICE] && V.manifest[DEFAULT_VOICE][s]) ? DEFAULT_VOICE : null;
+        if(use){
+          duckMusic();
+          try{ if(clipAudio) clipAudio.pause(); }catch(e){}
+          clipAudio = new Audio((V.base||'') + '/' + use + '/' + s + '.mp3');
+          clipAudio.volume = 0.95;
+          clipAudio.play().catch(()=>sayDevice(text));   // autoplay blocked → device voice
+          return;
+        }
+      }
+      sayDevice(text);
+    }catch(e){ sayDevice(text); }
+  }
+  function sayDevice(text){
     try{
       if(!('speechSynthesis' in window)) return;
       const u = new SpeechSynthesisUtterance(text);
@@ -286,7 +317,8 @@
   const artSentences = ['Look, the {w}!', "It's the {w}!", "There's the {w}!", 'I see the {w}!', 'Can you say {w}?'];
   function sayArt(key){
     const w=(key||'').toLowerCase(); if(!w) return;
-    say(artSentences[Math.random()*artSentences.length|0].replace('{w}', w));
+    let h=0; for(let i=0;i<w.length;i++) h+=w.charCodeAt(i);   // deterministic per word (matches voice/render.py) → one clip per picture
+    say(artSentences[h % artSentences.length].replace('{w}', w));
   }
   const speakable = s => (s||'').replace(/[^\w\s,.!?'-]/g,'').replace(/\s+/g,' ').trim();
 

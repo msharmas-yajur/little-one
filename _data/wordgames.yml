@@ -66,6 +66,7 @@
 - id: who-says
   title: "Who says…?"
   age: "1+"
+  voice: manisha
   age_band: [12-24m]
   skills: [communicating, focus, connections]
   ask: "Who says {label}?"

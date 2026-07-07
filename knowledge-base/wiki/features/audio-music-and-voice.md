@@ -21,9 +21,22 @@ tumbling playful, peekaboo = sneaky-then-a-peek; menu/games use a gentle default
 low volume, **ducks under the voice**, 🎵/🔇 toggle persisted in `localStorage`,
 starts on first tap. `player.js`.
 
-## Voice — decided approach (roadmap)
-The current reinforcing voice uses the browser's built-in speech (Web Speech API),
-which sounds **robotic** with no emotional range. Target: a warm, joyful,
+## Voice — BUILT (2026-07-07): Sarvam clips + picker + per-content voices
+**Shipped:** the reinforcing voice now prefers a pre-rendered **Sarvam** clip for the
+active voice and falls back to the device voice for anything unrendered (partial
+coverage is fine and grows). `voice/render.py` renders a bounded phrase set (the
+deterministic art-naming sentences + peek-a-boo + count words + a preview greeting)
+once per voice into `assets/voice/<voice>/<slug>.mp3`; the manifest `_data/voices.json`
+is embedded by child.html as `window.VOICE` (no fetch). `say()` in player.js is
+clip-first; `sayArt()` is deterministic per word so each picture has one clip.
+**Settings voice picker** (dyad.js): Auto (per story) · Anushka (default) · Vidya ·
+Manisha · Arya, with a live preview; stored in `lo.voice`. **Per-content voices:** a
+story/game may carry `voice:` (e.g. peekaboo=vidya, splish-splash=arya, who-says=
+manisha). Precedence: picked voice › content voice › anushka. Re-render in CI via
+`.github/workflows/gardener-voice.yml` (opens a PR). Bilingual voice (en-IN + home
+language on the same page) is the natural next step — Sarvam covers 10 Indic languages.
+
+The original device-only reinforcing voice (Web Speech API) sounds **robotic**. Target: a warm, joyful,
 parentese voice that carries the little one through the **5-year journey**.
 
 **Architecture decision (why not the obvious tools):**

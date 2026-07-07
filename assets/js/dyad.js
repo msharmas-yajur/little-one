@@ -282,6 +282,11 @@
           '<button class="dyad-autobtn'+(autonomy()==='auto'?' on':'')+'" data-a="auto">Automatically</button>'+
           '<button class="dyad-autobtn'+(autonomy()==='ask-first'?' on':'')+'" data-a="ask-first">Ask me first</button>'+
           '</div>'):'')+
+      (window.VOICE && window.VOICE.voices ? ('<label>Storybook voice</label>'+
+        '<div class="dyad-pills" id="dyadVoicePills">'+
+          '<button type="button" class="dyad-pill" data-v="">Auto <span class="opt">(per story)</span></button>'+
+          window.VOICE.voices.map(function(v){ return '<button type="button" class="dyad-pill" data-v="'+v+'">'+v.charAt(0).toUpperCase()+v.slice(1)+'</button>'; }).join('')+
+        '</div>') : '')+
       '<p class="dyad-msg" id="dyadMsg" hidden></p>'+
       '<div class="dyad-actions" style="flex-wrap:wrap;">'+
         (p?'<button class="dyad-skip" id="dyadExport">Export</button>':'')+
@@ -292,6 +297,17 @@
         '<button class="dyad-save" id="dyadClose">Done</button>'+
       '</div></div>';
     document.body.appendChild(wrap);
+    (function(){
+      const pills=wrap.querySelectorAll('#dyadVoicePills .dyad-pill'); if(!pills.length) return;
+      let cur=''; try{ cur=localStorage.getItem('lo.voice')||''; }catch(e){}
+      pills.forEach(function(b){ if(b.getAttribute('data-v')===cur) b.classList.add('sel'); });
+      pills.forEach(function(b){ b.onclick=function(){
+        const v=b.getAttribute('data-v');
+        try{ if(v) localStorage.setItem('lo.voice', v); else localStorage.removeItem('lo.voice'); }catch(e){}
+        pills.forEach(function(x){ x.classList.toggle('sel', x===b); });
+        try{ new Audio((window.VOICE.base||'')+'/'+(v||'anushka')+'/hello-little-one.mp3').play().catch(function(){}); }catch(e){}  // preview the voice
+      }; });
+    })();
     const close=()=>{ if(window.LO && window.LO.renderMenu) window.LO.renderMenu(); wrap.remove(); };
     const msg=(t)=>{ const m=document.getElementById('dyadMsg'); if(m){ m.textContent=t; m.hidden=false; } };
     document.getElementById('dyadClose').onclick=close;

@@ -1,0 +1,60 @@
+name: Voice render
+
+# PRD 0003 milestone 1: render the approved spoken phrases into static voice
+# clips (Sarvam), once per voice, and open a PR with any new clips + manifest.
+# Manual only. Idempotent — existing clips are skipped, so re-runs are cheap.
+# Needs SARVAM_API_KEY as a repo secret. render.py uses the stdlib only.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write
+
+concurrency:
+  group: voice-render
+  cancel-in-progress: false
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Render voice clips
+        env:
+          SARVAM_API_KEY: ${{ secrets.SARVAM_API_KEY }}
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          RUN_NUM: ${{ github.run_number }}
+        run: |
+          set -euo pipefail
+          python3 voice/render.py
+
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "### 🎙 Voice render: no new clips" >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          n=$(git status --porcelain | grep -c '\.mp3$' || true)
+
+          git config user.name "voice[bot]"
+          git config user.email "voice[bot]@users.noreply.github.com"
+          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git"
+          br="voice/render-${RUN_NUM}"
+          git checkout -b "$br"
+          git add -A
+          git commit -m "🎙 Voice render: ${n} new clip(s)"
+          git push -u origin "$br"
+
+          body="Rendered new voice clips (Sarvam) for approved phrases. Static audio + updated manifest (_data/voices.json). Human-gated: listen to a sample, then merge."
+          if gh pr create --base main --head "$br" --title "🎙 Voice render (${n} new clips)" --body "$body"; then
+            url=$(gh pr view "$br" --json url --jq '.url')
+            { echo "### 🎙 Voice render opened a PR"; echo "$url"; } >> "$GITHUB_STEP_SUMMARY"
+          else
+            { echo "### 🎙 Voice render pushed \`$br\`"; echo "https://github.com/${REPO}/compare/main...${br}?expand=1"; } >> "$GITHUB_STEP_SUMMARY"
+          fi

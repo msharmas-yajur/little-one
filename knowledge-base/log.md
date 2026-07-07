@@ -284,3 +284,17 @@ Append-only. Newest at the bottom. Each entry: date · what happened.
   (3 majority + 1 outlier), "Which one is different?", odd tap scores. This is the
   concrete proof of milestone 3b and the reference for milestone 4 (Gardener
   proposing mechanics). No new art needed (reused existing 17 keys as groups).
+- 2026-07-06 · BUILT THE MECHANIC LOOP (PRD 0003 milestone 4 — Gardener graduation),
+  on Opus. The Gardener graduates from content (instances) to proposing a new
+  experience MECHANIC (class): schema branch + additive PAGE_TYPES/GAME_TYPES
+  renderer + serialization + example + log, as ONE human-gated PR. New:
+  knowledge-base/MECHANIC.md (charter), schema/mechanic_lint.py (the JS CAPABILITY
+  DENYLIST — bounds generated code the way additionalProperties:false bounds
+  content: blocks fetch/XHR/WebSocket/storage/eval/import/external-URL/<script> +
+  additive-and-small caps; verified against poisoned + benign diffs),
+  .github/workflows/gardener-mechanic.yml (dispatch; mechanic/* branch; class-scoped
+  gate = allowlist + mechanic_lint + node --check + lint.rb + validate.py + build),
+  gardener-lint.yml extended for mechanic/* PRs, wiki/features/mechanic-loop.md.
+  Safety: always human-gated (only opens PR); bounded allowlist FORBIDS editing
+  the validators/charters/raw (can't weaken its own gate); Council pre-read on the
+  example. Next: first live mechanic run.

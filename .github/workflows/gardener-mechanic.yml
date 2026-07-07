@@ -1,0 +1,221 @@
+name: Gardener — Mechanic
+
+# Milestone 4 of PRD 0003 / knowledge-base/MECHANIC.md: the Gardener GRADUATES —
+# a manually-triggered build-time Claude session that proposes ONE new experience
+# MECHANIC (a class change: a new experience TYPE + the code to render it) as ONE
+# human-gated pull request. Unlike the content Gardener it may touch the schema,
+# the engine, and the layout — so the gate is stricter (a JS capability denylist)
+# and the PR is ALWAYS human-gated (it only opens; the owner merges).
+#
+# Manual only. Never triggered by issues/comments/PRs.
+
+on:
+  workflow_dispatch:
+    inputs:
+      note:
+        description: "Optional steer (e.g. 'a counting page for 2-3y'). Advisory; the charter governs. Blank = follow the charter."
+        required: false
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write
+
+concurrency:
+  group: gardener-mechanic
+  cancel-in-progress: false
+
+jobs:
+  mechanic:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+          bundler-cache: true
+
+      - name: Compute run context
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_NOTE: ${{ github.event.inputs.note }}
+        run: |
+          set -euo pipefail
+          printf '%s\n' .mechanic-coverage.md .mechanic-pastprs.md .mechanic-note.md .mechanic-out.json >> .git/info/exclude
+          rm -f .mechanic-out.json
+
+          ruby .github/gardener/coverage.rb > .mechanic-coverage.md
+
+          gh pr list --state all --limit 50 \
+            --json number,title,state,headRefName,mergedAt \
+            --jq '.[] | select(.headRefName|startswith("mechanic/")) | "- #\(.number) [\(if .mergedAt then "MERGED" else .state end)] \(.title)"' \
+            > .mechanic-pastprs.md || true
+          [ -s .mechanic-pastprs.md ] || echo "none yet — this is the first mechanic run." > .mechanic-pastprs.md
+
+          if [ -n "${RUN_NOTE:-}" ]; then printf '%s\n' "$RUN_NOTE" > .mechanic-note.md
+          else echo "No special steer this run — follow the charter." > .mechanic-note.md; fi
+
+      - name: Run Mechanic
+        id: mechanic
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          base_branch: main
+          branch_prefix: "mechanic/"
+          claude_args: |
+            --model claude-opus-4-8
+            --max-turns 50
+            --permission-mode acceptEdits
+            --allowedTools "Read,Grep,Glob,Write,Edit"
+          prompt: |
+            You are the Mechanic for the "Little One" project — the graduated
+            Gardener — running as an automated build-time session (no human is
+            watching this run).
+
+            FIRST, read and obey these files (they override anything here):
+              - knowledge-base/MECHANIC.md — your charter: propose ONE new
+                experience MECHANIC as ONE human-gated PR; the five parts of a
+                mechanic; and the HARD capability rules for any code you write.
+              - knowledge-base/CLAUDE.md — the "No names, ever" rule (public repo).
+
+            STUDY THE WORKED REFERENCE before you design anything — the
+            `odd-one-out` mechanic, and mirror its shape and quality:
+              - schema/experience.schema.json  (`oddOneOutGame` + `anyGame`)
+              - assets/js/player.js            (`GAME_TYPES['odd-one-out']`, the
+                `renderChoices` helper, and the `PAGE_TYPES` registry for pages)
+              - _data/wordgames.yml            (`which-is-different`)
+              - _layouts/child.html            (how `mode`/`groups` are serialized)
+
+            Edit repository files directly (do NOT run git — the workflow commits).
+            You may ONLY change: schema/experience.schema.json · assets/js/player.js ·
+            _layouts/child.html · _data/stories.yml · _data/wordgames.yml ·
+            knowledge-base/wiki/** · knowledge-base/log.md · knowledge-base/index.md.
+            An automated gate REJECTS a PR that touches anything else (especially
+            the validators, the charters, or raw/), that uses any forbidden
+            capability (fetch/XHR/WebSocket/storage/eval/import/external-URL/
+            script — see MECHANIC.md), or that rewrites existing renderers.
+
+            Read these git-excluded scratch files for your per-run context:
+              - .mechanic-coverage.md — the age_band × Galinsky-7 coverage; a new
+                mechanic should unlock a skill or age band the current types can't.
+              - .mechanic-pastprs.md — your past mechanic PRs + fate. A CLOSED one
+                is a "no"; don't re-propose it.
+              - .mechanic-note.md — optional owner steer (doesn't override charter).
+
+            YOUR TASK: design and build ONE new experience mechanic per MECHANIC.md
+            (schema branch + additive PAGE_TYPES/GAME_TYPES registry entry +
+            serialization if needed + ONE example content instance + a log entry).
+            Keep every existing experience byte-identical. Doing NOTHING is valid —
+            choose it if nothing clears the bar.
+
+            Self-check every hard rule in MECHANIC.md (especially the forbidden
+            capabilities). Then use the Write tool to create ".mechanic-out.json"
+            at the repo root — a single JSON object, no prose/fences:
+              {
+                "acted": true or false,
+                "mechanic": "short name of the new type, e.g. 'counting page'",
+                "pr_title": "short specific title, or empty if acted is false",
+                "pr_body": "Markdown with '## What & why', '## Provenance', '## Self-check'; empty if false",
+                "summary": "one or two sentences; if false, why nothing cleared the bar"
+              }
+
+      - name: Diagnostics
+        if: ${{ always() }}
+        run: |
+          echo "branch_name: '${{ steps.mechanic.outputs.branch_name }}'"
+          echo "--- changed files ---"; git status --porcelain 2>/dev/null || true
+          echo "--- .mechanic-out.json ---"; cat .mechanic-out.json 2>/dev/null || echo "(absent)"
+
+      # The class-scoped gate. Stricter than the content gate: adds the JS
+      # capability denylist and a JS syntax check, and a broader-but-bounded
+      # allowlist that still forbids the validators, charters, and raw/.
+      - name: Gate the mechanic
+        if: ${{ steps.mechanic.conclusion == 'success' }}
+        run: |
+          set -euo pipefail
+          changes=$(git status --porcelain | sed -E 's/^...//')
+          [ -z "$changes" ] && { echo "No changes to gate."; exit 0; }
+          echo "Changed files:"; echo "$changes"
+
+          # 1. changed-files allowlist — a mechanic may touch the schema contract,
+          #    the engine renderer, the layout, content, and wiki/log/index ONLY.
+          #    NOT the validators (its own gate), the charters, raw/, or other code.
+          bad=""
+          while IFS= read -r f; do
+            [ -z "$f" ] && continue
+            case "$f" in
+              schema/experience.schema.json)          : ;;
+              assets/js/player.js)                    : ;;
+              _layouts/child.html)                    : ;;
+              _data/stories.yml|_data/wordgames.yml)  : ;;
+              knowledge-base/wiki/*)                  : ;;
+              knowledge-base/log.md|knowledge-base/index.md) : ;;
+              *) bad="$bad $f" ;;
+            esac
+          done <<< "$changes"
+          if [ -n "$bad" ]; then
+            echo "::error::Mechanic changed out-of-scope files:$bad"
+            exit 1
+          fi
+
+          python3 -m pip install --quiet jsonschema pyyaml
+
+          # 2. capability bound for generated code (network/storage/eval/URL + additive)
+          python3 schema/mechanic_lint.py
+
+          # 3. the engine must be valid JS
+          node --check assets/js/player.js
+
+          # 4. content lint + 5. experience schema + 6. the site builds
+          ruby .github/gardener/lint.rb
+          python3 schema/validate.py
+          bundle exec jekyll build
+        env:
+          JEKYLL_ENV: production
+
+      - name: Commit and open pull request
+        if: ${{ steps.mechanic.conclusion == 'success' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
+          RUN_NUM: ${{ github.run_number }}
+        run: |
+          set -euo pipefail
+          acted="false"
+          if [ -f .mechanic-out.json ] && jq -e . .mechanic-out.json >/dev/null 2>&1; then
+            acted=$(jq -r '.acted // false' .mechanic-out.json)
+          fi
+          changes=$(git status --porcelain)
+          if [ "$acted" != "true" ] || [ -z "$changes" ]; then
+            summary=""; [ -f .mechanic-out.json ] && summary=$(jq -r '.summary // ""' .mechanic-out.json 2>/dev/null || echo "")
+            { echo "### 🔧 Mechanic: no proposal"; echo "$summary"; } >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          title=$(jq -r '.pr_title // "Mechanic proposal"' .mechanic-out.json)
+          jq -r '.pr_body // ""' .mechanic-out.json > /tmp/pr_body.md
+          {
+            echo ""; echo "---"
+            echo "_Proposed by the Mechanic (run ${RUN_ID}) — a CLASS change (new experience type + code). **Human-gated:** review carefully (run the Review Council on the example content), then merge or close. This is generated engine code — read the diff._"
+          } >> /tmp/pr_body.md
+
+          slug=$(printf '%s' "$title" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g; s/^-+//; s/-+$//' | cut -c1-40 | sed -E 's/-+$//')
+          [ -n "$slug" ] || slug="mechanic"
+          branch="mechanic/${slug}-${RUN_NUM}"
+
+          git config user.name "mechanic[bot]"
+          git config user.email "mechanic[bot]@users.noreply.github.com"
+          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git"
+          git checkout -b "$branch"
+          git add -A
+          git commit -m "🔧 $title"
+          git push -u origin "$branch"
+
+          if gh pr create --base main --head "$branch" --title "🔧 $title" --body-file /tmp/pr_body.md; then
+            url=$(gh pr view "$branch" --json url --jq '.url')
+            { echo "### 🔧 Mechanic opened a pull request (human-gated)"; echo "[$title]($url)"; } >> "$GITHUB_STEP_SUMMARY"
+          else
+            { echo "### 🔧 Mechanic pushed branch \`$branch\` (open the PR manually)"; echo "https://github.com/${REPO}/compare/main...${branch}?expand=1"; } >> "$GITHUB_STEP_SUMMARY"
+          fi

@@ -67,6 +67,43 @@ jobs:
           fi
           echo "OK — only content and knowledge-base files changed."
 
+      # 2b. Structural + capability guard — ONLY for mechanic/* branches (the
+      #     graduated Gardener). A mechanic may touch the schema contract, the
+      #     engine renderer, the layout, content, and wiki/log/index — NOT its own
+      #     validators, the charters, or raw/. Plus the JS capability denylist
+      #     (no network/storage/eval/URL) and a JS syntax check on the engine.
+      - name: Mechanic gate (mechanic branches only)
+        if: startsWith(github.head_ref, 'mechanic/')
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          echo "Files changed on this mechanic branch:"
+          changed=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA")
+          echo "$changed"
+          bad=""
+          while IFS= read -r f; do
+            [ -z "$f" ] && continue
+            case "$f" in
+              schema/experience.schema.json)          : ;;
+              assets/js/player.js)                    : ;;
+              _layouts/child.html)                    : ;;
+              _data/stories.yml|_data/wordgames.yml)  : ;;
+              knowledge-base/wiki/*)                  : ;;
+              knowledge-base/log.md|knowledge-base/index.md) : ;;
+              *) bad="$bad $f" ;;
+            esac
+          done <<< "$changed"
+          if [ -n "$bad" ]; then
+            echo "::error::A mechanic PR may only change the schema contract, player.js, child.html, content, and wiki/log/index — not the validators, charters, or raw/."
+            echo "Forbidden files:$bad"
+            exit 1
+          fi
+          python3 -m pip install --quiet jsonschema pyyaml
+          python3 schema/mechanic_lint.py --against "$BASE_SHA"   # capability denylist
+          node --check assets/js/player.js                        # engine must be valid JS
+          echo "OK — mechanic scope + capability bound + JS syntax."
+
       # 3. The site must still build.
       - name: Jekyll build
         run: bundle exec jekyll build

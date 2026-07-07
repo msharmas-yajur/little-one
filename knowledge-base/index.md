@@ -8,7 +8,8 @@ The catalog of every page. One line each. Keep current on every ingest.
 
 ## Schema
 - `CLAUDE.md` — operating rules for any LLM session working here.
-- `GARDENER.md` — charter for the Gardener pass (the automated improvement loop).
+- `GARDENER.md` — charter for the Gardener pass (the automated content loop).
+- `MECHANIC.md` — charter for the Mechanic pass (Gardener graduated to propose new experience mechanics; human-gated).
 - `COUNCIL.md` — charter for the Review Council (the LLM-judge panel that gates generated instances). Specced.
 
 ## Concepts (`wiki/concepts/`)
@@ -34,7 +35,8 @@ The catalog of every page. One line each. Keep current on every ingest.
 - `peekaboo-flaps.md` — lift-the-flap "Where's …?" reveal + camera-mirror finale. Status: built.
 - `gardener-loop.md` — Tier-2 self-learning loop: one reviewed PR per manual run. Status: built & LIVE (PRs #1, #2 merged).
 - `review-council.md` — six-seat rubric-anchored judge panel + chairman; gates generated instances. Status: review-mode built.
-- `experience-schema.md` — the capability-bounded declarative UI contract the engine renders; generated UI sandboxed by grammar. Status: built (v1).
+- `experience-schema.md` — the capability-bounded declarative UI contract the engine renders; generated UI sandboxed by grammar. Status: built (engine is a pure schema renderer).
+- `mechanic-loop.md` — the Gardener graduated: propose a new experience mechanic (schema branch + renderer) as a human-gated PR, JS-capability-bounded. Status: built.
 
 ## Raw sources (`raw/`)
 - `raw/ideas/`
